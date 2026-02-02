@@ -3,7 +3,7 @@
 #include <GL\glew.h>
 #include <iostream>
 #include <string>
-using namespace std;
+#include <utility>
 
 
 class Display
