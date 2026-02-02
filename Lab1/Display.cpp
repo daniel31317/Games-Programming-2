@@ -4,6 +4,7 @@
 Display::Display()
 {
 	_window = nullptr; //initialise to generate null access violation for debugging. 
+	_context = nullptr;
 	_screenWidth = 1024;
 	_screenHeight = 768; 
 }
@@ -11,7 +12,9 @@ Display::Display()
 
 Display::~Display()
 {
-	delete _window;
+	SDL_GL_DeleteContext(_context);
+	SDL_DestroyWindow(_window);
+	SDL_Quit();
 }
 
 void Display::returnError(std::string errorString)
@@ -23,6 +26,7 @@ void Display::returnError(std::string errorString)
 	std::cin.get();
 
 	SDL_Event e;
+
 	e.type = SDL_QUIT;
 	SDL_PushEvent(&e);
 }
@@ -40,7 +44,7 @@ void Display::initDisplay()
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // set up double buffer   
 	_window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHeight, SDL_WINDOW_OPENGL);
-	SDL_GLContext glContext = SDL_GL_CreateContext(_window);
+	_context = SDL_GL_CreateContext(_window);
 	GLenum error = glewInit();
 
 	if (_window == nullptr)
@@ -49,9 +53,9 @@ void Display::initDisplay()
 		return;
 	}
 
-	if (glContext == nullptr)
+	if (_context == nullptr)
 	{
-		returnError("glContext is null");
+		returnError("Context is null");
 		return;
 	}
 
@@ -61,6 +65,14 @@ void Display::initDisplay()
 		return;
 	}
 	
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
 
+}
+
+
+
+void Display::clearDisplay()
+{
+	glClearDepth(1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
 }

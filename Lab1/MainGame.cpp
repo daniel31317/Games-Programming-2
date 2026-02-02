@@ -49,18 +49,19 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
-	glClearDepth(1.0); 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
+	_gameDisplay.clearDisplay();
 
+	Vertex vertices[3] = { Vertex(glm::vec3(-0.5, -0.5, 0)),
+						   Vertex(glm::vec3(0, 0.5, 0)),
+						   Vertex(glm::vec3(0.5, -0.5, 0)) };
+
+	Mesh mesh(vertices, 3);
+	Shader shader("shader");
+	shader.Bind();
+	mesh.Draw();
 	
-	// old code for testing only 
-	glEnableClientState(GL_COLOR_ARRAY); 
-	glBegin(GL_TRIANGLES);
-	glColor3f(0.0f, 1.0f, 0.0f);	
-	glVertex2f(0, 0);
-	glVertex2f(0, 500);
-	glVertex2f(500, 500);
-	glEnd();
 
 	_gameDisplay.swapBuffer();
 }
+
+

@@ -3,6 +3,8 @@
 #include <SDL\SDL.h>
 #include <GL/glew.h>
 #include "Display.h" 
+#include "Mesh.h"
+#include "Shader.h"
 
 enum class GameState{PLAY, EXIT};
 
