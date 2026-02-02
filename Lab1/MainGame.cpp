@@ -5,6 +5,7 @@
 MainGame::MainGame()
 {
 	_gameState = GameState::PLAY;
+	Display* _gameDisplay = new Display(); //new display
 }
 
 MainGame::~MainGame()
@@ -13,13 +14,13 @@ MainGame::~MainGame()
 
 void MainGame::run()
 {
-	initSystems();
+	initSystems(); 
 	gameLoop();
 }
 
 void MainGame::initSystems()
 {
-	_gameDisplay.initDisplay();
+	_gameDisplay.initDisplay(); 
 }
 
 void MainGame::gameLoop()
@@ -33,18 +34,18 @@ void MainGame::gameLoop()
 
 void MainGame::processInput()
 {
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-			case SDL_QUIT: _gameState = GameState::EXIT; 
-				SDL_Quit();	 
-			break;
+	SDL_Event evnt;
 
-			default: break;
+	while(SDL_PollEvent(&evnt)) //get and process events
+	{
+		switch (evnt.type)
+		{
+			case SDL_QUIT:
+				_gameState = GameState::EXIT;
+				break;
 		}
 	}
+	
 }
 
 void MainGame::drawGame()
@@ -56,7 +57,7 @@ void MainGame::drawGame()
 	// old code for testing only 
 	glEnableClientState(GL_COLOR_ARRAY); 
 	glBegin(GL_TRIANGLES);
-	glColor3f(0.0f, 1.0f, 0.0f);	
+	glColor3f(1.0f, 0.0f, 0.0f);	
 	glVertex2f(0, 0);
 	glVertex2f(0, 500);
 	glVertex2f(500, 500);
