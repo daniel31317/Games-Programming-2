@@ -10,8 +10,8 @@ Shader::Shader(const std::string& filename)
 
 	//load shaders
 
-	shaders[0] = CreateShader(LoadShader("C:\\Users\\DJUDD300\\Documents\\GitHub\\Games-Programming-2\\res\\" + filename + ".vert"), GL_VERTEX_SHADER);
-	shaders[1] = CreateShader(LoadShader("C:\\Users\\DJUDD300\\Documents\\GitHub\\Games-Programming-2\\res\\" + filename + ".frag"), GL_FRAGMENT_SHADER);
+	shaders[0] = CreateShader(LoadShader(filename + ".vert"), GL_VERTEX_SHADER);
+	shaders[1] = CreateShader(LoadShader(filename + ".frag"), GL_FRAGMENT_SHADER);
 
 
 	//attach the shaders to the program
@@ -22,6 +22,9 @@ Shader::Shader(const std::string& filename)
 
 	//bind the attribute location
 	glBindAttribLocation(program, 0, "position");
+	glBindAttribLocation(program, 1, "texCoord");
+
+	uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
 
 	//link the program and check it linked
 	glLinkProgram(program); //create executables that will run on the GPU shaders
@@ -114,4 +117,10 @@ GLuint Shader::CreateShader(const std::string& text, unsigned int type)
 void Shader::Bind()
 {
 	glUseProgram(program);
+}
+
+void Shader::Update(const Transform& transform)
+{
+	glm::mat4 model = transform.GetModel();
+	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GLU_FALSE, &model[0][0]);
 }
