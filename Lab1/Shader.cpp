@@ -24,8 +24,6 @@ Shader::Shader(const std::string& filename)
 	glBindAttribLocation(program, 0, "position");
 	glBindAttribLocation(program, 1, "texCoord");
 
-	uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
-
 	//link the program and check it linked
 	glLinkProgram(program); //create executables that will run on the GPU shaders
 	CheckShaderError(program, GL_LINK_STATUS, true, "Error: Shader program linking failed"); // cheack for error
@@ -34,7 +32,7 @@ Shader::Shader(const std::string& filename)
 	glValidateProgram(program); //check the entire program is valid
 	CheckShaderError(program, GL_VALIDATE_STATUS, true, "Error: Shader program not valid");
 
-
+	uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
 }
 
 Shader::~Shader()
