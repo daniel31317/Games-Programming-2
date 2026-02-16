@@ -27,7 +27,7 @@ void MainGame::initSystems()
 	_gameDisplay.initDisplay();
 	mesh.loadModel("..\\res\\monkey3.obj");
 	shader = std::make_unique<Shader>("..\\res\\shader"); //new shader
-	texture = std::make_unique<Texture>("..\\res\\bricks.jpg"); //load texture
+	texture = std::make_unique<Texture>("..\\res\\water.jpg"); //load texture
 	myCamera.initCamera(glm::vec3(0, 0, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
 }
 
