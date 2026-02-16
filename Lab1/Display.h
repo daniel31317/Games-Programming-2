@@ -3,7 +3,7 @@
 #include <GL\glew.h>
 #include <iostream>
 #include <string>
-#include <utility>
+using namespace std;
 
 
 class Display
@@ -13,20 +13,17 @@ public:
 	~Display();
 	void initDisplay();
 	void swapBuffer();
-	void clearDisplay();
+	void clearDisplay(float r, float g, float b, float a);
+
+	float getWidth();
+	float getHeight();
 
 private:
 
-	SDL_Window* _window; //holds pointer to out window
-	int _screenWidth;
-	int _screenHeight;
-
-	SDL_GLContext _context;
-
-
 	void returnError(std::string errorString);
 
-
-	
+	SDL_GLContext _glContext; //global variable to hold the context
+	SDL_Window* _sdlWindow; //holds pointer to out window
+	float _screenWidth;
+	float _screenHeight;
 };
-

@@ -3,6 +3,11 @@
 #include "Shader.h"
 
 
+Shader::Shader()
+{
+
+}
+	
 Shader::Shader(const std::string& filename)
 {
 
@@ -117,8 +122,9 @@ void Shader::Bind()
 	glUseProgram(program);
 }
 
-void Shader::Update(const Transform& transform)
+void Shader::Update(const Transform& transform, const Camera& camera)
 {
-	glm::mat4 model = transform.GetModel();
-	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GLU_FALSE, &model[0][0]);
+	glm::mat4 mvp = camera.GetViewProjection() * transform.GetModel();
+	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GLU_FALSE, &mvp[0][0]);
 }
+

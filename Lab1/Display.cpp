@@ -3,17 +3,17 @@
 
 Display::Display()
 {
-	_window = nullptr; //initialise to generate null access violation for debugging. 
-	_context = nullptr;
-	_screenWidth = 1024;
-	_screenHeight = 768; 
+	_sdlWindow = nullptr; //initialise to generate null access violation for debugging. 
+	_glContext = nullptr;
+	_screenWidth = 1024.0f;
+	_screenHeight = 768.0f; 
 }
 
 
 Display::~Display()
 {
-	SDL_GL_DeleteContext(_context);
-	SDL_DestroyWindow(_window);
+	SDL_GL_DeleteContext(_glContext);
+	SDL_DestroyWindow(_sdlWindow);
 	SDL_Quit();
 }
 
@@ -33,7 +33,7 @@ void Display::returnError(std::string errorString)
 
 void Display::swapBuffer()
 {
-	SDL_GL_SwapWindow(_window);
+	SDL_GL_SwapWindow(_sdlWindow);
 }
 
 void Display::initDisplay()
@@ -43,17 +43,19 @@ void Display::initDisplay()
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // set up double buffer   
-	_window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHeight, SDL_WINDOW_OPENGL);
-	_context = SDL_GL_CreateContext(_window);
+	_sdlWindow = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)_screenWidth, (int)_screenHeight, SDL_WINDOW_OPENGL);
+	_glContext = SDL_GL_CreateContext(_sdlWindow);
+
+
 	GLenum error = glewInit();
 
-	if (_window == nullptr)
+	if (_sdlWindow == nullptr)
 	{
 		returnError("Window is null");
 		return;
 	}
 
-	if (_context == nullptr)
+	if (_glContext == nullptr)
 	{
 		returnError("Context is null");
 		return;
@@ -65,14 +67,27 @@ void Display::initDisplay()
 		return;
 	}
 	
+	glEnable(GL_DEPTH_TEST); //enable z-buffering 
+	glEnable(GL_CULL_FACE); //dont draw faces that are not pointing at the camera
 	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
 
 }
 
 
 
-void Display::clearDisplay()
+void Display::clearDisplay(float r, float g, float b, float a)
 {
-	glClearDepth(1.0);
+	glClearColor(r, g, b, a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
+}
+
+
+float Display::getWidth()
+{
+	return _screenWidth;
+}
+
+float Display::getHeight()
+{
+	return _screenHeight;
 }
