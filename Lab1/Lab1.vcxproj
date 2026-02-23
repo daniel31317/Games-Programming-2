@@ -97,6 +97,8 @@
     <None Include="..\res\fog.vert" />
     <None Include="..\res\shader.frag" />
     <None Include="..\res\shader.vert" />
+    <None Include="..\res\toon.frag" />
+    <None Include="..\res\toon.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

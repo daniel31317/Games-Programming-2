@@ -85,5 +85,11 @@
     <None Include="..\res\fog.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\res\toon.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\toon.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
