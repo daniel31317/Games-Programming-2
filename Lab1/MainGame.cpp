@@ -26,7 +26,7 @@ void MainGame::initSystems()
 {
 	_gameDisplay.initDisplay();
 	mesh.loadModel("..\\res\\monkey3.obj");
-	shader = std::make_unique<Shader>("..\\res\\shader"); //new shader
+	shader = std::make_unique<Shader>("..\\res\\fog"); //new shader
 	texture = std::make_unique<Texture>("..\\res\\water.jpg"); //load texture
 	myCamera.initCamera(glm::vec3(0, 0, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
 }
@@ -60,7 +60,7 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
-	_gameDisplay.clearDisplay(0.0f, 0.0f, 0.0f, 1.0f);
+	_gameDisplay.clearDisplay(backgroundColour);
 
 	//transform.SetPos(glm::vec3(sinf(counter), 0.0, 0.0));
 	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));

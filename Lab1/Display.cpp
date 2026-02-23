@@ -81,6 +81,12 @@ void Display::clearDisplay(float r, float g, float b, float a)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
 }
 
+void Display::clearDisplay(glm::vec4 backgroundColour)
+{
+	glClearColor(backgroundColour.r, backgroundColour.g, backgroundColour.b, backgroundColour.a);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
+}
+
 
 float Display::getWidth()
 {

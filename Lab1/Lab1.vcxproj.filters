@@ -68,12 +68,21 @@
     <ClInclude Include="obj_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\shader.vert">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\res\shader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\fog.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\fog.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

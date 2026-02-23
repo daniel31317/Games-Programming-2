@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Mesh.h" />
@@ -92,6 +93,8 @@
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\res\fog.frag" />
+    <None Include="..\res\fog.vert" />
     <None Include="..\res\shader.frag" />
     <None Include="..\res\shader.vert" />
   </ItemGroup>

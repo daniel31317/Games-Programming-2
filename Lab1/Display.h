@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL/SDL.h>
 #include <GL\glew.h>
+#include <glm/glm.hpp>
 #include <iostream>
 #include <string>
 using namespace std;
@@ -14,6 +15,7 @@ public:
 	void initDisplay();
 	void swapBuffer();
 	void clearDisplay(float r, float g, float b, float a);
+	void clearDisplay(glm::vec4 backgroundColour);
 
 	float getWidth();
 	float getHeight();
@@ -26,4 +28,5 @@ private:
 	SDL_Window* _sdlWindow; //holds pointer to out window
 	float _screenWidth;
 	float _screenHeight;
+
 };

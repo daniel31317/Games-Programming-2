@@ -8,8 +8,10 @@
 #include "Texture.h"
 #include "transform.h"
 #include "Camera.h"
+#include "Constants.h"
 
 enum class GameState { PLAY, EXIT };
+
 
 class MainGame
 {

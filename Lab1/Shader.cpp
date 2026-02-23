@@ -26,8 +26,7 @@ Shader::Shader(const std::string& filename)
 	}
 
 	//bind the attribute location
-	glBindAttribLocation(program, 0, "position");
-	glBindAttribLocation(program, 1, "texCoord");
+	glBindAttribLocation(program, 0, "VertexPosition");
 
 	//link the program and check it linked
 	glLinkProgram(program); //create executables that will run on the GPU shaders
@@ -120,6 +119,7 @@ GLuint Shader::CreateShader(const std::string& text, unsigned int type)
 void Shader::Bind()
 {
 	glUseProgram(program);
+	glUniform3f(1, backgroundColour.r, backgroundColour.g, backgroundColour.b);
 }
 
 void Shader::Update(const Transform& transform, const Camera& camera)
