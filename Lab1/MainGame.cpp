@@ -25,9 +25,11 @@ void MainGame::run()
 void MainGame::initSystems()
 {
 	_gameDisplay.initDisplay();
+
 	m_shaderManager.LoadShaders();
-	mesh.loadModel("..\\res\\monkey3.obj");
-	texture = std::make_unique<Texture>("..\\res\\bricks.jpg"); //load texture
+	m_meshManager.LoadMeshes();
+	m_textureManager.LoadTextures();
+
 	myCamera.initCamera(glm::vec3(0, 0, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
 }
 
@@ -66,10 +68,13 @@ void MainGame::drawGame()
 	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
 	//transform.SetScale(glm::vec3(sinf(counter), sinf(counter), sinf(counter)));
 
-	m_shaderManager.GetShader(FOG)->Bind();
-	m_shaderManager.GetShader(FOG)->Update(transform, myCamera);
-	texture->Bind(0);
-	mesh.draw();
+	m_shaderManager.GetShader(RIM_LIGHT)->Bind();
+	m_shaderManager.GetShader(RIM_LIGHT)->Update(transform, myCamera);
+
+	m_textureManager.GetTexture(BRICKS)->Bind(0);
+
+	m_meshManager.GetMesh(MONKEY)->draw();
+
 	counter = counter + 0.01f;
 
 	glEnableClientState(GL_COLOR_ARRAY);

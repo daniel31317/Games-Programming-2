@@ -4,8 +4,8 @@
 #include <memory>
 #include "Display.h" 
 #include "ShaderManager.h"
-#include "Mesh.h"
-#include "Texture.h"
+#include "MeshManager.h"
+#include "TextureManager.h"
 #include "transform.h"
 #include "Camera.h"
 #include "Constants.h"
@@ -29,10 +29,12 @@ private:
 	void drawGame();
 
 	Display _gameDisplay;
-	GameState _gameState;
-	Mesh mesh;
+	GameState _gameState; 
+
 	ShaderManager m_shaderManager;
-	std::unique_ptr<Texture> texture;
+	MeshManager m_meshManager;
+	TextureManager m_textureManager;
+
 	Camera myCamera;
 
 	float counter;

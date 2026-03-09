@@ -15,7 +15,6 @@ class ShaderManager
 {
 private:
 
-
 	std::unique_ptr<Shader> m_shaderList[NUM_SHADERS];
 
 public:
