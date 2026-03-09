@@ -37,6 +37,8 @@ private:
 		RIMCOLOR_U,   
 		RIMPOWER_U,
 		FOGCOLOR_U,
+		DIFFUSE_U,
+		NORMALT_U,
 		NUM_UNIFORMS
 
 	};

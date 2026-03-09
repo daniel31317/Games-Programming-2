@@ -68,10 +68,10 @@ void MainGame::drawGame()
 	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
 	//transform.SetScale(glm::vec3(sinf(counter), sinf(counter), sinf(counter)));
 
-	m_shaderManager.GetShader(RIM_LIGHT)->Bind();
-	m_shaderManager.GetShader(RIM_LIGHT)->Update(transform, myCamera);
+	m_shaderManager.GetShader(FOG)->Bind();
+	m_shaderManager.GetShader(FOG)->Update(transform, myCamera);
 
-	m_textureManager.GetTexture(BRICKS)->Bind(0);
+	m_textureManager.GetTexture(ROCK)->Bind(0);
 
 	m_meshManager.GetMesh(MONKEY)->draw();
 

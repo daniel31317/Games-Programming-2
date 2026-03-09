@@ -14,6 +14,7 @@ public:
 		this->texCoord = texCoord;
 		this->normal = normal;
 	}
+	
 
 	glm::vec3* GetPos() { return &pos; }
 	glm::vec2* GetTexCoord() { return &texCoord; }

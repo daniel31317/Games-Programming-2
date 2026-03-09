@@ -8,7 +8,8 @@ TextureManager::TextureManager()
 void TextureManager::LoadTextures()
 {
 	m_textureList[BRICKS] = std::make_unique<Texture>("..\\res\\bricks.jpg");
-	m_textureList[WATER] = std::make_unique<Texture>("..\\res\\Water.jpg");
+	m_textureList[WATER] = std::make_unique<Texture>("..\\res\\water.jpg");
+	m_textureList[ROCK] = std::make_unique<Texture>("..\\res\\rock.jpg");
 }
 
 Texture* TextureManager::GetTexture(TextureName name)

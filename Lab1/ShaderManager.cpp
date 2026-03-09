@@ -11,6 +11,7 @@ void ShaderManager::LoadShaders()
 	m_shaderList[FOG] = std::make_unique<Shader>("..\\res\\fog");
 	m_shaderList[RIM_LIGHT] = std::make_unique<Shader>("..\\res\\rimlight");
 	m_shaderList[TOON] = std::make_unique<Shader>("..\\res\\toon");
+	m_shaderList[BUMP] = std::make_unique<Shader>("..\\res\\bump");
 }
 
 Shader* ShaderManager::GetShader(ShaderName name)

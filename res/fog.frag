@@ -4,9 +4,13 @@ out vec4 FragColor;
 
 in vec4 v_pos; 
 
+in vec2 t_coords; 
+
 uniform vec3 fogColor;
 
-float maxDist = 10.0f; //fog max distance
+uniform sampler2D diffuse;
+
+float maxDist = 8.0f; //fog max distance
 float minDist = 0.0f; //fog min distance
 
 void main() 
@@ -17,9 +21,9 @@ void main()
 
     fogFactor = clamp(fogFactor, 0.0, 1.0);
 
-    vec3 objectColor = vec3(255, 0, 212) / 255.0;
+    vec4 texColor = texture(diffuse, t_coords);
 
-    vec3 finalColor = mix(fogColor, objectColor, fogFactor);
+    vec3 finalColor = mix(fogColor, texColor.rgb, fogFactor);
 
-    FragColor = vec4(finalColor, 1.0);
+    FragColor = vec4(finalColor, texColor.a);
 }

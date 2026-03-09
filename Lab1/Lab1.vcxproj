@@ -99,6 +99,8 @@
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\res\bump.frag" />
+    <None Include="..\res\bump.vert" />
     <None Include="..\res\fog.frag" />
     <None Include="..\res\fog.vert" />
     <None Include="..\res\rimlight.frag" />

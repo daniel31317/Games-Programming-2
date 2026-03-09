@@ -1,11 +1,14 @@
 #pragma once
 #include <memory>
+#include <glm\glm.hpp>
+#include <GL\glew.h>
 #include "Mesh.h"
 
 
 enum MeshName
 {
 	MONKEY,
+	QUAD,
 	NUM_MESH
 };
 

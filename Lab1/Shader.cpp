@@ -44,6 +44,8 @@ Shader::Shader(const std::string& filename)
 	uniforms[RIMCOLOR_U] = glGetUniformLocation(program, "rimColor");
 	uniforms[RIMPOWER_U] = glGetUniformLocation(program, "rimPower");
 	uniforms[FOGCOLOR_U] = glGetUniformLocation(program, "fogColor");
+	uniforms[DIFFUSE_U] = glGetUniformLocation(program, "diffuse");
+	uniforms[NORMALT_U] = glGetUniformLocation(program, "normalT");
 }
 
 Shader::~Shader()
@@ -145,5 +147,9 @@ void Shader::Update(const Transform& transform, const Camera& camera)
 	glUniform1f(uniforms[RIMPOWER_U], 3.0f);
 
 	glUniform3f(uniforms[FOGCOLOR_U], backgroundColour.r, backgroundColour.g, backgroundColour.b);
+
+	glUniform1i(uniforms[DIFFUSE_U], 0);
+
+	glUniform1i(uniforms[NORMALT_U], 1);
 }
 

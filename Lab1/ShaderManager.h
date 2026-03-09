@@ -7,6 +7,7 @@ enum ShaderName
 	FOG,
 	RIM_LIGHT,
 	TOON,
+	BUMP,
 	NUM_SHADERS
 };
 

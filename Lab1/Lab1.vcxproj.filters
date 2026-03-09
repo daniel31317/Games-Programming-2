@@ -115,5 +115,11 @@
     <None Include="..\res\rimlight.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\res\bump.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\bump.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
