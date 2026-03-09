@@ -36,6 +36,7 @@ private:
 		CAMPOS_U,     
 		RIMCOLOR_U,   
 		RIMPOWER_U,
+		FOGCOLOR_U,
 		NUM_UNIFORMS
 
 	};

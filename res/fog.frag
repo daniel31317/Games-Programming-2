@@ -4,7 +4,7 @@ out vec4 FragColor;
 
 in vec4 v_pos; 
 
-layout (location = 1) uniform vec3 fogColor;
+uniform vec3 fogColor;
 
 float maxDist = 10.0f; //fog max distance
 float minDist = 0.0f; //fog min distance

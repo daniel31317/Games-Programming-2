@@ -27,6 +27,8 @@ Shader::Shader(const std::string& filename)
 
 	//bind the attribute location
 	glBindAttribLocation(program, 0, "VertexPosition");
+	glBindAttribLocation(program, 1, "UV"); 
+	glBindAttribLocation(program, 2, "Normals");
 
 	//link the program and check it linked
 	glLinkProgram(program); //create executables that will run on the GPU shaders
@@ -41,6 +43,7 @@ Shader::Shader(const std::string& filename)
 	uniforms[CAMPOS_U] = glGetUniformLocation(program, "camPos");
 	uniforms[RIMCOLOR_U] = glGetUniformLocation(program, "rimColor");
 	uniforms[RIMPOWER_U] = glGetUniformLocation(program, "rimPower");
+	uniforms[FOGCOLOR_U] = glGetUniformLocation(program, "fogColor");
 }
 
 Shader::~Shader()
@@ -123,26 +126,24 @@ GLuint Shader::CreateShader(const std::string& text, unsigned int type)
 void Shader::Bind()
 {
 	glUseProgram(program);
-	glUniform3f(1, backgroundColour.r, backgroundColour.g, backgroundColour.b);
 }
 
 void Shader::Update(const Transform& transform, const Camera& camera)
 {
 	glm::mat4 model = transform.GetModel();
 	glm::mat4 mvp = camera.GetViewProjection() * model;
-	glm::vec3 cameraPosition = camera.GetPosition(); // Assuming your camera class has this
+	glm::vec3 cameraPosition = camera.GetPosition();
 
-	// 1. Pass the MVP matrix
 	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_FALSE, &mvp[0][0]);
 
-	// 2. Pass the Model matrix (for world-space lighting)
 	glUniformMatrix4fv(uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);
 
-	// 3. Pass the Camera Position
 	glUniform3f(uniforms[CAMPOS_U], cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	// 4. Pass Rim settings (You can also move these to a separate function)
-	glUniform3f(uniforms[RIMCOLOR_U], 1.0f, 0.0f, 1.0f); // White rim
+	glUniform3f(uniforms[RIMCOLOR_U], 1.0f, 0.0f, 1.0f);
+
 	glUniform1f(uniforms[RIMPOWER_U], 3.0f);
+
+	glUniform3f(uniforms[FOGCOLOR_U], backgroundColour.r, backgroundColour.g, backgroundColour.b);
 }
 
