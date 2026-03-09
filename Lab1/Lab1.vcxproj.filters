@@ -91,5 +91,11 @@
     <None Include="..\res\toon.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\res\rimlight.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\rimlight.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

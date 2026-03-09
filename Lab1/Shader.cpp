@@ -37,6 +37,10 @@ Shader::Shader(const std::string& filename)
 	CheckShaderError(program, GL_VALIDATE_STATUS, true, "Error: Shader program not valid");
 
 	uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
+	uniforms[MODEL_U] = glGetUniformLocation(program, "modelMatrix");
+	uniforms[CAMPOS_U] = glGetUniformLocation(program, "camPos");
+	uniforms[RIMCOLOR_U] = glGetUniformLocation(program, "rimColor");
+	uniforms[RIMPOWER_U] = glGetUniformLocation(program, "rimPower");
 }
 
 Shader::~Shader()
@@ -124,7 +128,21 @@ void Shader::Bind()
 
 void Shader::Update(const Transform& transform, const Camera& camera)
 {
-	glm::mat4 mvp = camera.GetViewProjection() * transform.GetModel();
-	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GLU_FALSE, &mvp[0][0]);
+	glm::mat4 model = transform.GetModel();
+	glm::mat4 mvp = camera.GetViewProjection() * model;
+	glm::vec3 cameraPosition = camera.GetPosition(); // Assuming your camera class has this
+
+	// 1. Pass the MVP matrix
+	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_FALSE, &mvp[0][0]);
+
+	// 2. Pass the Model matrix (for world-space lighting)
+	glUniformMatrix4fv(uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);
+
+	// 3. Pass the Camera Position
+	glUniform3f(uniforms[CAMPOS_U], cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
+	// 4. Pass Rim settings (You can also move these to a separate function)
+	glUniform3f(uniforms[RIMCOLOR_U], 1.0f, 0.0f, 1.0f); // White rim
+	glUniform1f(uniforms[RIMPOWER_U], 3.0f);
 }
 

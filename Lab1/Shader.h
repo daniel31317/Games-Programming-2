@@ -32,7 +32,10 @@ private:
 	enum
 	{
 		TRANSFORM_U,
-
+		MODEL_U,     
+		CAMPOS_U,     
+		RIMCOLOR_U,   
+		RIMPOWER_U,
 		NUM_UNIFORMS
 
 	};

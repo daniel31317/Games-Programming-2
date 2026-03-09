@@ -95,6 +95,8 @@
   <ItemGroup>
     <None Include="..\res\fog.frag" />
     <None Include="..\res\fog.vert" />
+    <None Include="..\res\rimlight.frag" />
+    <None Include="..\res\rimlight.vert" />
     <None Include="..\res\shader.frag" />
     <None Include="..\res\shader.vert" />
     <None Include="..\res\toon.frag" />

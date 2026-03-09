@@ -24,6 +24,10 @@ struct Camera
 		return projection * glm::lookAt(pos, pos + forward, up);
 	}
 
+	inline glm::vec3 GetPosition() const
+	{
+		return pos;
+	}
 
 private:
 	glm::mat4 projection;
