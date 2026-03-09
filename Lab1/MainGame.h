@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <memory>
 #include "Display.h" 
-#include "Shader.h"
+#include "ShaderManager.h"
 #include "Mesh.h"
 #include "Texture.h"
 #include "transform.h"
@@ -31,7 +31,7 @@ private:
 	Display _gameDisplay;
 	GameState _gameState;
 	Mesh mesh;
-	std::unique_ptr<Shader> shader;
+	ShaderManager m_shaderManager;
 	std::unique_ptr<Texture> texture;
 	Camera myCamera;
 

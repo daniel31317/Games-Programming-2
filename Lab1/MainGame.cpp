@@ -25,8 +25,8 @@ void MainGame::run()
 void MainGame::initSystems()
 {
 	_gameDisplay.initDisplay();
+	m_shaderManager.LoadShaders();
 	mesh.loadModel("..\\res\\monkey3.obj");
-	shader = std::make_unique<Shader>("..\\res\\fog"); //new shader
 	texture = std::make_unique<Texture>("..\\res\\bricks.jpg"); //load texture
 	myCamera.initCamera(glm::vec3(0, 0, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
 }
@@ -66,8 +66,8 @@ void MainGame::drawGame()
 	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
 	//transform.SetScale(glm::vec3(sinf(counter), sinf(counter), sinf(counter)));
 
-	shader->Bind();
-	shader->Update(transform, myCamera);
+	m_shaderManager.GetShader(FOG)->Bind();
+	m_shaderManager.GetShader(FOG)->Update(transform, myCamera);
 	texture->Bind(0);
 	mesh.draw();
 	counter = counter + 0.01f;
