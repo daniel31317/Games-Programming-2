@@ -155,7 +155,7 @@ void Shader::Update(const Transform& transform, const Camera& camera)
 
 	glUniform1i(uniforms[NORMALT_U], 1);
 
-	glUniform3f(uniforms[LIGHTPOS_U], 0.0f, 1.0f, -1.0f);
+	glUniform3f(uniforms[LIGHTPOS_U], 0.0f, 0.0f, -1.0f);
 
 	glUniform3f(uniforms[LIGHTCOLOUR_U], 1.0f, 1.0f, 1.0f);
 
