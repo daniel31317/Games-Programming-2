@@ -99,6 +99,8 @@
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\res\ADS.frag" />
+    <None Include="..\res\ADS.vert" />
     <None Include="..\res\bump.frag" />
     <None Include="..\res\bump.vert" />
     <None Include="..\res\fog.frag" />

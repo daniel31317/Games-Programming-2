@@ -15,7 +15,7 @@ public:
 	void initDisplay();
 	void swapBuffer();
 	void clearDisplay(float r, float g, float b, float a);
-	void clearDisplay(glm::vec4 backgroundColour);
+	void clearDisplay();
 
 	float getWidth();
 	float getHeight();

@@ -8,6 +8,7 @@ enum ShaderName
 	RIM_LIGHT,
 	TOON,
 	BUMP,
+	ADS,
 	NUM_SHADERS
 };
 

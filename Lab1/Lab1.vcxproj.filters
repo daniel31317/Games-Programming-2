@@ -121,5 +121,11 @@
     <None Include="..\res\bump.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\res\ADS.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\ADS.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

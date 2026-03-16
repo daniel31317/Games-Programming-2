@@ -46,6 +46,9 @@ Shader::Shader(const std::string& filename)
 	uniforms[FOGCOLOR_U] = glGetUniformLocation(program, "fogColor");
 	uniforms[DIFFUSE_U] = glGetUniformLocation(program, "diffuse");
 	uniforms[NORMALT_U] = glGetUniformLocation(program, "normalT");
+	uniforms[LIGHTPOS_U] = glGetUniformLocation(program, "lightPos");
+	uniforms[LIGHTCOLOUR_U] = glGetUniformLocation(program, "lightColor");
+	uniforms[OBJECTCOLOUR_U] = glGetUniformLocation(program, "objectColor");
 }
 
 Shader::~Shader()
@@ -151,5 +154,11 @@ void Shader::Update(const Transform& transform, const Camera& camera)
 	glUniform1i(uniforms[DIFFUSE_U], 0);
 
 	glUniform1i(uniforms[NORMALT_U], 1);
+
+	glUniform3f(uniforms[LIGHTPOS_U], 0.0f, 1.0f, -1.0f);
+
+	glUniform3f(uniforms[LIGHTCOLOUR_U], 1.0f, 1.0f, 1.0f);
+
+	glUniform3f(uniforms[OBJECTCOLOUR_U], 1.0f, 0.0f, 0.0f);
 }
 
