@@ -9,6 +9,8 @@ void MeshManager::LoadMeshes()
 {
 	m_meshList[MONKEY] = std::make_unique<Mesh>();
 	m_meshList[MONKEY]->loadModel("..\\res\\monkey3.obj");
+	m_meshList[AMX_50] = std::make_unique<Mesh>();
+	m_meshList[AMX_50]->loadModel("..\\res\\AMX-50.obj");
 
 	m_meshList[QUAD] = std::make_unique<Mesh>();
 

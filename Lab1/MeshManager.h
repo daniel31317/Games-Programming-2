@@ -9,6 +9,7 @@ enum MeshName
 {
 	MONKEY,
 	QUAD,
+	AMX_50,
 	NUM_MESH
 };
 

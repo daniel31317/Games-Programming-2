@@ -73,7 +73,7 @@ void MainGame::drawGame()
 
 	m_textureManager.GetTexture(ROCK)->Bind(0);
 
-	m_meshManager.GetMesh(MONKEY)->draw();
+	m_meshManager.GetMesh(AMX_50)->draw();
 
 	counter = counter + 0.01f;
 

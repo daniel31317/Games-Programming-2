@@ -101,7 +101,7 @@ IndexedModel OBJModel::ToIndexedModel()
         glm::vec2 currentTexCoord;
         glm::vec3 currentNormal;
 
-        if (hasUVs)
+        if (hasUVs && currentIndex->uvIndex != (unsigned int)-1)
             currentTexCoord = uvs[currentIndex->uvIndex];
         else
             currentTexCoord = glm::vec2(0, 0);
@@ -114,7 +114,6 @@ IndexedModel OBJModel::ToIndexedModel()
         unsigned int normalModelIndex;
         unsigned int resultModelIndex;
 
-        //Create model to properly generate normals on
         std::map<OBJIndex, unsigned int>::iterator it = normalModelIndexMap.find(*currentIndex);
         if (it == normalModelIndexMap.end())
         {
@@ -128,7 +127,6 @@ IndexedModel OBJModel::ToIndexedModel()
         else
             normalModelIndex = it->second;
 
-        //Create model which properly separates texture coordinates
         unsigned int previousVertexLocation = FindLastVertexIndex(indexLookup, currentIndex, result);
 
         if (previousVertexLocation == (unsigned int)-1)
@@ -245,15 +243,14 @@ void OBJModel::CreateOBJFace(const std::string& line)
 {
     std::vector<std::string> tokens = SplitString(line, ' ');
 
-    this->OBJIndices.push_back(ParseOBJIndex(tokens[1], &this->hasUVs, &this->hasNormals));
-    this->OBJIndices.push_back(ParseOBJIndex(tokens[2], &this->hasUVs, &this->hasNormals));
-    this->OBJIndices.push_back(ParseOBJIndex(tokens[3], &this->hasUVs, &this->hasNormals));
+    if (tokens.size() < 4)
+        return;
 
-    if ((int)tokens.size() > 4)
+    for (unsigned int i = 2; i < tokens.size() - 1; i++)
     {
         this->OBJIndices.push_back(ParseOBJIndex(tokens[1], &this->hasUVs, &this->hasNormals));
-        this->OBJIndices.push_back(ParseOBJIndex(tokens[3], &this->hasUVs, &this->hasNormals));
-        this->OBJIndices.push_back(ParseOBJIndex(tokens[4], &this->hasUVs, &this->hasNormals));
+        this->OBJIndices.push_back(ParseOBJIndex(tokens[i], &this->hasUVs, &this->hasNormals));
+        this->OBJIndices.push_back(ParseOBJIndex(tokens[i + 1], &this->hasUVs, &this->hasNormals));
     }
 }
 
@@ -267,7 +264,7 @@ OBJIndex OBJModel::ParseOBJIndex(const std::string& token, bool* hasUVs, bool* h
 
     OBJIndex result;
     result.vertexIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
-    result.uvIndex = 0;
+    result.uvIndex = (unsigned int)-1;
     result.normalIndex = 0;
 
     if (vertIndexEnd >= tokenLength)
@@ -276,8 +273,11 @@ OBJIndex OBJModel::ParseOBJIndex(const std::string& token, bool* hasUVs, bool* h
     vertIndexStart = vertIndexEnd + 1;
     vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
 
-    result.uvIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
-    *hasUVs = true;
+    if (vertIndexEnd > vertIndexStart)
+    {
+        result.uvIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
+        *hasUVs = true;
+    }
 
     if (vertIndexEnd >= tokenLength)
         return result;
@@ -285,6 +285,7 @@ OBJIndex OBJModel::ParseOBJIndex(const std::string& token, bool* hasUVs, bool* h
     vertIndexStart = vertIndexEnd + 1;
     vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
 
+    // Parse normal index
     result.normalIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
     *hasNormals = true;
 
