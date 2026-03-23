@@ -10,6 +10,7 @@ enum MeshName
 	MONKEY,
 	QUAD,
 	AMX_50,
+	LECLERC,
 	NUM_MESH
 };
 

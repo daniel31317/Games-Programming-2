@@ -12,8 +12,8 @@ uniform sampler2D diffuse;
 
 out vec4 fragmentColor;
 
-float ambientStrength = 0.1;
-float specularStrength = 0.5;
+float ambientStrength = 0.4;
+float specularStrength = 0.8;
 float shininess = 32.0;     
 
 void main()
@@ -30,7 +30,6 @@ void main()
     vec3 diffuse = diff * lightColor;
 
     //specular (phong)
-    float specularStrength = 0.5;
     vec3 viewDir = normalize(camPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
