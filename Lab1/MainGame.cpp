@@ -68,8 +68,8 @@ void MainGame::drawGame()
 	transform.SetRot(glm::vec3(glm::radians(90.0), 0.0, 0.0));
 	transform.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-	m_shaderManager.GetShader(ADS)->Bind();
-	m_shaderManager.GetShader(ADS)->Update(transform, myCamera);
+	m_shaderManager.GetShader(BUMP)->Bind();
+	m_shaderManager.GetShader(BUMP)->Update(transform, myCamera);
 
 	m_textureManager.GetTexture(ROCK)->Bind(0);
 
@@ -78,7 +78,8 @@ void MainGame::drawGame()
 	
 	
 	transform.SetPos(glm::vec3(-1.1, -0.95, 0.0));
-	transform.SetRot(glm::vec3(glm::radians(-5.0f), glm::radians(160.f), 0.0));
+	//transform.SetRot(glm::vec3(glm::radians(-5.0f), glm::radians(160.f), 0.0));
+	transform.SetRot(glm::vec3(0.0, counter, 0.0));
 	transform.SetScale(glm::vec3(0.3f, 0.3f, 0.3f));
 
 	m_shaderManager.GetShader(ADS)->Bind();
@@ -88,7 +89,8 @@ void MainGame::drawGame()
 	
 	
 	transform.SetPos(glm::vec3(1.1, -0.9, 0.0));
-	transform.SetRot(glm::vec3(glm::radians(-5.0f), glm::radians(200.0f), 0.0));
+	//transform.SetRot(glm::vec3(glm::radians(-5.0f), glm::radians(200.0f), 0.0));
+	transform.SetRot(glm::vec3(0.0, counter, 0.0));
 	transform.SetScale(glm::vec3(0.3f, 0.3f, 0.3f));
 
 	m_shaderManager.GetShader(ADS)->Bind();
