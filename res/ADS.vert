@@ -18,7 +18,7 @@ void main()
 
     fragPos = vec3(worldPos);
 
-    normal = normalize(mat3(modelMatrix) * Normals);
+    normal = normalize(mat3(transpose(inverse(modelMatrix))) * Normals);
 
     gl_Position = transform * vec4(VertexPosition, 1.0);
 
