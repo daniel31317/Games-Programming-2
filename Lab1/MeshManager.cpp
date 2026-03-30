@@ -1,4 +1,5 @@
 #include "MeshManager.h"
+#include <thread>
 
 MeshManager::MeshManager()
 {
@@ -7,12 +8,23 @@ MeshManager::MeshManager()
 
 void MeshManager::LoadMeshes()
 {
+	
 	m_meshList[MONKEY] = std::make_unique<Mesh>();
-	m_meshList[MONKEY]->loadModel("..\\res\\monkey3.obj");
 	m_meshList[AMX_50] = std::make_unique<Mesh>();
-	m_meshList[AMX_50]->loadModel("..\\res\\AMX-50.obj");
 	m_meshList[LECLERC] = std::make_unique<Mesh>();
-	m_meshList[LECLERC]->loadModel("..\\res\\Leclerc_AZUR.obj");
+
+	std::thread thread1{ &Mesh::loadModel, m_meshList[MONKEY].get(), "..\\res\\monkey3.obj" };
+	std::thread thread2{ &Mesh::loadModel, m_meshList[AMX_50].get(), "..\\res\\AMX-50.obj" };
+	std::thread thread3{ &Mesh::loadModel, m_meshList[LECLERC].get(), "..\\res\\Leclerc_AZUR.obj" };
+
+	thread1.join();
+	thread2.join();
+	thread3.join();
+
+	m_meshList[MONKEY]->uploadModelToGPU();
+	m_meshList[AMX_50]->uploadModelToGPU();
+	m_meshList[LECLERC]->uploadModelToGPU();
+
 
 	m_meshList[QUAD] = std::make_unique<Mesh>();
 
@@ -29,6 +41,7 @@ void MeshManager::LoadMeshes()
 	unsigned int numIndices = sizeof(indices) / sizeof(indices[0]);
 
 	m_meshList[QUAD]->init(vertices, numVertices, indices, numIndices);
+	m_meshList[QUAD]->uploadModelToGPU();
 }
 
 Mesh* MeshManager::GetMesh(MeshName name)
