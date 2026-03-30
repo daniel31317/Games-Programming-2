@@ -50,6 +50,7 @@ Texture::~Texture()
 	glDeleteTextures(1, &textureHandler);
 }
 
+
 void Texture::Bind(unsigned int unit)
 {
 	//check we are working with one of the 32 textures

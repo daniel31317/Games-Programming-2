@@ -7,6 +7,7 @@ enum TextureName
 	BRICKS,
 	WATER,
 	ROCK,
+	NONE,
 	NUM_TEXTURES
 };
 

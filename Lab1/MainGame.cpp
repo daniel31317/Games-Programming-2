@@ -85,6 +85,8 @@ void MainGame::drawGame()
 	m_shaderManager.GetShader(ADS)->Bind();
 	m_shaderManager.GetShader(ADS)->Update(transform, myCamera);
 
+	m_textureManager.GetTexture(NONE)->Bind(0);
+
 	m_meshManager.GetMesh(LECLERC)->draw();
 	
 	

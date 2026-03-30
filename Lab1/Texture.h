@@ -8,6 +8,8 @@ public:
 	Texture();
 	Texture(const std::string& fileName);
 
+	void CreateBlankTexture();
+
 	void Bind(unsigned int unit); // bind upto 32 textures
 
 	~Texture();
