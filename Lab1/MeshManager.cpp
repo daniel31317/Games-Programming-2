@@ -13,9 +13,9 @@ void MeshManager::LoadMeshes()
 	m_meshList[AMX_50] = std::make_unique<Mesh>();
 	m_meshList[LECLERC] = std::make_unique<Mesh>();
 
-	std::thread thread1{ &Mesh::loadModel, m_meshList[MONKEY].get(), "..\\res\\monkey3.obj" };
-	std::thread thread2{ &Mesh::loadModel, m_meshList[AMX_50].get(), "..\\res\\AMX-50.obj" };
-	std::thread thread3{ &Mesh::loadModel, m_meshList[LECLERC].get(), "..\\res\\Leclerc_AZUR.obj" };
+	std::thread thread1{ &Mesh::loadModel, m_meshList[MONKEY].get(), "..\\res\\monkey3" };
+	std::thread thread2{ &Mesh::loadModel, m_meshList[AMX_50].get(), "..\\res\\AMX-50" };
+	std::thread thread3{ &Mesh::loadModel, m_meshList[LECLERC].get(), "..\\res\\Leclerc_AZUR" };
 
 	thread1.join();
 	thread2.join();

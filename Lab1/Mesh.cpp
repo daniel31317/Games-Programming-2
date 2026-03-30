@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include <vector>
+#include <fstream>
 
 
 Mesh::Mesh()
@@ -28,8 +29,66 @@ void Mesh::init(Vertex* vertices, unsigned int numVertices, unsigned int* indice
 
 void Mesh::loadModel(const std::string& filename)
 {
-	model = OBJModel(filename).ToIndexedModel();
+	std::string binPath = filename + ".bin";
+
+	std::ifstream f(binPath.c_str());
+
+	if (f.good())
+	{
+		loadModelAsBinary(binPath);
+	}
+	else
+	{
+		model = OBJModel(filename + ".obj").ToIndexedModel();
+		saveModelAsBinary(binPath);
+	}
+	
 }
+
+void Mesh::saveModelAsBinary(const std::string& filename)
+{
+	std::ofstream file(filename, std::ios::binary);
+
+	uint32_t posCount = model.positions.size();
+	uint32_t texCount = model.texCoords.size();
+	uint32_t normCount = model.normals.size();
+	uint32_t idxCount = model.indices.size();
+
+	file.write(reinterpret_cast<char*>(&posCount), sizeof(uint32_t));
+	file.write(reinterpret_cast<char*>(&texCount), sizeof(uint32_t));
+	file.write(reinterpret_cast<char*>(&normCount), sizeof(uint32_t));
+	file.write(reinterpret_cast<char*>(&idxCount), sizeof(uint32_t));
+
+	file.write(reinterpret_cast<char*>(model.positions.data()), posCount * sizeof(glm::vec3));
+	file.write(reinterpret_cast<char*>(model.texCoords.data()), texCount * sizeof(glm::vec2));
+	file.write(reinterpret_cast<char*>(model.normals.data()), normCount * sizeof(glm::vec3));
+	file.write(reinterpret_cast<char*>(model.indices.data()), idxCount * sizeof(uint32_t));
+}
+
+void Mesh::loadModelAsBinary(const std::string& filename)
+{
+	std::ifstream file(filename, std::ios::binary);
+
+	uint32_t posCount, texCount, normCount, idxCount;
+	file.read(reinterpret_cast<char*>(&posCount), sizeof(uint32_t));
+	file.read(reinterpret_cast<char*>(&texCount), sizeof(uint32_t));
+	file.read(reinterpret_cast<char*>(&normCount), sizeof(uint32_t));
+	file.read(reinterpret_cast<char*>(&idxCount), sizeof(uint32_t));
+
+	// Resize and read directly into vectors
+	model.positions.resize(posCount);
+	model.texCoords.resize(texCount);
+	model.normals.resize(normCount);
+	model.indices.resize(idxCount);
+
+	file.read(reinterpret_cast<char*>(model.positions.data()), posCount * sizeof(glm::vec3));
+	file.read(reinterpret_cast<char*>(model.texCoords.data()), texCount * sizeof(glm::vec2));
+	file.read(reinterpret_cast<char*>(model.normals.data()), normCount * sizeof(glm::vec3));
+	file.read(reinterpret_cast<char*>(model.indices.data()), idxCount * sizeof(uint32_t));
+}
+
+
+
 
 void Mesh::uploadModelToGPU()
 {
@@ -70,3 +129,6 @@ void Mesh::draw()
 	glDrawElements(GL_TRIANGLES, drawCount, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
+
+
+

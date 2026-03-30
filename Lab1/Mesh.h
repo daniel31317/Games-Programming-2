@@ -37,6 +37,8 @@ public:
 	void init(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices);
 	void loadModel(const std::string& filename);
 	void uploadModelToGPU();
+	void loadModelAsBinary(const std::string& filename);
+	void saveModelAsBinary(const std::string& filename);
 
 private:
 
