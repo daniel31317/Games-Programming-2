@@ -7,11 +7,13 @@
 #include "MeshManager.h"
 #include "TextureManager.h"
 #include "transform.h"
+#include "GameObject.h"
 #include "Camera.h"
 #include "Constants.h"
 
 enum class GameState { PLAY, EXIT };
 
+#define NUM_GAME_OBJECTS 3
 
 class MainGame
 {
@@ -24,6 +26,7 @@ public:
 private:
 
 	void initSystems();
+	void initGameObjects();
 	void processInput();
 	void gameLoop();
 	void drawGame();
@@ -35,8 +38,8 @@ private:
 	MeshManager m_meshManager;
 	TextureManager m_textureManager;
 
-	Camera myCamera;
+	std::unique_ptr<GameObject> m_gameObjects[NUM_GAME_OBJECTS];
 
-	float counter;
+	Camera myCamera;
 
 };
