@@ -1,6 +1,7 @@
 -Sky background
 
 -Add buildings
+	-Collisions
 
 -Working real textures
 
