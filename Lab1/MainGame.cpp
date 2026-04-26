@@ -57,7 +57,7 @@ void MainGame::initGameObjects()
 	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(NONE));
 	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(LECLERCBODY));
 
-	cameraOffset = m_mainCamera.GetPosition()  - *m_gameObjects[1]->GetTransform()->GetPosition();
+	
 
 	//leclerc turret
 
@@ -67,6 +67,11 @@ void MainGame::initGameObjects()
 	m_gameObjects[2]->SetShader(*m_shaderManager.GetShader(ADS));
 	m_gameObjects[2]->SetTexture(*m_textureManager.GetTexture(NONE));
 	m_gameObjects[2]->SetMesh(*m_meshManager.GetMesh(LECLERCTURRET));
+
+	cameraOffset = m_mainCamera.GetPosition() - *m_gameObjects[2]->GetTransform()->GetPosition();
+
+
+
 }
 
 void MainGame::gameLoop()
@@ -122,11 +127,10 @@ void MainGame::processInput()
 					freeCamera = !freeCamera;
 					if (!freeCamera)
 					{
-						glm::vec3 tankRot = *m_gameObjects[1]->GetTransform()->GetRotation();
-						m_mainCamera.SetRotation(glm::vec3(tankRot.x, tankRot.y, tankRot.z));
-						glm::mat4 rotMat = glm::rotate(tankRot.y, glm::vec3(0, 1, 0));
+						glm::mat4 rotMat = glm::rotate(m_gameObjects[2]->GetTransform()->GetRotation()->y + glm::radians(90.0f), glm::vec3(0, 1, 0));
 						glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-						m_mainCamera.SetPosition(*m_gameObjects[1]->GetTransform()->GetPosition() + rotatedOffset);
+						m_mainCamera.SetPosition(*m_gameObjects[2]->GetTransform()->GetPosition() + rotatedOffset);
+						m_mainCamera.SetRotation(glm::vec3(0, m_gameObjects[2]->GetTransform()->GetRotation()->y + glm::radians(90.0f), 0));
 					}
 				}
 				break;
@@ -176,29 +180,40 @@ void MainGame::processInput()
 		{
 			m_gameObjects[1]->GetTransform()->move(m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
 			m_gameObjects[2]->GetTransform()->move(m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
-			m_mainCamera.move(m_mainCamera.GetForward() * moveAmount * deltaTime);
+			m_mainCamera.move(m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
 		}
 		else if (state[SDL_SCANCODE_S])
 		{
 			m_gameObjects[1]->GetTransform()->move(-m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
 			m_gameObjects[2]->GetTransform()->move(-m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
-			m_mainCamera.move(-m_mainCamera.GetForward() * moveAmount * deltaTime);
+			m_mainCamera.move(-m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
 		}
 		else if (state[SDL_SCANCODE_A])
 		{
 			m_gameObjects[1]->GetTransform()->rotate(glm::vec3(0.0, rotAmount * deltaTime, 0.0));
-			m_mainCamera.rotate(rotAmount * deltaTime, glm::vec3(0, 1, 0));
-			glm::mat4 rotMat = glm::rotate(m_gameObjects[1]->GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
-			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-			m_mainCamera.SetPosition(*m_gameObjects[1]->GetTransform()->GetPosition() + rotatedOffset);
 		}
 		else if (state[SDL_SCANCODE_D])
 		{
 			m_gameObjects[1]->GetTransform()->rotate(glm::vec3(0.0, -rotAmount * deltaTime, 0.0));
-			m_mainCamera.rotate(-rotAmount * deltaTime, glm::vec3(0, 1, 0));
-			glm::mat4 rotMat = glm::rotate(m_gameObjects[1]->GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
+			
+		}
+		else if (state[SDL_SCANCODE_LEFT])
+		{
+			m_gameObjects[2]->GetTransform()->rotate(glm::vec3(0.0f, rotAmount * deltaTime, 0.0f));
+			m_mainCamera.rotate(rotAmount * deltaTime, glm::vec3(0, 1, 0));
+
+			glm::mat4 rotMat = glm::rotate(m_gameObjects[2]->GetTransform()->GetRotation()->y + glm::radians(90.0f), glm::vec3(0, 1, 0));
 			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-			m_mainCamera.SetPosition(*m_gameObjects[1]->GetTransform()->GetPosition() + rotatedOffset);
+			m_mainCamera.SetPosition(*m_gameObjects[2]->GetTransform()->GetPosition() + rotatedOffset);
+		}
+		else if (state[SDL_SCANCODE_RIGHT])
+		{
+			m_gameObjects[2]->GetTransform()->rotate(glm::vec3(0.0f, -rotAmount * deltaTime, 0.0f));
+			m_mainCamera.rotate(-rotAmount * deltaTime, glm::vec3(0, 1, 0));
+
+			glm::mat4 rotMat = glm::rotate(m_gameObjects[2]->GetTransform()->GetRotation()->y + glm::radians(90.0f), glm::vec3(0, 1, 0));
+			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
+			m_mainCamera.SetPosition(*m_gameObjects[2]->GetTransform()->GetPosition() + rotatedOffset);
 		}
 	}
 	
