@@ -49,8 +49,8 @@ void MainGame::initGameObjects()
 	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(QUAD));
 
 
-	//leclerc
-	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, -1.0, -1.5));
+	//leclerc body
+	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, -0.80, -1.5));
 	m_gameObjects[1]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
 	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(ADS));
@@ -59,14 +59,14 @@ void MainGame::initGameObjects()
 
 	cameraOffset = m_mainCamera.GetPosition()  - *m_gameObjects[1]->GetTransform()->GetPosition();
 
-	//surbaisse
-	/*
-	m_gameObjects[2]->GetTransform()->SetPosition(glm::vec3(1.1, -0.9, 0.0));
-	m_gameObjects[2]->GetTransform()->SetRotation(glm::vec3(glm::radians(-5.0f), glm::radians(200.0f), 0.0));
-	m_gameObjects[2]->GetTransform()->SetScale(glm::vec3(0.3f, 0.3f, 0.3f));
+	//leclerc turret
+
+	m_gameObjects[2]->GetTransform()->SetPosition(glm::vec3(0.0, -1.04, -1.55));
+	m_gameObjects[2]->GetTransform()->SetRotation(glm::vec3(0.0, glm::radians(-90.0), 0.0));
+	m_gameObjects[2]->GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
 	m_gameObjects[2]->SetShader(*m_shaderManager.GetShader(ADS));
 	m_gameObjects[2]->SetTexture(*m_textureManager.GetTexture(NONE));
-	m_gameObjects[2]->SetMesh(*m_meshManager.GetMesh(AMX_50));*/
+	m_gameObjects[2]->SetMesh(*m_meshManager.GetMesh(LECLERCTURRET));
 }
 
 void MainGame::gameLoop()
@@ -175,11 +175,13 @@ void MainGame::processInput()
 		if (state[SDL_SCANCODE_W])
 		{
 			m_gameObjects[1]->GetTransform()->move(m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
+			m_gameObjects[2]->GetTransform()->move(m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
 			m_mainCamera.move(m_mainCamera.GetForward() * moveAmount * deltaTime);
 		}
 		else if (state[SDL_SCANCODE_S])
 		{
 			m_gameObjects[1]->GetTransform()->move(-m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
+			m_gameObjects[2]->GetTransform()->move(-m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
 			m_mainCamera.move(-m_mainCamera.GetForward() * moveAmount * deltaTime);
 		}
 		else if (state[SDL_SCANCODE_A])
