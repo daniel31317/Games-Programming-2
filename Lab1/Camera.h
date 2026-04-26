@@ -30,7 +30,10 @@ struct Camera
 		up = glm::vec3(rotation * glm::vec4(up, 0.0f));
 	}
 
-
+    glm::vec3 GetForward() const
+    {
+        return glm::normalize(forward);
+    }
 
 
 
@@ -42,6 +45,11 @@ struct Camera
 	inline glm::vec3 GetPosition() const
 	{
 		return pos;
+	}
+
+	void SetPosition(const glm::vec3& pos) 
+	{
+		this->pos = pos;
 	}
 
 

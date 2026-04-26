@@ -89,12 +89,18 @@ void Display::clearDisplay()
 }
 
 
-float Display::getWidth()
+const float Display::getWidth() const
 {
 	return _screenWidth;
 }
 
-float Display::getHeight()
+const float Display::getHeight() const
 {
 	return _screenHeight;
+}
+
+
+SDL_Window* Display::getWindow() const
+{
+	return _sdlWindow;
 }

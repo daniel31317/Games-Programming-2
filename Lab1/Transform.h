@@ -5,7 +5,6 @@
 
 
 struct Transform
-
 {
 public:
     Transform(const glm::vec3& pos = glm::vec3(), 
@@ -28,6 +27,19 @@ public:
 		glm::mat4 rotMat = rotX * rotY * rotZ;
 
 		return posMat * rotMat * scaleMat;
+	}
+
+	void move(const glm::vec3& movement) { m_pos += movement; } //move the transform by a certain amount
+
+    void rotate(const glm::vec3& rotation) //rotate the transform by a certain amount
+	{
+		m_rot += rotation;
+	}
+
+	glm::vec3 GetForward() const 
+	{
+		glm::mat4 rotation = glm::rotate(m_rot.y, glm::vec3(0, 1, 0));
+		return glm::vec3(rotation * glm::vec4(0, 0, 1, 0));
 	}
 
 	const glm::vec3* GetPosition() const { return &m_pos; } //getters

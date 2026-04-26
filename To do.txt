@@ -1,9 +1,5 @@
 -Sky background
 
--Make tank move
-	- put camera on tank 
-	- move tank with camera following 
-
 -Add buildings
 
 -Working real textures

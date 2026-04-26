@@ -17,9 +17,10 @@ public:
 	void clearDisplay(float r, float g, float b, float a);
 	void clearDisplay();
 
-	float getWidth();
-	float getHeight();
+	const float getWidth() const;
+	const float getHeight() const;
 
+	SDL_Window* getWindow() const;
 private:
 
 	void returnError(std::string errorString);
