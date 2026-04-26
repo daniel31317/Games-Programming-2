@@ -35,7 +35,7 @@ void MainGame::initSystems()
 
 	initGameObjects();
 
-	myCamera.initCamera(glm::vec3(0, 0, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
+	m_mainCamera.initCamera(glm::vec3(0, 0, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
 }
 
 void MainGame::initGameObjects()
@@ -99,10 +99,14 @@ void MainGame::drawGame()
 	for(int i = 0; i < NUM_GAME_OBJECTS; i++)
 	{
 		m_gameObjects[i]->GetShader()->Bind();
-		m_gameObjects[i]->GetShader()->Update(*m_gameObjects[i]->GetTransform(), myCamera);
+		m_gameObjects[i]->GetShader()->Update(*m_gameObjects[i]->GetTransform(), m_mainCamera);
 		m_gameObjects[i]->GetTexture()->Bind(0);
 		m_gameObjects[i]->GetMesh()->draw();
 	}	
+
+	m_mainCamera.move(glm::vec3(0.0f, 0.0f, 0.01f));
+	m_mainCamera.rotate(0.01, glm::vec3(0, 1, 0));
+
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnd();

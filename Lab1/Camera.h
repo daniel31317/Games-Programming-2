@@ -18,6 +18,21 @@ struct Camera
 
 	}
 
+	void move(const glm::vec3& movement)
+	{
+		pos += movement;
+	}
+ 
+	void rotate(float angle, const glm::vec3& axis)
+	{
+		glm::mat4 rotation = glm::rotate(angle, axis);
+		forward = glm::vec3(rotation * glm::vec4(forward, 0.0f));
+		up = glm::vec3(rotation * glm::vec4(up, 0.0f));
+	}
+
+
+
+
 
 	inline glm::mat4 GetViewProjection() const
 	{
@@ -28,6 +43,8 @@ struct Camera
 	{
 		return pos;
 	}
+
+
 
 private:
 	glm::mat4 projection;

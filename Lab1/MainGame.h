@@ -40,6 +40,6 @@ private:
 
 	std::unique_ptr<GameObject> m_gameObjects[NUM_GAME_OBJECTS];
 
-	Camera myCamera;
+	Camera m_mainCamera;
 
 };
