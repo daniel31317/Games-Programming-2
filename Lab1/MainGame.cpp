@@ -52,10 +52,10 @@ void MainGame::initGameObjects()
 	//leclerc
 	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, -1.0, -1.5));
 	m_gameObjects[1]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
-	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(0.3f, 0.3f, 0.3f));
+	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
 	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(ADS));
 	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(NONE));
-	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(LECLERC));
+	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(LECLERCBODY));
 
 	cameraOffset = m_mainCamera.GetPosition()  - *m_gameObjects[1]->GetTransform()->GetPosition();
 
@@ -74,6 +74,10 @@ void MainGame::gameLoop()
 	float fpsTimer = 0.0f;
 	int fpsCounter = 0;
 	std::string words = "Game Programming 2 | FPS: ";
+	std::string words2 = " | Free Camera (TAB): ";
+
+	std::string on = "ON";
+	std::string off = "OFF";
 
 	while (_gameState != GameState::EXIT)
 	{
@@ -85,7 +89,11 @@ void MainGame::gameLoop()
 		fpsCounter++;
 		if (fpsTimer >= 1.f)
 		{
-			std::string title = words + std::to_string(fpsCounter);
+			std::string title = words + std::to_string(fpsCounter) + words2;
+			if(freeCamera)
+				title += on;
+			else
+				title += off;
 			SDL_SetWindowTitle(_gameDisplay.getWindow(), title.c_str());
 			fpsTimer = 0.0f;
 			fpsCounter = 0;
@@ -108,6 +116,21 @@ void MainGame::processInput()
 				SDL_Quit();	 
 			break;
 
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_TAB)
+				{
+					freeCamera = !freeCamera;
+					if (!freeCamera)
+					{
+						glm::vec3 tankRot = *m_gameObjects[1]->GetTransform()->GetRotation();
+						m_mainCamera.SetRotation(glm::vec3(tankRot.x, tankRot.y, tankRot.z));
+						glm::mat4 rotMat = glm::rotate(tankRot.y, glm::vec3(0, 1, 0));
+						glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
+						m_mainCamera.SetPosition(*m_gameObjects[1]->GetTransform()->GetPosition() + rotatedOffset);
+					}
+				}
+				break;
+
 			default: break;
 		}
 	}
@@ -117,32 +140,66 @@ void MainGame::processInput()
 	float rotAmount = 1.f;
 	float moveAmount = 5.f;
 
-	if (state[SDL_SCANCODE_W])
+
+
+	if (freeCamera)
 	{
-		m_gameObjects[1]->GetTransform()->move(m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
-		m_mainCamera.move(m_mainCamera.GetForward() * moveAmount * deltaTime);
+		if (state[SDL_SCANCODE_W])
+		{
+			m_mainCamera.move(m_mainCamera.GetForward() * moveAmount * deltaTime);
+		}
+		if (state[SDL_SCANCODE_S])
+		{
+			m_mainCamera.move(-m_mainCamera.GetForward() * moveAmount * deltaTime);
+		}
+		if (state[SDL_SCANCODE_A])
+		{
+			m_mainCamera.rotate(rotAmount * deltaTime, glm::vec3(0, 1, 0));
+
+		}
+		if (state[SDL_SCANCODE_D])
+		{
+			m_mainCamera.rotate(-rotAmount * deltaTime, glm::vec3(0, 1, 0));
+		}
+		if(state[SDL_SCANCODE_LSHIFT])
+		{
+			m_mainCamera.move(glm::vec3(0, moveAmount * deltaTime, 0));
+		}
+		if(state[SDL_SCANCODE_LCTRL])
+		{
+			m_mainCamera.move(glm::vec3(0, -moveAmount * deltaTime, 0));
+		}
 	}
-	else if (state[SDL_SCANCODE_S])
+	else
 	{
-		m_gameObjects[1]->GetTransform()->move(-m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
-		m_mainCamera.move(-m_mainCamera.GetForward() * moveAmount * deltaTime);
+		if (state[SDL_SCANCODE_W])
+		{
+			m_gameObjects[1]->GetTransform()->move(m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
+			m_mainCamera.move(m_mainCamera.GetForward() * moveAmount * deltaTime);
+		}
+		else if (state[SDL_SCANCODE_S])
+		{
+			m_gameObjects[1]->GetTransform()->move(-m_gameObjects[1]->GetTransform()->GetForward() * moveAmount * deltaTime);
+			m_mainCamera.move(-m_mainCamera.GetForward() * moveAmount * deltaTime);
+		}
+		else if (state[SDL_SCANCODE_A])
+		{
+			m_gameObjects[1]->GetTransform()->rotate(glm::vec3(0.0, rotAmount * deltaTime, 0.0));
+			m_mainCamera.rotate(rotAmount * deltaTime, glm::vec3(0, 1, 0));
+			glm::mat4 rotMat = glm::rotate(m_gameObjects[1]->GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
+			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
+			m_mainCamera.SetPosition(*m_gameObjects[1]->GetTransform()->GetPosition() + rotatedOffset);
+		}
+		else if (state[SDL_SCANCODE_D])
+		{
+			m_gameObjects[1]->GetTransform()->rotate(glm::vec3(0.0, -rotAmount * deltaTime, 0.0));
+			m_mainCamera.rotate(-rotAmount * deltaTime, glm::vec3(0, 1, 0));
+			glm::mat4 rotMat = glm::rotate(m_gameObjects[1]->GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
+			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
+			m_mainCamera.SetPosition(*m_gameObjects[1]->GetTransform()->GetPosition() + rotatedOffset);
+		}
 	}
-	else if (state[SDL_SCANCODE_A])
-	{
-		m_gameObjects[1]->GetTransform()->rotate(glm::vec3(0.0, rotAmount * deltaTime, 0.0));
-		m_mainCamera.rotate(rotAmount * deltaTime, glm::vec3(0, 1, 0));
-		glm::mat4 rotMat = glm::rotate(m_gameObjects[1]->GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
-		glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-		m_mainCamera.SetPosition(*m_gameObjects[1]->GetTransform()->GetPosition() + rotatedOffset);
-	}
-	else if (state[SDL_SCANCODE_D])
-	{
-		m_gameObjects[1]->GetTransform()->rotate(glm::vec3(0.0, -rotAmount * deltaTime, 0.0));
-		m_mainCamera.rotate(-rotAmount * deltaTime, glm::vec3(0, 1, 0));
-		glm::mat4 rotMat = glm::rotate(m_gameObjects[1]->GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
-		glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-		m_mainCamera.SetPosition(*m_gameObjects[1]->GetTransform()->GetPosition() + rotatedOffset);
-	}
+	
 }
 
 void MainGame::drawGame()

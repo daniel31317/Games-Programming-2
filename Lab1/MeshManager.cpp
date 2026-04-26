@@ -10,20 +10,20 @@ void MeshManager::LoadMeshes()
 {
 	
 	m_meshList[MONKEY] = std::make_unique<Mesh>();
-	m_meshList[AMX_50] = std::make_unique<Mesh>();
-	m_meshList[LECLERC] = std::make_unique<Mesh>();
+	m_meshList[LECLERCBODY] = std::make_unique<Mesh>();
+	m_meshList[LECLERCTURRET] = std::make_unique<Mesh>();
 
 	std::thread thread1{ &Mesh::loadModel, m_meshList[MONKEY].get(), "..\\res\\monkey3" };
-	std::thread thread2{ &Mesh::loadModel, m_meshList[AMX_50].get(), "..\\res\\AMX-50" };
-	std::thread thread3{ &Mesh::loadModel, m_meshList[LECLERC].get(), "..\\res\\Leclerc_AZUR" };
+	std::thread thread2{ &Mesh::loadModel, m_meshList[LECLERCBODY].get(), "..\\res\\LeclercBody" };
+	std::thread thread3{ &Mesh::loadModel, m_meshList[LECLERCTURRET].get(), "..\\res\\LeclercTurret" };
 
 	thread1.join();
 	thread2.join();
 	thread3.join();
 
 	m_meshList[MONKEY]->uploadModelToGPU();
-	m_meshList[AMX_50]->uploadModelToGPU();
-	m_meshList[LECLERC]->uploadModelToGPU();
+	m_meshList[LECLERCBODY]->uploadModelToGPU();
+	m_meshList[LECLERCTURRET]->uploadModelToGPU();
 
 
 	m_meshList[QUAD] = std::make_unique<Mesh>();
