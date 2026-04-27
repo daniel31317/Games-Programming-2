@@ -5,6 +5,6 @@
 
 -Working real textures
 
--Rendering only what can be seen
-
 -Tank fight
+
+-Gun shot shader
