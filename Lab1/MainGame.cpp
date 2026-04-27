@@ -148,12 +148,12 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_A])
 		{
-			m_mainCamera.move(m_mainCamera.GetRight() * moveAmount * deltaTime);
+			m_mainCamera.move(-m_mainCamera.GetRight() * moveAmount * deltaTime);
 
 		}
 		if (state[SDL_SCANCODE_D])
 		{
-			m_mainCamera.move(-m_mainCamera.GetRight() * moveAmount * deltaTime);
+			m_mainCamera.move(m_mainCamera.GetRight() * moveAmount * deltaTime);
 		}
 		if(state[SDL_SCANCODE_LSHIFT])
 		{
@@ -175,11 +175,11 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_UP])
 		{
-			m_mainCamera.rotate(-rotAmount * deltaTime, m_mainCamera.GetRight());
+			m_mainCamera.rotate(rotAmount * deltaTime, m_mainCamera.GetRight());
 		}
 		if (state[SDL_SCANCODE_DOWN])
 		{
-			m_mainCamera.rotate(rotAmount * deltaTime, m_mainCamera.GetRight());
+			m_mainCamera.rotate(-rotAmount * deltaTime, m_mainCamera.GetRight());
 		}
 	}
 	else

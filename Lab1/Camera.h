@@ -28,9 +28,11 @@ struct Camera
 	void rotate(float angle, const glm::vec3& axis)
 	{
 		glm::mat4 rotation = glm::rotate(angle, axis);
-		forward = glm::vec3(rotation * glm::vec4(forward, 0.0f));
-		up = glm::vec3(rotation * glm::vec4(up, 0.0f));
-		right = glm::vec3(rotation * glm::vec4(right, 0.0f));
+		forward = glm::normalize(glm::vec3(rotation * glm::vec4(forward, 0.0f)));
+
+		right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
+
+		up = glm::normalize(glm::cross(right, forward));
 
 		// Keep rot in sync
 		if (axis.y > 0.5f) rot.y += angle;
@@ -74,21 +76,15 @@ struct Camera
 	void SetRotation(const glm::vec3& newRot)
 	{
 		this->rot = newRot;
-
-		// Reset then reapply rotation from scratch
 		forward = glm::vec3(0.0f, 0.0f, 1.0f);
-		up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-		glm::mat4 rotX = glm::rotate(rot.x, glm::vec3(1, 0, 0));
 		glm::mat4 rotY = glm::rotate(rot.y, glm::vec3(0, 1, 0));
-		glm::mat4 rotZ = glm::rotate(rot.z, glm::vec3(0, 0, 1));
-		glm::mat4 rotMat = rotY * rotX * rotZ;
+		glm::mat4 rotX = glm::rotate(rot.x, glm::vec3(1, 0, 0));
 
-		forward = glm::vec3(rotMat * glm::vec4(forward, 0.0f));
-		up = glm::vec3(rotMat * glm::vec4(up, 0.0f));
-		right = glm::vec3(rotMat * glm::vec4(right, 0.0f));
+		forward = glm::normalize(glm::vec3(rotY * rotX * glm::vec4(forward, 0.0f)));
+		right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
+		up = glm::normalize(glm::cross(right, forward));
 	}
-
 
 
 private:
