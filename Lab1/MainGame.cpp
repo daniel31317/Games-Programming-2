@@ -120,8 +120,27 @@ void MainGame::processInput()
 					{
 						m_tank->ResetCameraToTank();
 					}
+					else
+					{
+						m_mainCamera.ResetPitch();
+						m_mainCamera.SetRotation(m_mainCamera.GetRotation());
+					}
 
 					updateGameTitle = true;
+				}
+				break;
+
+			case SDL_WINDOWEVENT:
+				if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+				{
+					int width = event.window.data1;
+					int height = event.window.data2;
+
+					// Update OpenGL viewport
+					glViewport(0, 0, width, height);
+
+					// Update camera projection
+					m_mainCamera.updateProjection(70.0f, (float)width / height, 0.01f, 1000.0f);
 				}
 				break;
 
@@ -175,11 +194,19 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_UP])
 		{
-			m_mainCamera.rotate(rotAmount * deltaTime, m_mainCamera.GetRight());
+			if (m_mainCamera.GetPitch() < glm::radians(89.0f))
+			{
+				m_mainCamera.rotate(rotAmount * deltaTime, m_mainCamera.GetRight());
+				m_mainCamera.AddPitch(rotAmount * deltaTime);
+			}
 		}
 		if (state[SDL_SCANCODE_DOWN])
 		{
-			m_mainCamera.rotate(-rotAmount * deltaTime, m_mainCamera.GetRight());
+			if (m_mainCamera.GetPitch() > glm::radians(-89.0f))
+			{
+				m_mainCamera.rotate(-rotAmount * deltaTime, m_mainCamera.GetRight());
+				m_mainCamera.AddPitch(-rotAmount * deltaTime);
+			}
 		}
 	}
 	else

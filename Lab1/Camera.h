@@ -29,15 +29,14 @@ struct Camera
 	{
 		glm::mat4 rotation = glm::rotate(angle, axis);
 		forward = glm::normalize(glm::vec3(rotation * glm::vec4(forward, 0.0f)));
-
 		right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
-
 		up = glm::normalize(glm::cross(right, forward));
 
-		// Keep rot in sync
+		// Track pitch separately
+		if (glm::abs(glm::dot(axis, glm::vec3(1, 0, 0))) > 0.5f ||
+			glm::abs(glm::dot(axis, right)) > 0.5f)
+			rot.x += angle;
 		if (axis.y > 0.5f) rot.y += angle;
-		if (axis.x > 0.5f) rot.x += angle;
-		if (axis.z > 0.5f) rot.z += angle;
 	}
 
     glm::vec3 GetForward() const
@@ -76,6 +75,8 @@ struct Camera
 	void SetRotation(const glm::vec3& newRot)
 	{
 		this->rot = newRot;
+		this->rot.x = glm::clamp(rot.x, glm::radians(-89.0f), glm::radians(89.0f));
+
 		forward = glm::vec3(0.0f, 0.0f, 1.0f);
 
 		glm::mat4 rotY = glm::rotate(rot.y, glm::vec3(0, 1, 0));
@@ -86,6 +87,14 @@ struct Camera
 		up = glm::normalize(glm::cross(right, forward));
 	}
 
+	void updateProjection(float fov, float aspect, float nearClip, float farClip)
+	{
+		projection = glm::perspective(fov, aspect, nearClip, farClip);
+	}
+
+	float GetPitch() const { return m_pitch; }
+	void AddPitch(float angle) { m_pitch += angle; }
+	void ResetPitch() { m_pitch = 0.0f; }
 
 private:
 	glm::mat4 projection;
@@ -94,5 +103,7 @@ private:
 	glm::vec3 forward;
 	glm::vec3 up;
 	glm::vec3 right;
+
+	float m_pitch = 0.0f;
 
 };

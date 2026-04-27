@@ -6,8 +6,8 @@ Display::Display()
 {
 	_sdlWindow = nullptr; //initialise to generate null access violation for debugging. 
 	_glContext = nullptr;
-	_screenWidth = 1024.0f;
-	_screenHeight = 768.0f; 
+	_screenWidth = 1280.0f;
+	_screenHeight = 720.0f; 
 }
 
 
@@ -44,7 +44,7 @@ void Display::initDisplay()
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // set up double buffer   
-	_sdlWindow = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)_screenWidth, (int)_screenHeight, SDL_WINDOW_OPENGL);
+	_sdlWindow = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)_screenWidth, (int)_screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 	_glContext = SDL_GL_CreateContext(_sdlWindow);
 
 
