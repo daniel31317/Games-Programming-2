@@ -8,3 +8,10 @@
 -Gun shot shader
 
 -Fume particle thing
+
+-Settings
+ 	-vsync
+	-sens
+	-tank settings
+	-buttons
+	
