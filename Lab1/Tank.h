@@ -50,7 +50,7 @@ public:
 		body.SetMesh(*meshManager.GetMesh(LECLERCBODY));
 
 		//turret
-		turret.GetTransform()->SetPosition(glm::vec3(0.0, -1.04, -1.35));
+		turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.80, -1.35));
 		turret.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 		turret.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
 		turret.SetShader(*shaderManager.GetShader(ADS));

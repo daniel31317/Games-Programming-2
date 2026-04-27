@@ -11,8 +11,8 @@ void main()
 
     float intensity = dot(normal, lightDir) * brightness;
 
-    vec3 baseColor = vec3(255, 0, 212) / 255.0;
+    vec3 baseColour = vec3(255, 0, 212) / 255.0;
 
-    gl_FragColor = vec4(baseColor * intensity, 1.0);
+    gl_FragColor = vec4(baseColour * intensity, 1.0);
 }
 

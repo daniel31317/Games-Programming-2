@@ -1,12 +1,12 @@
 #version 430
 
-out vec4 FragColor;
+out vec4 FragColour;
 
 in vec4 v_pos; 
 
 in vec2 t_coords; 
 
-uniform vec3 fogColor;
+uniform vec3 fogColour;
 
 uniform sampler2D diffuse;
 
@@ -21,9 +21,9 @@ void main()
 
     fogFactor = clamp(fogFactor, 0.0, 1.0);
 
-    vec4 texColor = texture(diffuse, t_coords);
+    vec4 texColour = texture(diffuse, t_coords);
 
-    vec3 finalColor = mix(fogColor, texColor.rgb, fogFactor);
+    vec3 finalColour = mix(fogColour, texColour.rgb, fogFactor);
 
-    FragColor = vec4(finalColor, texColor.a);
+    FragColour = vec4(finalColour, texColour.a);
 }

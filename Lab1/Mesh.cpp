@@ -52,16 +52,19 @@ void Mesh::saveModelAsBinary(const std::string& filename)
 	uint32_t posCount = model.positions.size();
 	uint32_t texCount = model.texCoords.size();
 	uint32_t normCount = model.normals.size();
+	uint32_t colCount = model.colours.size();
 	uint32_t idxCount = model.indices.size();
 
 	file.write(reinterpret_cast<char*>(&posCount), sizeof(uint32_t));
 	file.write(reinterpret_cast<char*>(&texCount), sizeof(uint32_t));
 	file.write(reinterpret_cast<char*>(&normCount), sizeof(uint32_t));
+	file.write(reinterpret_cast<char*>(&colCount), sizeof(uint32_t));
 	file.write(reinterpret_cast<char*>(&idxCount), sizeof(uint32_t));
 
 	file.write(reinterpret_cast<char*>(model.positions.data()), posCount * sizeof(glm::vec3));
 	file.write(reinterpret_cast<char*>(model.texCoords.data()), texCount * sizeof(glm::vec2));
 	file.write(reinterpret_cast<char*>(model.normals.data()), normCount * sizeof(glm::vec3));
+	file.write(reinterpret_cast<char*>(model.colours.data()), colCount * sizeof(glm::vec3));
 	file.write(reinterpret_cast<char*>(model.indices.data()), idxCount * sizeof(uint32_t));
 }
 
@@ -69,21 +72,24 @@ void Mesh::loadModelAsBinary(const std::string& filename)
 {
 	std::ifstream file(filename, std::ios::binary);
 
-	uint32_t posCount, texCount, normCount, idxCount;
+	uint32_t posCount, texCount, normCount, idxCount, colCount;
 	file.read(reinterpret_cast<char*>(&posCount), sizeof(uint32_t));
 	file.read(reinterpret_cast<char*>(&texCount), sizeof(uint32_t));
 	file.read(reinterpret_cast<char*>(&normCount), sizeof(uint32_t));
+	file.read(reinterpret_cast<char*>(&colCount), sizeof(uint32_t));
 	file.read(reinterpret_cast<char*>(&idxCount), sizeof(uint32_t));
 
 	// Resize and read directly into vectors
 	model.positions.resize(posCount);
 	model.texCoords.resize(texCount);
 	model.normals.resize(normCount);
+	model.colours.resize(colCount);
 	model.indices.resize(idxCount);
 
 	file.read(reinterpret_cast<char*>(model.positions.data()), posCount * sizeof(glm::vec3));
 	file.read(reinterpret_cast<char*>(model.texCoords.data()), texCount * sizeof(glm::vec2));
 	file.read(reinterpret_cast<char*>(model.normals.data()), normCount * sizeof(glm::vec3));
+	file.read(reinterpret_cast<char*>(model.colours.data()), colCount * sizeof(glm::vec3));
 	file.read(reinterpret_cast<char*>(model.indices.data()), idxCount * sizeof(uint32_t));
 }
 
@@ -113,6 +119,22 @@ void Mesh::uploadModelToGPU()
 	glBufferData(GL_ARRAY_BUFFER, model.normals.size() * sizeof(model.normals[0]), &model.normals[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	if (model.colours.empty())
+	{
+		//fill with white if no colours are specified
+		std::vector<glm::vec3> defaultColors(model.positions.size(), glm::vec3(1.0f, 1.0f, 1.0f));
+		glBindBuffer(GL_ARRAY_BUFFER, vertexArrayBuffers[COLOR_VB]);
+		glBufferData(GL_ARRAY_BUFFER, defaultColors.size() * sizeof(defaultColors[0]), &defaultColors[0], GL_STATIC_DRAW);
+	}
+	else
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, vertexArrayBuffers[COLOR_VB]);
+		glBufferData(GL_ARRAY_BUFFER, model.colours.size() * sizeof(model.colours[0]), &model.colours[0], GL_STATIC_DRAW);
+	}
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexArrayBuffers[INDEX_VB]); //tell opengl what type of data the buffer is (GL_ARRAY_BUFFER), and pass the data
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model.indices.size() * sizeof(model.indices[0]), &model.indices[0], GL_STATIC_DRAW); //move the data to the GPU - type of data, size of data, starting address (pointer) of data, where do we store the data on the GPU

@@ -20,6 +20,7 @@ public:
     std::vector<glm::vec3> positions;
     std::vector<glm::vec2> texCoords;
     std::vector<glm::vec3> normals;
+    std::vector<glm::vec3> colours;
     std::vector<unsigned int> indices;
 
     void CalcNormals();
@@ -32,6 +33,8 @@ public:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
+    std::vector<glm::vec3> colours;
+
     bool hasUVs;
     bool hasNormals;
 
@@ -45,6 +48,8 @@ private:
     glm::vec2 ParseOBJVec2(const std::string& line);
     glm::vec3 ParseOBJVec3(const std::string& line);
     OBJIndex ParseOBJIndex(const std::string& token, bool* hasUVs, bool* hasNormals);
+    glm::vec3 ParseOBJColour(const std::string& line);
+    
 };
 
 #endif // OBJ_LOADER_H_INCLUDED

@@ -5,7 +5,7 @@ in vec2 t_coords;
 uniform sampler2D diffuse;
 uniform sampler2D normalT;
 
-out vec4 fragmentColor;
+out vec4 fragmentColour;
 
 void main()
 {
@@ -20,5 +20,5 @@ void main()
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 diffuseContrib = diff * colour;
 
-    fragmentColor = vec4(ambient + diffuseContrib, 1.0);
+    fragmentColour = vec4(ambient + diffuseContrib, 1.0);
 }

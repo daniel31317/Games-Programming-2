@@ -7,7 +7,6 @@
 
 enum MeshName
 {
-	MONKEY,
 	QUAD,
 	LECLERCBODY,
 	LECLERCTURRET,

@@ -29,6 +29,7 @@ Shader::Shader(const std::string& filename)
 	glBindAttribLocation(program, 0, "VertexPosition");
 	glBindAttribLocation(program, 1, "UV"); 
 	glBindAttribLocation(program, 2, "Normals");
+	glBindAttribLocation(program, 3, "VertexColour");
 
 	//link the program and check it linked
 	glLinkProgram(program); //create executables that will run on the GPU shaders
@@ -41,14 +42,14 @@ Shader::Shader(const std::string& filename)
 	uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
 	uniforms[MODEL_U] = glGetUniformLocation(program, "modelMatrix");
 	uniforms[CAMPOS_U] = glGetUniformLocation(program, "camPos");
-	uniforms[RIMCOLOR_U] = glGetUniformLocation(program, "rimColor");
+	uniforms[RIMCOLOUR_U] = glGetUniformLocation(program, "rimColour");
 	uniforms[RIMPOWER_U] = glGetUniformLocation(program, "rimPower");
-	uniforms[FOGCOLOR_U] = glGetUniformLocation(program, "fogColor");
+	uniforms[FOGCOLOUR_U] = glGetUniformLocation(program, "fogColour");
 	uniforms[DIFFUSE_U] = glGetUniformLocation(program, "diffuse");
 	uniforms[NORMALT_U] = glGetUniformLocation(program, "normalT");
 	uniforms[LIGHTPOS_U] = glGetUniformLocation(program, "lightPos");
-	uniforms[LIGHTCOLOUR_U] = glGetUniformLocation(program, "lightColor");
-	uniforms[OBJECTCOLOUR_U] = glGetUniformLocation(program, "objectColor");
+	uniforms[LIGHTCOLOUR_U] = glGetUniformLocation(program, "lightColour");
+	uniforms[VERTEXCOLOUR_U] = glGetUniformLocation(program, "vertexColour");
 }
 
 Shader::~Shader()
@@ -145,11 +146,11 @@ void Shader::Update(const Transform& transform, const Camera& camera)
 
 	glUniform3f(uniforms[CAMPOS_U], cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	glUniform3f(uniforms[RIMCOLOR_U], 1.0f, 0.0f, 1.0f);
+	glUniform3f(uniforms[RIMCOLOUR_U], 1.0f, 0.0f, 1.0f);
 
 	glUniform1f(uniforms[RIMPOWER_U], 3.0f);
 
-	glUniform3f(uniforms[FOGCOLOR_U], backgroundColour.r, backgroundColour.g, backgroundColour.b);
+	glUniform3f(uniforms[FOGCOLOUR_U], backgroundColour.r, backgroundColour.g, backgroundColour.b);
 
 	glUniform1i(uniforms[DIFFUSE_U], 0);
 
@@ -159,6 +160,6 @@ void Shader::Update(const Transform& transform, const Camera& camera)
 
 	glUniform3f(uniforms[LIGHTCOLOUR_U], 1.0f, 1.0f, 1.0f);
 
-	glUniform3f(uniforms[OBJECTCOLOUR_U], 75.f / 255.f, 83.f / 255.f, 32.f / 255.f);
+	glUniform3f(uniforms[VERTEXCOLOUR_U], 75.f / 255.f, 83.f / 255.f, 32.f / 255.f);
 }
 

@@ -4,9 +4,9 @@ in vec3 normal;
 in vec3 viewDirection;
 in vec2 texCoords;
 
-out vec4 fragmentColor;
+out vec4 fragmentColour;
 
-uniform vec3 rimColor;
+uniform vec3 rimColour;
 uniform float rimPower;
 
 uniform sampler2D diffuse;
@@ -18,8 +18,8 @@ void main()
 
 	float rim = pow(1.0 - max(dot(N, V), 0.0), rimPower);
 
-	vec4 baseColor = texture(diffuse, texCoords);
+	vec4 baseColour = texture(diffuse, texCoords);
 
-	fragmentColor = baseColor + vec4(rimColor, 1.0) * rim;
+	fragmentColour = baseColour + vec4(rimColour, 1.0) * rim;
 }
 

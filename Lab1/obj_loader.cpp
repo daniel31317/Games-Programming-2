@@ -39,7 +39,10 @@ OBJModel::OBJModel(const std::string& fileName)
                 else if (lineCStr[1] == 'n')
                     this->normals.push_back(ParseOBJVec3(line));
                 else if (lineCStr[1] == ' ' || lineCStr[1] == '\t')
+                {
                     this->vertices.push_back(ParseOBJVec3(line));
+                    this->colours.push_back(ParseOBJColour(line)); 
+                }
                 break;
             case 'f':
                 CreateOBJFace(line);
@@ -133,9 +136,13 @@ IndexedModel OBJModel::ToIndexedModel()
         {
             resultModelIndex = result.positions.size();
 
+            glm::vec3 currentColour = colours.size() > currentIndex->vertexIndex ?
+                colours[currentIndex->vertexIndex] : glm::vec3(1, 1, 1);
+
             result.positions.push_back(currentPosition);
             result.texCoords.push_back(currentTexCoord);
             result.normals.push_back(currentNormal);
+            result.colours.push_back(currentColour);
         }
         else
             resultModelIndex = previousVertexLocation;
@@ -349,6 +356,14 @@ glm::vec2 OBJModel::ParseOBJVec2(const std::string& line)
     float y = ParseOBJFloatValue(line, vertIndexStart, vertIndexEnd);
 
     return glm::vec2(x, y);
+}
+
+glm::vec3 OBJModel::ParseOBJColour(const std::string& line)
+{
+    std::vector<std::string> tokens = SplitString(line, ' ');
+    if (tokens.size() >= 7)
+        return glm::vec3(atof(tokens[4].c_str()), atof(tokens[5].c_str()), atof(tokens[6].c_str()));
+    return glm::vec3(1, 1, 1);
 }
 
 static bool CompareOBJIndexPtr(const OBJIndex* a, const OBJIndex* b)
