@@ -11,15 +11,19 @@ void MeshManager::LoadMeshes()
 	
 	m_meshList[LECLERCBODY] = std::make_unique<Mesh>();
 	m_meshList[LECLERCTURRET] = std::make_unique<Mesh>();
+	m_meshList[CITY] = std::make_unique<Mesh>();
 
 	std::thread thread1{ &Mesh::loadModel, m_meshList[LECLERCBODY].get(), "..\\res\\LeclercBody" };
 	std::thread thread2{ &Mesh::loadModel, m_meshList[LECLERCTURRET].get(), "..\\res\\LeclercTurret" };
+	std::thread thread3{ &Mesh::loadModel, m_meshList[CITY].get(), "..\\res\\City" };
 
 	thread1.join();
 	thread2.join();
+	thread3.join();
 
 	m_meshList[LECLERCBODY]->uploadModelToGPU();
 	m_meshList[LECLERCTURRET]->uploadModelToGPU();
+	m_meshList[CITY]->uploadModelToGPU();
 
 
 	m_meshList[QUAD] = std::make_unique<Mesh>();

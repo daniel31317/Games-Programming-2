@@ -10,6 +10,7 @@ enum MeshName
 	QUAD,
 	LECLERCBODY,
 	LECLERCTURRET,
+	CITY,
 	NUM_MESH
 };
 

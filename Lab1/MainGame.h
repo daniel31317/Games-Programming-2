@@ -14,7 +14,7 @@
 
 enum class GameState { PLAY, EXIT };
 
-#define NUM_GAME_OBJECTS 2
+#define NUM_GAME_OBJECTS 3
 
 class MainGame
 {
