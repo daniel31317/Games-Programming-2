@@ -35,10 +35,12 @@ public:
     std::vector<glm::vec3> normals;
     std::vector<glm::vec3> colours;
 
+	glm::vec3 defaultColour;
+
     bool hasUVs;
     bool hasNormals;
 
-    OBJModel(const std::string& fileName);
+    OBJModel(const std::string& fileName , glm::vec3 defaultColour);
 
     IndexedModel ToIndexedModel();
 private:

@@ -10,8 +10,9 @@ static inline unsigned int ParseOBJIndexValue(const std::string& token, unsigned
 static inline float ParseOBJFloatValue(const std::string& token, unsigned int start, unsigned int end);
 static inline std::vector<std::string> SplitString(const std::string& s, char delim);
 
-OBJModel::OBJModel(const std::string& fileName)
+OBJModel::OBJModel(const std::string& fileName, glm::vec3 defaultColour)
 {
+	this->defaultColour = defaultColour;
     hasUVs = false;
     hasNormals = false;
     std::ifstream file;
@@ -363,7 +364,7 @@ glm::vec3 OBJModel::ParseOBJColour(const std::string& line)
     std::vector<std::string> tokens = SplitString(line, ' ');
     if (tokens.size() >= 7)
         return glm::vec3(atof(tokens[4].c_str()), atof(tokens[5].c_str()), atof(tokens[6].c_str()));
-    return glm::vec3(1, 1, 1);
+    return defaultColour;
 }
 
 static bool CompareOBJIndexPtr(const OBJIndex* a, const OBJIndex* b)

@@ -33,12 +33,15 @@ public:
 	Mesh();
 	~Mesh();
 
+	
+
 	void draw();
 	void init(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices);
 	void loadModel(const std::string& filename);
 	void uploadModelToGPU();
 	void loadModelAsBinary(const std::string& filename);
 	void saveModelAsBinary(const std::string& filename);
+	void setDefaultColour(const glm::vec3& defaultColour) { this->defaultColour = defaultColour; }
 
 private:
 
@@ -57,6 +60,9 @@ private:
 	IndexedModel model;
 	GLuint vertexArrayObject;
 	GLuint vertexArrayBuffers[NUM_BUFFERS]; // create our array of buffers
+
+	glm::vec3 defaultColour = glm::vec3(1,1,1);
+
 	unsigned int drawCount; //how much of the vertexArrayObject do we want to draw
 };
 
