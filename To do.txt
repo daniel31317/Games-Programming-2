@@ -5,9 +5,11 @@
 
 -Tank fight
 
--Gun shot shader
+-Smoke from barrel shot
 
 -Fume particle thing
+
+-Moving barrel
 
 -Settings
  	-vsync
@@ -15,3 +17,6 @@
 	-tank settings
 	-buttons
 	
+-Rotate tank functions combination
+
+-Possible shader change with gl_position

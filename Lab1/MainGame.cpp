@@ -235,6 +235,10 @@ void MainGame::processInput()
 		{
 			m_tank->RotateTurretRight(deltaTime);
 		}
+		if (state[SDL_SCANCODE_SPACE])
+		{
+			m_tank->Shoot();
+		}
 	}
 	
 }

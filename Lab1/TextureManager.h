@@ -7,6 +7,7 @@ enum TextureName
 	BRICKS,
 	WATER,
 	ROCK,
+	MUZZLEFLASH,
 	NONE,
 	NUM_TEXTURES
 };

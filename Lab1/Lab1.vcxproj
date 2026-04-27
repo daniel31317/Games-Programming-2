@@ -107,6 +107,8 @@
     <None Include="..\res\bump.vert" />
     <None Include="..\res\fog.frag" />
     <None Include="..\res\fog.vert" />
+    <None Include="..\res\RemoveBackground.frag" />
+    <None Include="..\res\RemoveBackground.vert" />
     <None Include="..\res\rimlight.frag" />
     <None Include="..\res\rimlight.vert" />
     <None Include="..\res\shader.frag" />

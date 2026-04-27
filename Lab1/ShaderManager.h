@@ -9,6 +9,7 @@ enum ShaderName
 	TOON,
 	BUMP,
 	ADS,
+	REMOVE_BACKGRROUND,
 	NUM_SHADERS
 };
 

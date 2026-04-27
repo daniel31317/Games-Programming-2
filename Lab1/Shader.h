@@ -34,6 +34,8 @@ private:
 		TRANSFORM_U,
 		MODEL_U,     
 		CAMPOS_U,     
+		CAMVIEW_U,   
+		CAMPROJ_U,
 		RIMCOLOUR_U,   
 		RIMPOWER_U,
 		FOGCOLOUR_U,

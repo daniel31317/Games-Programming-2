@@ -11,6 +11,14 @@ struct Tank
 
 public:
 
+	struct MuzzleFlash
+	{
+		float lifetime = 0.0f;   
+		float maxLifetime = 0.1f;
+
+		bool IsAlive() { return lifetime > 0; }
+	};
+
 	float currentSpeed = 0.0f;
 
 	float acceleration = 1.5f;
@@ -29,9 +37,12 @@ public:
 	float bodyRotSpeed = 1.0f;
 	float turretRotSpeed = 1.0f;
 
+	float maxReloadTime = 6.0f;
+	float currentReloadTime = 0.0f;
 
 	glm::vec3 cameraOffset = glm::vec3();
 	glm::vec3 turretOffset = glm::vec3();
+	float muzzleFlashOffset = 0.0;
 
 	Tank()
 	{
@@ -57,12 +68,22 @@ public:
 		turret.SetTexture(*textureManager.GetTexture(NONE));
 		turret.SetMesh(*meshManager.GetMesh(LECLERCTURRET));
 
+		//muzzle flash
+		muzzleFlash.GetTransform()->SetPosition(glm::vec3(0.0, -0.45, -0.1));
+		muzzleFlash.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+		muzzleFlash.GetTransform()->SetScale(glm::vec3(0.3f, 0.3f, 0.3f));
+		muzzleFlash.SetShader(*shaderManager.GetShader(REMOVE_BACKGRROUND));
+		muzzleFlash.SetTexture(*textureManager.GetTexture(MUZZLEFLASH));
+		muzzleFlash.SetMesh(*meshManager.GetMesh(QUAD));
+
 		this->camera = camera;
 
 
 		cameraOffset = camera->GetPosition() - *turret.GetTransform()->GetPosition();
 
 		turretOffset = *turret.GetTransform()->GetPosition() - *body.GetTransform()->GetPosition();
+
+		muzzleFlashOffset = muzzleFlash.GetTransform()->GetPosition()->y - turret.GetTransform()->GetPosition()->y;
 	}
 
 
@@ -115,11 +136,16 @@ public:
 			glm::vec3 forward = body.GetTransform()->GetForward();
 			body.GetTransform()->move(forward * currentSpeed * deltaTime);
 			turret.GetTransform()->move(forward * currentSpeed * deltaTime);
+			muzzleFlash.GetTransform()->move(forward * currentSpeed * deltaTime);
 			camera->move(forward * currentSpeed * deltaTime);
 		}
 
 		movingForward = false;
 		movingBackward = false;
+
+
+		muzzleFlashData.lifetime -= deltaTime;
+		currentReloadTime -= deltaTime;
 	}
 
     void SetPosition(glm::vec3 position)
@@ -206,28 +232,50 @@ public:
 
 	void RotateTurretLeft(float deltaTime)
 	{
-		turret.GetTransform()->rotate(glm::vec3(0.0f, turretRotSpeed * deltaTime, 0.0f));
+		Transform* turretTransform = turret.GetTransform();
+
+		turretTransform->rotate(glm::vec3(0.0f, turretRotSpeed * deltaTime, 0.0f));
+
+		muzzleFlash.GetTransform()->SetRotation(*turretTransform->GetRotation());
+
+		muzzleFlash.GetTransform()->SetPosition(*turretTransform->GetPosition()
+			+ (turretTransform->GetForward() * 1.4f)
+			+ (turretTransform->GetUp() * muzzleFlashOffset));
+
 		camera->rotate(turretRotSpeed * deltaTime, glm::vec3(0, 1, 0));
-
-		glm::mat4 rotMat = glm::rotate(turret.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
+		glm::mat4 rotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
 		glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-
-		camera->SetPosition(*turret.GetTransform()->GetPosition() + rotatedOffset);
+		camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
 	}
 
     void RotateTurretRight(float deltaTime)
     {
-		turret.GetTransform()->rotate(glm::vec3(0.0f, -turretRotSpeed * deltaTime, 0.0f));
+		Transform* turretTransform = turret.GetTransform();
+
+		turretTransform->rotate(glm::vec3(0.0f, -turretRotSpeed * deltaTime, 0.0f));
+
+		muzzleFlash.GetTransform()->SetRotation(*turretTransform->GetRotation());
+
+		muzzleFlash.GetTransform()->SetPosition(*turretTransform->GetPosition()
+			+ (turretTransform->GetForward() * 1.4f)
+			+ (turretTransform->GetUp() * muzzleFlashOffset));
+
 		camera->rotate(-turretRotSpeed * deltaTime, glm::vec3(0, 1, 0));
-
-		glm::mat4 rotMat = glm::rotate(turret.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
+		glm::mat4 rotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
 		glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-
-		camera->SetPosition(*turret.GetTransform()->GetPosition() + rotatedOffset);
+		camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
     }
 
     
-
+	void Shoot()
+	{
+		if(currentReloadTime > 0.0f)
+		{
+			return;
+		}
+		muzzleFlashData.lifetime = muzzleFlashData.maxLifetime;
+		currentReloadTime = maxReloadTime;
+	}
 
 	void ResetCameraToTank()
 	{
@@ -248,6 +296,14 @@ public:
 		turret.GetShader()->Update(*turret.GetTransform(), *camera);
 		turret.GetTexture()->Bind(0);
 		turret.GetMesh()->draw();
+
+		if (muzzleFlashData.IsAlive())
+		{
+			muzzleFlash.GetShader()->Bind();
+			muzzleFlash.GetShader()->Update(*muzzleFlash.GetTransform(), *camera);
+			muzzleFlash.GetTexture()->Bind(0);
+			muzzleFlash.GetMesh()->draw();
+		}
 	}
 
 
@@ -255,6 +311,9 @@ public:
 private:
 	GameObject body;
 	GameObject turret;
+	GameObject muzzleFlash;
+
+	MuzzleFlash muzzleFlashData;
 
 	Camera* camera;
 };

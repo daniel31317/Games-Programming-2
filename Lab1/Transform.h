@@ -42,6 +42,18 @@ public:
 		return glm::vec3(rotation * glm::vec4(0, 0, 1, 0));
 	}
 
+	glm::vec3 GetUp() const 
+	{
+		glm::mat4 rotation = glm::rotate(m_rot.y, glm::vec3(0, 1, 0));
+		return glm::vec3(rotation * glm::vec4(0, 1, 0, 0));
+	}
+
+	glm::vec3 GetRight() const 
+	{
+		glm::mat4 rotation = glm::rotate(m_rot.y, glm::vec3(0, 1, 0));
+		return glm::vec3(rotation * glm::vec4(1, 0, 0, 0));
+	}
+
 	const glm::vec3* GetPosition() const { return &m_pos; } //getters
 	const glm::vec3* GetRotation() const { return &m_rot; }
 	const glm::vec3* GetScale() const { return &m_scale; }
