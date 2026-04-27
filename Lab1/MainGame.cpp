@@ -221,11 +221,11 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_A])
 		{
-			m_tank->RotateBodyLeft(deltaTime);
+			m_tank->RotateBodyLeft(deltaTime, true);
 		}
 		if (state[SDL_SCANCODE_D])
 		{
-			m_tank->RotateBodyRight(deltaTime);
+			m_tank->RotateBodyRight(deltaTime, true);
 		}
 		if (state[SDL_SCANCODE_LEFT])
 		{

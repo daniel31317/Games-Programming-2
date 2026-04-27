@@ -149,8 +149,15 @@ public:
 		movingBackward = true;
     }
 
-	void RotateBodyLeft(float deltaTime)
+	void RotateBodyLeft(float deltaTime, bool checkMovebackwards)
 	{
+		//avoid infinite loop with checkMovebackwards
+		if (checkMovebackwards && movingBackward)
+		{
+			RotateBodyRight(deltaTime ,false);
+			return;
+		}
+	
 		//apply turn speed penalty based on current speed
 		float effectiveRotSpeed = bodyRotSpeed * (1.0f - (currentSpeed / maxForwardSpeed) * 0.5f);
 		float rotationAmount = effectiveRotSpeed * deltaTime;
@@ -172,8 +179,14 @@ public:
 	}
 
 	//like RotateBodyLeft but with opposite rotation
-    void RotateBodyRight(float deltaTime)
+    void RotateBodyRight(float deltaTime, bool checkMovebackwards)
     {
+
+		if (checkMovebackwards && movingBackward)
+		{
+			RotateBodyLeft(deltaTime, false);
+			return;
+		}
 		float effectiveRotSpeed = bodyRotSpeed * (1.0f - (currentSpeed / maxForwardSpeed) * 0.5f);
 		float rotationAmount = effectiveRotSpeed * deltaTime;
 
