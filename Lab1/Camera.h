@@ -15,6 +15,7 @@ struct Camera
 		this->rot = glm::vec3();
 		this->forward = glm::vec3(0.0f, 0.0f, 1.0f);
 		this->up = glm::vec3(0.0f, 1.0f, 0.0f);
+		this->right = glm::vec3(1.0f, 0.0f, 0.0f);
 		this->projection = glm::perspective(fov, aspect, nearClip, farClip);
 
 	}
@@ -29,6 +30,7 @@ struct Camera
 		glm::mat4 rotation = glm::rotate(angle, axis);
 		forward = glm::vec3(rotation * glm::vec4(forward, 0.0f));
 		up = glm::vec3(rotation * glm::vec4(up, 0.0f));
+		right = glm::vec3(rotation * glm::vec4(right, 0.0f));
 
 		// Keep rot in sync
 		if (axis.y > 0.5f) rot.y += angle;
@@ -41,6 +43,15 @@ struct Camera
         return glm::normalize(forward);
     }
 
+	glm::vec3 GetUp() const 
+	{ 
+		return glm::normalize(up); 
+	}
+
+	glm::vec3 GetRight() const 
+	{ 
+		return glm::normalize(right); 
+	}
 
 
 	inline glm::mat4 GetViewProjection() const
@@ -75,6 +86,7 @@ struct Camera
 
 		forward = glm::vec3(rotMat * glm::vec4(forward, 0.0f));
 		up = glm::vec3(rotMat * glm::vec4(up, 0.0f));
+		right = glm::vec3(rotMat * glm::vec4(right, 0.0f));
 	}
 
 
@@ -85,5 +97,6 @@ private:
 	glm::vec3 rot;
 	glm::vec3 forward;
 	glm::vec3 up;
+	glm::vec3 right;
 
 };
