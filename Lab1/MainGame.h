@@ -10,10 +10,11 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "Constants.h"
+#include "Tank.h"
 
 enum class GameState { PLAY, EXIT };
 
-#define NUM_GAME_OBJECTS 3
+#define NUM_GAME_OBJECTS 1
 
 class MainGame
 {
@@ -38,15 +39,19 @@ private:
 	MeshManager m_meshManager;
 	TextureManager m_textureManager;
 
-	std::unique_ptr<GameObject> m_gameObjects[NUM_GAME_OBJECTS];
+	std::unique_ptr<GameObject> m_gameObjects [NUM_GAME_OBJECTS];
+
+	std::unique_ptr<Tank> m_tank;
 
 	Camera m_mainCamera;
 
-	glm::vec3 cameraOffset = glm::vec3();
 
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
 
+	int lastFrameCount = 0;
+
 	bool freeCamera = false;	
+	bool updateGameTitle = false;	
 
 };

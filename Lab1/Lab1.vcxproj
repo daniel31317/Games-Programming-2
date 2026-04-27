@@ -96,6 +96,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Tank.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
