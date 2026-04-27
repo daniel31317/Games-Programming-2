@@ -28,8 +28,11 @@ private:
 
 	void initSystems();
 	void initGameObjects();
-	void processInput();
+	
 	void gameLoop();
+
+	void processInput();
+	void update();
 	void drawGame();
 
 	Display _gameDisplay;

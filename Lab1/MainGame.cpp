@@ -95,6 +95,7 @@ void MainGame::gameLoop()
 		}
 
 		processInput();
+		update();
 		drawGame();
 	}
 }
@@ -193,6 +194,11 @@ void MainGame::processInput()
 	
 }
 
+
+void MainGame::update()
+{
+	m_tank->Update(deltaTime);
+}
 
 
 

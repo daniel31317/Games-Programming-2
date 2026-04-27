@@ -11,11 +11,24 @@ struct Tank
 
 public:
 
-	float forwardSpeed = 5.0f;	
-	float backwardSpeed = 2.5f;	
+	float currentSpeed = 0.0f;
+
+	float acceleration = 1.5f;
+	float deceleration = 2.5f;
+
+	float maxForwardSpeed = 7.5f;
+	float maxBackwardSpeed = 3.0f;
+
+	bool movingForward = false;	
+	bool movingBackward = false;	
+
+	float turnSpeedPenalty = 0.75f;
+	float brakeForce = 5.f;
+
 
 	float bodyRotSpeed = 1.0f;
 	float turretRotSpeed = 1.0f;
+
 
 	glm::vec3 cameraOffset = glm::vec3();
 	glm::vec3 turretOffset = glm::vec3();
@@ -53,7 +66,61 @@ public:
 	}
 
 
-    // Replace all occurrences of turret-> with turret. in Tank methods
+	void Update(float deltaTime)
+	{
+		// Detect direction change and brake
+		bool braking = (movingForward && currentSpeed < 0) || (movingBackward && currentSpeed > 0);
+
+		if (braking)
+		{
+			if (currentSpeed > 0)
+			{
+				currentSpeed -= brakeForce * deltaTime;
+				if (currentSpeed < 0) currentSpeed = 0;
+			}
+			else if (currentSpeed < 0)
+			{
+				currentSpeed += brakeForce * deltaTime;
+				if (currentSpeed > 0) currentSpeed = 0;
+			}
+		}
+		else if (movingForward)
+		{
+			currentSpeed += acceleration * deltaTime;
+			if (currentSpeed > maxForwardSpeed)
+				currentSpeed = maxForwardSpeed;
+		}
+		else if (movingBackward)
+		{
+			currentSpeed -= acceleration * deltaTime;
+			if (currentSpeed < -maxBackwardSpeed)
+				currentSpeed = -maxBackwardSpeed;
+		}
+		else
+		{
+			if (currentSpeed > 0)
+			{
+				currentSpeed -= deceleration * deltaTime;
+				if (currentSpeed < 0) currentSpeed = 0;
+			}
+			else if (currentSpeed < 0)
+			{
+				currentSpeed += deceleration * deltaTime;
+				if (currentSpeed > 0) currentSpeed = 0;
+			}
+		}
+
+		if (currentSpeed != 0.0f)
+		{
+			glm::vec3 forward = body.GetTransform()->GetForward();
+			body.GetTransform()->move(forward * currentSpeed * deltaTime);
+			turret.GetTransform()->move(forward * currentSpeed * deltaTime);
+			camera->move(forward * currentSpeed * deltaTime);
+		}
+
+		movingForward = false;
+		movingBackward = false;
+	}
 
     void SetPosition(glm::vec3 position)
     {
@@ -73,24 +140,26 @@ public:
 
     void MoveForward(float deltaTime)
     {
-		glm::vec3 forward = body.GetTransform()->GetForward();
-		body.GetTransform()->move(forward * forwardSpeed * deltaTime);
-		turret.GetTransform()->move(forward * forwardSpeed * deltaTime);
-		camera->move(forward * forwardSpeed * deltaTime);
+		movingForward = true;
 	}
 	
 
     void MoveBackwards(float deltaTime)
     {
-		glm::vec3 backward = -body.GetTransform()->GetForward();
-		body.GetTransform()->move(backward * forwardSpeed * deltaTime);
-		turret.GetTransform()->move(backward * forwardSpeed * deltaTime);
-		camera->move(backward * forwardSpeed * deltaTime);
+		movingBackward = true;
     }
 
 	void RotateBodyLeft(float deltaTime)
 	{
-		body.GetTransform()->rotate(glm::vec3(0.0, bodyRotSpeed * deltaTime, 0.0));
+		//apply turn speed penalty based on current speed
+		float effectiveRotSpeed = bodyRotSpeed * (1.0f - (currentSpeed / maxForwardSpeed) * 0.5f);
+		float rotationAmount = effectiveRotSpeed * deltaTime;
+
+		body.GetTransform()->rotate(glm::vec3(0.0, rotationAmount, 0.0));
+
+		//change current speed
+		currentSpeed *= (1.0f - rotationAmount * turnSpeedPenalty);
+
 		glm::vec3 bodyPos = *body.GetTransform()->GetPosition();
 		glm::mat4 bodyRot = glm::rotate(body.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
 		glm::vec3 rotatedOffset = glm::vec3(bodyRot * glm::vec4(turretOffset, 0.0f));
@@ -102,9 +171,16 @@ public:
 		camera->SetPosition(*turret.GetTransform()->GetPosition() + camOffset);
 	}
 
+	//like RotateBodyLeft but with opposite rotation
     void RotateBodyRight(float deltaTime)
     {
-		body.GetTransform()->rotate(glm::vec3(0.0, -bodyRotSpeed * deltaTime, 0.0));
+		float effectiveRotSpeed = bodyRotSpeed * (1.0f - (currentSpeed / maxForwardSpeed) * 0.5f);
+		float rotationAmount = effectiveRotSpeed * deltaTime;
+
+		body.GetTransform()->rotate(glm::vec3(0.0, -rotationAmount, 0.0));
+
+		currentSpeed *= (1.0f - rotationAmount * turnSpeedPenalty);
+
 		glm::vec3 bodyPos = *body.GetTransform()->GetPosition();
 		glm::mat4 bodyRot = glm::rotate(body.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
 		glm::vec3 rotatedOffset = glm::vec3(bodyRot * glm::vec4(turretOffset, 0.0f));
