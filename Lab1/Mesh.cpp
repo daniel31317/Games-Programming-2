@@ -41,7 +41,7 @@ void Mesh::loadModel(const std::string& filename)
 	else
 	{
 		model = OBJModel(filename + ".obj", defaultColour).ToIndexedModel();
-		//saveModelAsBinary(binPath);
+		saveModelAsBinary(binPath);
 	}
 	
 }
