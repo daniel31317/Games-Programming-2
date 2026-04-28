@@ -14,8 +14,6 @@ void MeshManager::LoadMeshes()
 	m_meshList[CITY] = std::make_unique<Mesh>();
 
 
-	m_meshList[CITY]->setDefaultColour(glm::vec3(0.6f, 0.55f, 0.5f));
-
 	std::thread thread1{ &Mesh::loadModel, m_meshList[LECLERCBODY].get(), "..\\res\\LeclercBody" };
 	std::thread thread2{ &Mesh::loadModel, m_meshList[LECLERCTURRET].get(), "..\\res\\LeclercTurret" };
 	std::thread thread3{ &Mesh::loadModel, m_meshList[CITY].get(), "..\\res\\City" };

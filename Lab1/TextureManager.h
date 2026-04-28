@@ -8,6 +8,7 @@ enum TextureName
 	WATER,
 	ROCK,
 	MUZZLEFLASH,
+	CITYTEXTURE,
 	NONE,
 	NUM_TEXTURES
 };

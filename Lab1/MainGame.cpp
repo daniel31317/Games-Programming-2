@@ -53,8 +53,8 @@ void MainGame::initGameObjects()
 	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, -1.0, 0.0));	
 	m_gameObjects[1]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(0.005f, 0.005f, 0.005f));
-	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(ADS));
-	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(NONE));
+	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(RIM_LIGHT));
+	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(CITYTEXTURE));
 	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(CITY));
 
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
