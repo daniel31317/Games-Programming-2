@@ -41,21 +41,14 @@ void MainGame::initSystems()
 
 void MainGame::initGameObjects()
 {
-	//ground
+
+
 	m_gameObjects[0]->GetTransform()->SetPosition(glm::vec3(0.0, -1.0, 0.0));	
-	m_gameObjects[0]->GetTransform()->SetRotation(glm::vec3(glm::radians(90.0), 0.0, 0.0));
-	m_gameObjects[0]->GetTransform()->SetScale(glm::vec3(100.0f, 100.0f, 100.0f));
-	m_gameObjects[0]->SetShader(*m_shaderManager.GetShader(BUMP));
-	m_gameObjects[0]->SetTexture(*m_textureManager.GetTexture(ROCK));
-	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(QUAD));
-
-
-	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, -1.0, 0.0));	
-	m_gameObjects[1]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
-	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(0.01, 0.01, 0.01));
-	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(RIM_LIGHT));
-	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(CITYTEXTURE));
-	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(CITY));
+	m_gameObjects[0]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+	m_gameObjects[0]->GetTransform()->SetScale(glm::vec3(0.01, 0.01, 0.01));
+	m_gameObjects[0]->SetShader(*m_shaderManager.GetShader(RIM_LIGHT));
+	m_gameObjects[0]->SetTexture(*m_textureManager.GetTexture(CITYTEXTURE));
+	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(CITY));
 
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
 }
