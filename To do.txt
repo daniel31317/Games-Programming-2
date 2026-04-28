@@ -2,6 +2,7 @@
 
 -Add buildings
 	-Collisions
+	-Work with ads lighting
 
 -Tank fight
 

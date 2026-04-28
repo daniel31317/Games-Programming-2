@@ -41,14 +41,21 @@ void MainGame::initSystems()
 
 void MainGame::initGameObjects()
 {
-
-
 	m_gameObjects[0]->GetTransform()->SetPosition(glm::vec3(0.0, -1.0, 0.0));	
 	m_gameObjects[0]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 	m_gameObjects[0]->GetTransform()->SetScale(glm::vec3(0.01, 0.01, 0.01));
 	m_gameObjects[0]->SetShader(*m_shaderManager.GetShader(RIM_LIGHT));
 	m_gameObjects[0]->SetTexture(*m_textureManager.GetTexture(CITYTEXTURE));
 	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(CITY));
+
+
+
+	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));	
+	m_gameObjects[1]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(1, 1, 1));
+	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(RIM_LIGHT));
+	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(NONE));
+	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(CUBE));
 
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
 }
@@ -258,10 +265,20 @@ void MainGame::drawGame()
 
 	for(int i = 0; i < NUM_GAME_OBJECTS; i++)
 	{
+		if (i == 1)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Switch to wireframe
+			glLineWidth(2.0f); // Make the lines thicker (optional)
+		}
 		m_gameObjects[i]->GetShader()->Bind();
 		m_gameObjects[i]->GetShader()->Update(*m_gameObjects[i]->GetTransform(), m_mainCamera);
 		m_gameObjects[i]->GetTexture()->Bind(0);
 		m_gameObjects[i]->GetMesh()->draw();
+
+		if (i == 1)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 	}	
 
 	m_tank->Draw();
