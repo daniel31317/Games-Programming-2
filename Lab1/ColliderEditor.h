@@ -3,13 +3,12 @@
 #include <cstdlib>
 #include <SDL\SDL.h>
 #include <memory>
+#include <vector>
 #include "GameObject.h"
 #include "MeshManager.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
 #include "Camera.h"
-
-#define NUM_COLLIDERS 64
 
 struct ColliderEditor
 {
@@ -21,7 +20,8 @@ struct ColliderEditor
 
 		ColliderEditor(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager)
 		{
-			for (int i = 0; i < NUM_COLLIDERS; i++)
+			m_colliders.resize(1);
+			for (int i = 0; i < m_colliders.size(); i++)
 			{
 				m_colliders[i] = std::make_unique<GameObject>();
 				m_colliders[i]->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
@@ -35,7 +35,7 @@ struct ColliderEditor
 
 		void OpenEditor()
 		{
-			std::cout << "Collider Editor\n, - Position\n. - Rotation\n/ - Scale\nAxis - x/y/z\nChange Stat +/-\nSpace - Type Change Value\n";				
+			std::cout << "Collider Editor\nn - NewCollider\n, - Position\n. - Rotation\n/ - Scale\nAxis - x/y/z\nChange Stat +/-\nSpace - Type Change Value\n";				
 		}
 
 
@@ -233,7 +233,7 @@ struct ColliderEditor
 
 		void DrawEditor(Camera& mainCamera)
 		{
-			for (int i = 0; i < NUM_COLLIDERS; i++)
+			for (int i = 0; i < m_colliders.size(); i++)
 			{
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Switch to wireframe
 				glLineWidth(2.0f); // Make the lines thicker (optional)
@@ -257,8 +257,10 @@ struct ColliderEditor
 
 		bool changingChangeState = false;	
 
-		std::unique_ptr<GameObject> m_colliders[NUM_COLLIDERS];
+		std::vector<std::unique_ptr<GameObject>> m_colliders;
+
 		int currentColliderIndex = 0;
+		int numberOfColliders = 0;
 
 
 		bool plusDown = false;
