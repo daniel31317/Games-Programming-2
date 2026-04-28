@@ -5,6 +5,13 @@ MeshManager::MeshManager()
 {
 
 }
+MeshManager::~MeshManager()
+{
+    for(int i = 0; i < NUM_MESH; i++)
+    {
+        m_meshList[i]->unload();
+	}
+}
 
 void MeshManager::LoadMeshes()
 {

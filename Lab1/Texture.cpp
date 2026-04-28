@@ -45,6 +45,11 @@ Texture::Texture(const std::string& fileName)
 
 Texture::~Texture()
 {
+	
+}
+
+void Texture::unload()
+{
 	//number of and address of textures
 	glDeleteTextures(1, &textureHandler);
 }

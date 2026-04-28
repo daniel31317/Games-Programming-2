@@ -25,6 +25,7 @@ private:
 public:
 
 	MeshManager();
+	~MeshManager();
 
 	void LoadMeshes();
 

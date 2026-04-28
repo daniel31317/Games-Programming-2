@@ -12,6 +12,8 @@ public:
 	Shader();
 	Shader(const std::string& filename);
 
+	void unload();
+
 	void Bind(); //Set gpu to use our shaders
 	void Update(const Transform& transform, const Camera& camera, bool hasTexture);
 

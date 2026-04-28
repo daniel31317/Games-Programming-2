@@ -15,27 +15,38 @@ struct ColliderEditor
 
 	public:
 
-		ColliderEditor() {}
+		ColliderEditor() 
+		{ 
+			shaderManager = nullptr;
+			textureManager = nullptr;
+			meshManager	= nullptr;
+		
+		}
 
 
-		ColliderEditor(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager)
+		ColliderEditor(ShaderManager* shaderManager, TextureManager* textureManager, MeshManager* meshManager)
 		{
-			m_colliders.resize(1);
+			this->shaderManager = shaderManager;
+			this->textureManager = textureManager;
+			this->meshManager = meshManager;
+
+
 			for (int i = 0; i < m_colliders.size(); i++)
 			{
 				m_colliders[i] = std::make_unique<GameObject>();
 				m_colliders[i]->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
 				m_colliders[i]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 				m_colliders[i]->GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
-				m_colliders[i]->SetShader(*shaderManager.GetShader(RIM_LIGHT));
-				m_colliders[i]->SetTexture(*textureManager.GetTexture(NONE));
-				m_colliders[i]->SetMesh(*meshManager.GetMesh(CUBE));
+				m_colliders[i]->SetShader(*shaderManager->GetShader(RIM_LIGHT));
+				m_colliders[i]->SetTexture(*textureManager->GetTexture(NONE));
+				m_colliders[i]->SetMesh(*meshManager->GetMesh(CUBE));
 			}
 		}
 
 		void OpenEditor()
 		{
-			std::cout << "Collider Editor\nn - NewCollider\n, - Position\n. - Rotation\n/ - Scale\nAxis - x/y/z\nChange Stat +/-\nSpace - Type Change Value\n";				
+			std::cout << "Collider Editor\nNew Collider - N\nDelete Current Collider - B\nPosition - ,\nRotation - .\nScale - /\nAxis - X Y Z\nChange Stat + -\nType Change Value - V\nChange Collider Index Up - X\nChange Collider Index Down - C\n";		
+			std::cout << "Last Action - \n";
 		}
 
 
@@ -43,6 +54,7 @@ struct ColliderEditor
 		{
 			const Uint8* state = SDL_GetKeyboardState(NULL);
 
+			//transform type
 			if (state[SDL_SCANCODE_COMMA] && currentEditorState != EditorState::POSITION)
 			{
 				std::cout << "Position\n";
@@ -59,6 +71,8 @@ struct ColliderEditor
 				currentEditorState = EditorState::SCALE;
 			}
 
+
+			//axis
 			if (state[SDL_SCANCODE_X] && currentAxisState != AxisState::X)
 			{
 				std::cout << "Editing X axis\n";
@@ -76,12 +90,117 @@ struct ColliderEditor
 			}
 
 
+
+			//new collider
+			if(state[SDL_SCANCODE_N])
+			{
+				if(!nDown)
+				{
+					nDown = true;
+					m_colliders.push_back(std::make_unique<GameObject>());
+					m_colliders.back()->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
+					m_colliders.back()->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+					m_colliders.back()->GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
+					m_colliders.back()->SetShader(*shaderManager->GetShader(RIM_LIGHT));
+					m_colliders.back()->SetTexture(*textureManager->GetTexture(NONE));
+					m_colliders.back()->SetMesh(*meshManager->GetMesh(CUBE));
+					currentColliderIndex = m_colliders.size() - 1;
+					refreshEditorOutput();
+					std::cout << "New Collider Created\n";
+				}
+				
+			}
+			else
+			{
+				nDown = false;
+			}
+
+			//delete collider
+			if(state[SDL_SCANCODE_B])
+			{
+				if(!bDown)
+				{
+					if(m_colliders.size() > 0)
+					{
+						bDown = true;
+						m_colliders.erase(m_colliders.begin() + currentColliderIndex);
+
+						if(currentColliderIndex > 0)
+							currentColliderIndex--;
+
+						refreshEditorOutput();
+						std::cout << "Collider Created\n";
+					}
+					
+				}
+				
+			}
+			else
+			{
+				bDown = false;
+			}
+
+
+			//change index
+			if(state[SDL_SCANCODE_X])
+			{
+				if(!upArrowDown)
+				{
+					upArrowDown = true;
+					if (currentColliderIndex < m_colliders.size() - 1)
+					{
+						currentColliderIndex++;
+					}
+					else
+					{
+						currentColliderIndex = 0;
+					}
+				}
+				
+			}
+			else
+			{
+				upArrowDown = false;
+			}
+
+
+			if (state[SDL_SCANCODE_C])
+			{
+				if (!downArrowDown)
+				{
+					downArrowDown = true;
+					if (currentColliderIndex > 0)
+					{
+						currentColliderIndex--;
+					}
+					else
+					{
+						currentColliderIndex = m_colliders.size() - 1;
+					}
+				}
+
+			}
+			else
+			{
+				downArrowDown = false;
+			}
+
+
+
+
+
+
+
+			//add stuff
 			if(state[SDL_SCANCODE_EQUALS])
 			{
+				if (currentColliderIndex >= m_colliders.size() || m_colliders[currentColliderIndex] == nullptr)
+				{
+					return;
+				}
 				if (!plusDown)
 				{
 					plusDown = true;
-					std::cout << "plus down\n";
 					switch (currentEditorState)
 					{
 					case ColliderEditor::POSITION:
@@ -149,8 +268,14 @@ struct ColliderEditor
 				plusDown = false;
 			}
 
+
+			//minus stuff
 			if(state[SDL_SCANCODE_MINUS])
 			{
+				if (currentColliderIndex >= m_colliders.size() || m_colliders[currentColliderIndex] == nullptr)
+				{
+					return;
+				}
 				if (!minusDown)
 				{
 					minusDown = true;
@@ -225,6 +350,16 @@ struct ColliderEditor
 		}
 
 
+		void refreshEditorOutput() {
+			std::cout << "\033[13;1H";
+
+			std::cout << "\033[J";
+
+			std::cout << std::flush;
+		}
+
+
+
 		void CloseEditor()
 		{
 			std::system("cls");
@@ -235,10 +370,14 @@ struct ColliderEditor
 		{
 			for (int i = 0; i < m_colliders.size(); i++)
 			{
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Switch to wireframe
-				glLineWidth(2.0f); // Make the lines thicker (optional)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				glLineWidth(2.0f);
 				m_colliders[i]->GetShader()->Bind();
-				m_colliders[i]->GetShader()->Update(*m_colliders[i]->GetTransform(), mainCamera, true);
+				if(i == currentColliderIndex)
+					m_colliders[i]->GetShader()->Update(*m_colliders[i]->GetTransform(), mainCamera, true);
+				else
+					m_colliders[i]->GetShader()->Update(*m_colliders[i]->GetTransform(), mainCamera, false);
+				
 				m_colliders[i]->GetTexture()->Bind(0);
 				m_colliders[i]->GetMesh()->draw();
 
@@ -265,8 +404,16 @@ struct ColliderEditor
 
 		bool plusDown = false;
 		bool minusDown = false;
+		bool nDown = false;
+		bool bDown = false;
+		bool upArrowDown = false;
+		bool downArrowDown = false;
 
 		float changeAmountPos = 1.0f;	
 		float changeAmountRot = 5.0f;	
 		float changeAmountScale = 1.0f;	
+
+		ShaderManager* shaderManager;
+		TextureManager* textureManager;
+		MeshManager* meshManager;
 };

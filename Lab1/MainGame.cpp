@@ -54,7 +54,7 @@ void MainGame::initGameObjects()
 
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
 
-	m_colliderEditor = std::make_unique<ColliderEditor>(m_shaderManager, m_textureManager, m_meshManager);
+	m_colliderEditor = std::make_unique<ColliderEditor>(&m_shaderManager, &m_textureManager, &m_meshManager);
 }
 
 void MainGame::gameLoop()

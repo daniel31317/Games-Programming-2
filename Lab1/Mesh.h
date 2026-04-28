@@ -42,6 +42,7 @@ public:
 	void loadModelAsBinary(const std::string& filename);
 	void saveModelAsBinary(const std::string& filename);
 	void setDefaultColour(const glm::vec3& defaultColour) { this->defaultColour = defaultColour; }
+	void unload();
 
 private:
 

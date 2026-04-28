@@ -5,6 +5,14 @@ TextureManager::TextureManager()
 
 }
 
+TextureManager::~TextureManager()
+{
+	for(int i = 0; i < NUM_TEXTURES; i++)
+	{
+		m_textureList[i]->unload();
+	}
+}
+
 void TextureManager::LoadTextures()
 {
 	m_textureList[BRICKS] = std::make_unique<Texture>("..\\res\\bricks.jpg");

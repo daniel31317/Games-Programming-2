@@ -23,6 +23,7 @@ private:
 public:
 
 	ShaderManager();
+	~ShaderManager();
 
 	void LoadShaders();
 

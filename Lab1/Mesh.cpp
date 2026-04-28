@@ -12,6 +12,12 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
+	
+}
+
+// Clean up the VAO and VBOs called by mesh manager destructor instead of normal destructor to allow for deleteing of game objects in real time
+void Mesh::unload()
+{
 	glDeleteVertexArrays(1, &vertexArrayObject);
 }
 

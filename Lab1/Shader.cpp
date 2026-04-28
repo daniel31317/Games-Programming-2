@@ -55,14 +55,19 @@ Shader::Shader(const std::string& filename)
 
 Shader::~Shader()
 {
+
+
+}
+
+
+void Shader::unload()
+{
 	for (int i = 0; i < sizeof(shaders) / sizeof(shaders[0]); i++)
 	{
 		glDetachShader(program, shaders[i]);
-		glDeleteShader(shaders[i]); //delete the shaders
+		glDeleteShader(shaders[i]);
 	}
-
 	glDeleteProgram(program);
-
 }
 
 std::string Shader::LoadShader(const std::string& fileName)

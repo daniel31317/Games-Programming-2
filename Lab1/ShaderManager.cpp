@@ -6,6 +6,14 @@ ShaderManager::ShaderManager()
 	
 }
 
+ShaderManager::~ShaderManager()
+{
+	for(int i = 0; i < NUM_SHADERS; i++)
+	{
+		m_shaderList[i]->unload();
+	}
+}
+
 void ShaderManager::LoadShaders()
 {
 	m_shaderList[FOG] = std::make_unique<Shader>("..\\res\\fog");
