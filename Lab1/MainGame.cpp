@@ -12,7 +12,10 @@ MainGame::MainGame()
 	{
 		m_gameObjects[i] = std::make_unique<GameObject>();
 	}
+
 	m_tank = nullptr;
+
+	m_colliderEditor = std::make_unique<ColliderEditor>();
 }
 
 MainGame::~MainGame()
@@ -44,20 +47,14 @@ void MainGame::initGameObjects()
 	m_gameObjects[0]->GetTransform()->SetPosition(glm::vec3(0.0, -1.0, 0.0));	
 	m_gameObjects[0]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 	m_gameObjects[0]->GetTransform()->SetScale(glm::vec3(0.01, 0.01, 0.01));
-	m_gameObjects[0]->SetShader(*m_shaderManager.GetShader(RIM_LIGHT));
+	m_gameObjects[0]->SetShader(*m_shaderManager.GetShader(ADS));
 	m_gameObjects[0]->SetTexture(*m_textureManager.GetTexture(CITYTEXTURE));
 	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(CITY));
 
 
-
-	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));	
-	m_gameObjects[1]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
-	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(1, 1, 1));
-	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(RIM_LIGHT));
-	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(NONE));
-	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(CUBE));
-
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
+
+	m_colliderEditor = std::make_unique<ColliderEditor>(m_shaderManager, m_textureManager, m_meshManager);
 }
 
 void MainGame::gameLoop()
@@ -121,7 +118,7 @@ void MainGame::processInput()
 			break;
 
 			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_TAB)
+				if (event.key.keysym.sym == SDLK_TAB && !colliderEditor)
 				{
 					freeCamera = !freeCamera;
 					if (!freeCamera)
@@ -136,6 +133,34 @@ void MainGame::processInput()
 
 					updateGameTitle = true;
 				}
+
+				if(event.key.keysym.sym == SDLK_LALT)
+				{
+					colliderEditor = !colliderEditor;
+					if (colliderEditor)
+					{
+
+						if (!freeCamera)
+						{
+							m_mainCamera.ResetPitch();
+							m_mainCamera.SetRotation(m_mainCamera.GetRotation());
+						}
+
+						m_colliderEditor->OpenEditor();
+
+						freeCamera = true;
+											
+					}
+					else
+					{
+						freeCamera = false;
+						m_tank->ResetCameraToTank();
+						m_colliderEditor->CloseEditor();
+						
+					}
+					updateGameTitle = true;
+				}
+
 				break;
 
 			case SDL_WINDOWEVENT:
@@ -255,6 +280,8 @@ void MainGame::processInput()
 void MainGame::update()
 {
 	m_tank->Update(deltaTime);
+	if(colliderEditor)
+		m_colliderEditor->UpdateEditor();	
 }
 
 
@@ -265,21 +292,15 @@ void MainGame::drawGame()
 
 	for(int i = 0; i < NUM_GAME_OBJECTS; i++)
 	{
-		if (i == 1)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Switch to wireframe
-			glLineWidth(2.0f); // Make the lines thicker (optional)
-		}
 		m_gameObjects[i]->GetShader()->Bind();
-		m_gameObjects[i]->GetShader()->Update(*m_gameObjects[i]->GetTransform(), m_mainCamera);
+		m_gameObjects[i]->GetShader()->Update(*m_gameObjects[i]->GetTransform(), m_mainCamera, true);
 		m_gameObjects[i]->GetTexture()->Bind(0);
 		m_gameObjects[i]->GetMesh()->draw();
-
-		if (i == 1)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
 	}	
+
+
+	m_colliderEditor->DrawEditor(m_mainCamera);
+
 
 	m_tank->Draw();
 

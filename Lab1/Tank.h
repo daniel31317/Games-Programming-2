@@ -288,19 +288,19 @@ public:
 	void Draw()
 	{
 		body.GetShader()->Bind();
-		body.GetShader()->Update(*body.GetTransform(), *camera);
+		body.GetShader()->Update(*body.GetTransform(), *camera, false);
 		body.GetTexture()->Bind(0);
 		body.GetMesh()->draw();
 
 		turret.GetShader()->Bind();
-		turret.GetShader()->Update(*turret.GetTransform(), *camera);
+		turret.GetShader()->Update(*turret.GetTransform(), *camera, false);
 		turret.GetTexture()->Bind(0);
 		turret.GetMesh()->draw();
 
 		if (muzzleFlashData.IsAlive())
 		{
 			muzzleFlash.GetShader()->Bind();
-			muzzleFlash.GetShader()->Update(*muzzleFlash.GetTransform(), *camera);
+			muzzleFlash.GetShader()->Update(*muzzleFlash.GetTransform(), *camera, true);
 			muzzleFlash.GetTexture()->Bind(0);
 			muzzleFlash.GetMesh()->draw();
 		}

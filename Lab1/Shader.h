@@ -13,7 +13,7 @@ public:
 	Shader(const std::string& filename);
 
 	void Bind(); //Set gpu to use our shaders
-	void Update(const Transform& transform, const Camera& camera);
+	void Update(const Transform& transform, const Camera& camera, bool hasTexture);
 
 	std::string Shader::LoadShader(const std::string& fileName);
 
@@ -44,6 +44,7 @@ private:
 		LIGHTPOS_U,
 		LIGHTCOLOUR_U,
 		VERTEXCOLOUR_U,
+		HASTEXTURE_U,
 		NUM_UNIFORMS
 
 	};

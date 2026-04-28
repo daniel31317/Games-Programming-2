@@ -9,6 +9,7 @@ uniform vec3 lightPos;
 uniform vec3 lightColour;   
 uniform vec3 camPos;
 uniform sampler2D diffuse;
+uniform bool hasTexture;
 
 out vec4 fragmentColour;
 
@@ -35,7 +36,13 @@ void main()
     vec3 specular = specularStrength * spec * lightColour;
 
     vec3 lighting = (ambient + diffuse + specular);
-    vec3 result = lighting * vertexColour;
+
+    vec3 result;
+
+    if(hasTexture)
+        result = lighting * texColour;
+    else
+        result = lighting * vertexColour;
 
     fragmentColour = vec4(result, 1.0);
 }

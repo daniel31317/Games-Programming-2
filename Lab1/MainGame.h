@@ -11,10 +11,16 @@
 #include "Camera.h"
 #include "Constants.h"
 #include "Tank.h"
+#include "ColliderEditor.h"
 
 enum class GameState { PLAY, EXIT };
 
-#define NUM_GAME_OBJECTS 2
+#define NUM_GAME_OBJECTS 1
+#define NUM_COLLIDERS 64
+
+
+
+
 
 class MainGame
 {
@@ -42,11 +48,15 @@ private:
 	MeshManager m_meshManager;
 	TextureManager m_textureManager;
 
-	std::unique_ptr<GameObject> m_gameObjects [NUM_GAME_OBJECTS];
+	std::unique_ptr<GameObject> m_gameObjects[NUM_GAME_OBJECTS];
+
 
 	std::unique_ptr<Tank> m_tank;
 
 	Camera m_mainCamera;
+
+
+	std::unique_ptr <ColliderEditor> m_colliderEditor;
 
 
 	float deltaTime = 0.0f;
@@ -55,6 +65,7 @@ private:
 	int lastFrameCount = 0;
 
 	bool freeCamera = false;	
+	bool colliderEditor = false;	
 	bool updateGameTitle = false;	
 
 };

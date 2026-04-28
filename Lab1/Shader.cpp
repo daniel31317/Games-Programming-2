@@ -50,6 +50,7 @@ Shader::Shader(const std::string& filename)
 	uniforms[LIGHTPOS_U] = glGetUniformLocation(program, "lightPos");
 	uniforms[LIGHTCOLOUR_U] = glGetUniformLocation(program, "lightColour");
 	uniforms[VERTEXCOLOUR_U] = glGetUniformLocation(program, "vertexColour");
+	uniforms[HASTEXTURE_U] = glGetUniformLocation(program, "hasTexture");
 }
 
 Shader::~Shader()
@@ -134,7 +135,7 @@ void Shader::Bind()
 	glUseProgram(program);
 }
 
-void Shader::Update(const Transform& transform, const Camera& camera)
+void Shader::Update(const Transform& transform, const Camera& camera, bool hasTexture)
 {
 	glm::mat4 model = transform.GetModel();
 	glm::mat4 mvp = camera.GetViewProjection() * model;
@@ -161,5 +162,7 @@ void Shader::Update(const Transform& transform, const Camera& camera)
 	glUniform3f(uniforms[LIGHTCOLOUR_U], 1.0f, 1.0f, 1.0f);
 
 	glUniform3f(uniforms[VERTEXCOLOUR_U], 75.f / 255.f, 83.f / 255.f, 32.f / 255.f);
+
+	glUniform1i(uniforms[HASTEXTURE_U], hasTexture);
 }
 
