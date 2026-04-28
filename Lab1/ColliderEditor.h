@@ -45,7 +45,7 @@ struct ColliderEditor
 
 		void OpenEditor()
 		{
-			std::cout << "Collider Editor\nNew Collider - N\nDelete Current Collider - B\nPosition - ,\nRotation - .\nScale - /\nAxis - X Y Z\nChange Stat + -\nType Change Value - V\nChange Collider Index Up - X\nChange Collider Index Down - C\n";		
+			std::cout << "Collider Editor\nNew Collider - N\nDelete Current Collider - B\nPosition - ,\nRotation - .\nScale - /\nAxis - X Y Z\nChange Stat +(Increase) -(Decrease)\nType Change Stat Value - V\nChange Collider Index Up - X\nChange Collider Index Down - C\n";		
 			std::cout << "Last Action - \n";
 		}
 
@@ -57,16 +57,19 @@ struct ColliderEditor
 			//transform type
 			if (state[SDL_SCANCODE_COMMA] && currentEditorState != EditorState::POSITION)
 			{
+				refreshEditorOutput();
 				std::cout << "Position\n";
 				currentEditorState = EditorState::POSITION;
 			}
 			if (state[SDL_SCANCODE_PERIOD] && currentEditorState != EditorState::ROTATION)
 			{
+				refreshEditorOutput();
 				std::cout << "Rotation\n";
 				currentEditorState = EditorState::ROTATION;
 			}
 			if (state[SDL_SCANCODE_SLASH] && currentEditorState != EditorState::SCALE)
 			{
+				refreshEditorOutput();
 				std::cout << "Scale\n";
 				currentEditorState = EditorState::SCALE;
 			}
@@ -75,19 +78,73 @@ struct ColliderEditor
 			//axis
 			if (state[SDL_SCANCODE_X] && currentAxisState != AxisState::X)
 			{
+				refreshEditorOutput();
 				std::cout << "Editing X axis\n";
 				currentAxisState = AxisState::X;
 			}
 			if (state[SDL_SCANCODE_Y] && currentAxisState != AxisState::Y)
 			{
+				refreshEditorOutput();
 				std::cout << "Editing Y axis\n";
 				currentAxisState = AxisState::Y;
 			}
 			if (state[SDL_SCANCODE_Z] && currentAxisState != AxisState::Z)
 			{
+				refreshEditorOutput();
 				std::cout << "Editing Z axis\n";
 				currentAxisState = AxisState::Z;
 			}
+
+
+
+			if(state[SDL_SCANCODE_V])
+			{
+				if (!vDown)
+				{
+					vDown = true;
+					while (true)
+					{
+						std::cout << "Enter Value: ";
+
+						float changeAmount = 0;
+
+						if (std::cin >> changeAmount)
+						{
+							switch (currentEditorState)
+							{
+							case ColliderEditor::POSITION:
+								changeAmountPos = changeAmount;
+								break;
+							case ColliderEditor::ROTATION:
+								changeAmountRot = changeAmount;
+								break;
+							case ColliderEditor::SCALE:
+								changeAmountScale = changeAmount;
+								break;
+							default:
+								break;
+							}
+							refreshEditorOutput();
+							break;
+
+						}
+						else
+						{
+							std::cout << "Invalid input, try again\n";
+							std::cin.clear();
+							std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+							refreshEditorOutput();
+						}
+					}
+				}
+								
+			}
+			else
+			{
+				vDown = false;
+			}
+
+
 
 
 
@@ -406,6 +463,7 @@ struct ColliderEditor
 		bool minusDown = false;
 		bool nDown = false;
 		bool bDown = false;
+		bool vDown = false;
 		bool upArrowDown = false;
 		bool downArrowDown = false;
 
