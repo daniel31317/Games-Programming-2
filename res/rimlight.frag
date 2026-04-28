@@ -20,6 +20,7 @@ void main()
 
 	vec4 baseColour = texture(diffuse, texCoords);
 
-	fragmentColour = baseColour + vec4(rimColour, 1.0) * rim;
+	fragmentColour = baseColour;
+	//fragmentColour = vec4(texCoords.x, texCoords.y, 0.0, 1.0);
 }
 

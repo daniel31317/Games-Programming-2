@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include <vector>
 #include <fstream>
+#include <iostream>
 
 
 Mesh::Mesh()
@@ -40,7 +41,7 @@ void Mesh::loadModel(const std::string& filename)
 	else
 	{
 		model = OBJModel(filename + ".obj", defaultColour).ToIndexedModel();
-		saveModelAsBinary(binPath);
+		//saveModelAsBinary(binPath);
 	}
 	
 }
