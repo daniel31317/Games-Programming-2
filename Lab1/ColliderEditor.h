@@ -43,7 +43,7 @@ struct ColliderEditor
 		{
 			std::cout << "Collider Editor\nNew Collider - N\nDelete Current Collider - Backspace\nPosition - ,\n";
 			std::cout << "Rotation - .\nScale - / \nAxis - X Y Z\n";
-			std::cout << "Type Change Stat Value - V\nChange Stat + (Increase)-(Decrease)\nMultiply Change State By 10 - 1 or ! (NOT NUMPAD)\n";
+			std::cout << "Type Change Stat Value - V\nChange Stat + (Increase)-(Decrease)\nMultiply Change State By 10,100 - 1,2 (NOT NUMPAD)\n";
 			std::cout << "Change Collider Index Up - E\nChange Collider Index Down - Q\n";	
 			std::cout << "Hide All Meshes - H\n";
 			std::cout << "Force Save - P\n";
@@ -292,6 +292,11 @@ struct ColliderEditor
 			if (state[SDL_SCANCODE_1])
 			{
 				factor = 10.0f;
+			}
+
+			if (state[SDL_SCANCODE_2])
+			{
+				factor = 100.0f;
 			}
 
 
@@ -827,6 +832,7 @@ struct ColliderEditor
 		bool qDown = false;
 		bool hDown = false;
 		bool oneDown = false;
+		bool twoDown = false;
 		bool pDown = false;
 
 		
