@@ -90,6 +90,7 @@
     <ClInclude Include="ColliderEditor.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Display.h" />
+    <ClInclude Include="EnemyTank.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Mesh.h" />

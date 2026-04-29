@@ -12,6 +12,7 @@
 #include "Constants.h"
 #include "Tank.h"
 #include "ColliderEditor.h"
+#include "EnemyTank.h"
 
 enum class GameState { PLAY, EXIT };
 
@@ -52,6 +53,8 @@ private:
 
 
 	std::unique_ptr<Tank> m_tank;
+
+	std::unique_ptr<EnemyTank> m_EnemyTank;
 
 	Camera m_mainCamera;
 

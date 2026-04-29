@@ -28,7 +28,7 @@ public:
 	}
 
 
-	Tank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* camera)
+	Tank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* camera, bool isPlayer)
 	{
 		//leclerc body
 		m_body.GetTransform()->SetPosition(glm::vec3(0.0, -0.5, -1.5));
@@ -56,17 +56,17 @@ public:
 
 		this->camera = camera;
 
-
-
 		cameraOffset = camera->GetPosition() - *m_turret.GetTransform()->GetPosition();
 
 		turretOffset = *m_turret.GetTransform()->GetPosition() - *m_body.GetTransform()->GetPosition();
 
 		muzzleFlashOffset = m_muzzleFlash.GetTransform()->GetPosition()->y - m_turret.GetTransform()->GetPosition()->y;
 
+		this->isPlayer = isPlayer;
 
 		tankCollider = nullptr;
 	}
+
 
 
 	void Update(float deltaTime)
@@ -128,7 +128,12 @@ public:
 			tankCollider->GetCollider()->UpdateCollider(*tankCollider->GetTransform()->GetPosition(), *tankCollider->GetTransform()->GetRotation());
 			m_turret.GetTransform()->move(forward * currentSpeed * deltaTime);
 			m_muzzleFlash.GetTransform()->move(forward * currentSpeed * deltaTime);
-			camera->move(forward * currentSpeed * deltaTime);
+
+			if (isPlayer)
+			{
+				camera->move(forward * currentSpeed * deltaTime);
+			}
+			
 		
 		}
 
@@ -143,7 +148,7 @@ public:
     void SetPosition(glm::vec3 position)
     {
 		m_body.GetTransform()->SetPosition(position);
-		m_turret.GetTransform()->SetPosition(position);
+		m_turret.GetTransform()->SetPosition(position + turretOffset);
     }
     void SetRotation(glm::vec3 rotation)
     {
@@ -215,9 +220,13 @@ public:
 		tankCollider->GetTransform()->SetPosition(bodyPos + rotatedColliderOffset);
 		tankCollider->GetCollider()->UpdateCollider(*tankCollider->GetTransform()->GetPosition(), *tankCollider->GetTransform()->GetRotation());
 
-		glm::mat4 camRot = glm::rotate(m_turret.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
-		glm::vec3 camOffset = glm::vec3(camRot * glm::vec4(cameraOffset, 0.0f));
-		camera->SetPosition(*m_turret.GetTransform()->GetPosition() + camOffset);
+		if (isPlayer)
+		{
+			glm::mat4 camRot = glm::rotate(m_turret.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
+			glm::vec3 camOffset = glm::vec3(camRot * glm::vec4(cameraOffset, 0.0f));
+			camera->SetPosition(*m_turret.GetTransform()->GetPosition() + camOffset);
+		}
+
 
 	}
 
@@ -256,9 +265,13 @@ public:
 		tankCollider->GetTransform()->SetPosition(bodyPos + rotatedColliderOffset);
 		tankCollider->GetCollider()->UpdateCollider(*tankCollider->GetTransform()->GetPosition(), *tankCollider->GetTransform()->GetRotation());
 
-		glm::mat4 camRot = glm::rotate(m_turret.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
-		glm::vec3 camOffset = glm::vec3(camRot * glm::vec4(cameraOffset, 0.0f));
-		camera->SetPosition(*m_turret.GetTransform()->GetPosition() + camOffset);
+		if (isPlayer)
+		{
+			glm::mat4 camRot = glm::rotate(m_turret.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
+			glm::vec3 camOffset = glm::vec3(camRot * glm::vec4(cameraOffset, 0.0f));
+			camera->SetPosition(*m_turret.GetTransform()->GetPosition() + camOffset);
+		}
+		
     }
 
 	void RotateTurretLeft(float deltaTime)
@@ -273,10 +286,14 @@ public:
 			+ (turretTransform->GetForward() * 1.4f)
 			+ (turretTransform->GetUp() * muzzleFlashOffset));
 
-		camera->rotate(turretRotSpeed * deltaTime, glm::vec3(0, 1, 0));
-		glm::mat4 rotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
-		glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-		camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
+		if (isPlayer)
+		{
+			camera->rotate(turretRotSpeed * deltaTime, glm::vec3(0, 1, 0));
+			glm::mat4 rotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
+			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
+			camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
+		}
+
 	}
 
     void RotateTurretRight(float deltaTime)
@@ -291,10 +308,14 @@ public:
 			+ (turretTransform->GetForward() * 1.4f)
 			+ (turretTransform->GetUp() * muzzleFlashOffset));
 
-		camera->rotate(-turretRotSpeed * deltaTime, glm::vec3(0, 1, 0));
-		glm::mat4 rotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
-		glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-		camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
+		if (isPlayer)
+		{
+			camera->rotate(-turretRotSpeed * deltaTime, glm::vec3(0, 1, 0));
+			glm::mat4 rotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
+			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
+			camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
+		}
+
     }
 
 
@@ -303,6 +324,7 @@ public:
 	{
 		if (collided && collided != collidedLastFrame)
 		{
+			//dampning
 			currentSpeed = -currentSpeed / 8;
 		}	
 		collidedLastFrame = collided;
@@ -358,7 +380,7 @@ private:
 
 	MuzzleFlash muzzleFlashData;
 
-	bool collidedLastFrame;
+	bool collidedLastFrame = false;
 
 	Camera* camera;
 
@@ -382,6 +404,8 @@ private:
 
 	const float maxReloadTime = 6.0f;
 	float currentReloadTime = 0.0f;
+
+	bool isPlayer = false;
 
 	glm::vec3 cameraOffset = glm::vec3();
 	glm::vec3 turretOffset = glm::vec3();

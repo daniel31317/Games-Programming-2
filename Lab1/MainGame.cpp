@@ -52,7 +52,9 @@ void MainGame::initGameObjects()
 	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(CITY));
 
 
-	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
+	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera, true);
+
+	m_EnemyTank = std::make_unique<EnemyTank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
 
 	m_colliderEditor = std::make_unique<ColliderEditor>(&m_shaderManager, &m_textureManager, &m_meshManager, m_tank->GetBody());
 
@@ -323,6 +325,8 @@ void MainGame::update()
 	m_tank->HandleColliison(m_colliderEditor->CollisionWithTank(*m_tank));
 
 	m_tank->Update(deltaTime);
+
+	m_EnemyTank->GetTank()->Update(deltaTime);
 	
 }
 
@@ -343,6 +347,8 @@ void MainGame::drawGame()
 		}
 
 		m_tank->Draw();
+
+		m_EnemyTank->GetTank()->Draw();
 	}
 		
 	if (colliderEditorActive || collidersShowing)
