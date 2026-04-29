@@ -789,36 +789,12 @@ struct ColliderEditor
 			{
 				if (m_tankBodyCollider.GetCollider()->IsCollidingWith(m_colliders[i]->GetCollider()))
 				{
-					TempWrite();
 					return true;
 				}
 			}
-			TempWrite();
 			return false;
 		}
 
-
-		void TempWrite()
-		{
-			switch (*m_tankBodyCollider.GetCollider()->GetCollisionSide())
-			{
-				case Collider::CollisionSide::FrontLeft:
-					std::cout << "Front Left\n";
-					break;
-				case Collider::CollisionSide::FrontRight:
-					std::cout << "Front Right\n";
-					break;
-				case Collider::CollisionSide::BackLeft:
-					std::cout << "Back Left\n";
-					break;
-				case Collider::CollisionSide::BackRight:
-					std::cout << "Back Right\n";
-					break;
-				case Collider::CollisionSide::None:
-					std::cout << "None\n";
-					break;
-			}
-		}
 
 		GameObject* GetTankCollider() { return &m_tankBodyCollider; }
 		glm::vec3* GetTankColliderOffset() { return &m_tankBodyColliderOffset; }
