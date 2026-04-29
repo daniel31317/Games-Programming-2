@@ -207,8 +207,8 @@ void MainGame::processInput()
 
 
 	const Uint8* state = SDL_GetKeyboardState(NULL);
-	float rotAmount = 1.f;
-	float moveAmount = 5.f;
+	float rotAmount = 2.f;
+	float moveAmount = 10.f;
 
 
 

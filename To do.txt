@@ -2,15 +2,12 @@
 
 -Add buildings
 	-Collisions
-	-Work with ads lighting
 
 -Tank fight
 
 -Smoke from barrel shot
 
 -Fume particle thing
-
--Moving barrel
 
 -Settings
  	-vsync
