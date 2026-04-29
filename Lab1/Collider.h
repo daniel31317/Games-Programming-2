@@ -8,21 +8,24 @@
 struct Collider
 {
 	public:
-
 		enum class CollisionSide
 		{
 			None,
-			Front,
-			Back,
-			Left,
-			Right,
 			FrontLeft,
 			FrontRight,
 			BackLeft,
 			BackRight
 		};
 
-		Collider() : position(0.0f), rotation(0.0f), scale(1.0f) {}
+		struct SideDir { CollisionSide side; glm::vec2 direction; };
+		
+
+		
+
+		Collider() : position(0.0f), rotation(0.0f), scale(1.0f)  
+		{
+			lastCollisionSide = CollisionSide::None;
+		}
 
 
 		void UpdateCollider(glm::vec3 position, glm::vec3 rotation)
@@ -56,20 +59,20 @@ struct Collider
 			Collider a = *this;
 			glm::vec3 delta = b->position - a.position;
 
-			// 15 axes to test
+			//15 axes
 			glm::vec3 testAxes[15];
 
-			// 3 axes from A
+			//3 from a
 			testAxes[0] = a.axes[0];
 			testAxes[1] = a.axes[1];
 			testAxes[2] = a.axes[2];
 
-			// 3 axes from B
+			//3 from b
 			testAxes[3] = b->axes[0];
 			testAxes[4] = b->axes[1];
 			testAxes[5] = b->axes[2];
 
-			// 9 cross products
+			//get the cros products
 			int idx = 6;
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
@@ -77,7 +80,7 @@ struct Collider
 
 			for (int i = 0; i < 15; i++)
 			{
-				// Skip near-zero axes (can happen with parallel edges)
+				//skip near zero (parallel edges)
 				if (glm::length(testAxes[i]) < 0.0001f) continue;
 
 				glm::vec3 axis = glm::normalize(testAxes[i]);
@@ -86,7 +89,7 @@ struct Collider
 				float projB = ProjectOntoAxis(*b, axis);
 				float dist = std::abs(glm::dot(delta, axis));
 
-				// Gap found on this axis = no collision
+				// gap found on axis means no collision
 				if (dist > projA + projB)
 				{
 					lastCollisionSide = CollisionSide::None;
@@ -95,34 +98,42 @@ struct Collider
 					
 			}
 
-			float xDot = glm::dot(delta, axes[0]); // + = right,  - = left
-			float zDot = glm::dot(delta, axes[2]); // + = front,  - = back
 
+			//get the closest point of b collider
+			glm::vec3 closestPointOnB = b->position;
+			for (int i = 0; i < 3; i++) {
+				float dist = glm::dot(a.position - b->position, b->axes[i]);
+				dist = glm::clamp(dist, -(*b->GetHalfExtents())[i], (*b->GetHalfExtents())[i]);
+				closestPointOnB += b->axes[i] * dist;
+			}
+
+			
+			//get real collision delta to the closest point on the building
+			glm::vec3 actualCollisionDelta = closestPointOnB - a.position;
+
+			//translate to tank space
+			float xDot = glm::dot(actualCollisionDelta, axes[0]); 
+			float zDot = glm::dot(actualCollisionDelta, axes[2]);			
+
+			//normalize
 			glm::vec2 localDir = glm::normalize(glm::vec2(xDot, zDot));
 
-
-			bool right = localDir.x > 0.4f;
-			bool left = localDir.x < -0.4f;
-			bool front = localDir.y > 0.4f;
-			bool back = localDir.y < -0.4f;
-
-			if (front && right) lastCollisionSide = CollisionSide::FrontRight;
-			else if (front && left)  lastCollisionSide = CollisionSide::FrontLeft;
-			else if (back && right) lastCollisionSide = CollisionSide::BackRight;
-			else if (back && left)  lastCollisionSide = CollisionSide::BackLeft;
-			else if (front)          lastCollisionSide = CollisionSide::Front;
-			else if (back)           lastCollisionSide = CollisionSide::Back;
-			else if (right)          lastCollisionSide = CollisionSide::Right;
-			else                     lastCollisionSide = CollisionSide::Left;
-
-
-
-
+			//find the best corner that we hit with
+			float maxDot = -1.0f;
+			for (const SideDir& d : directions)
+			{
+				float dot = glm::dot(localDir, d.direction);
+				if (dot > maxDot) {
+					maxDot = dot;
+					lastCollisionSide = d.side;
+				}
+			}
 			return true;
 		}
 
 
 		const glm::vec3* GetAxes() const { return axes; }
+		const glm::vec3* GetHalfExtents() const { return &halfExtents; }
 
 		const CollisionSide* GetCollisionSide() { return &lastCollisionSide; }
 
@@ -137,5 +148,11 @@ struct Collider
 		glm::vec3 axes[3];
 		CollisionSide lastCollisionSide;
 
+		SideDir directions[4] = {
+			{ Collider::CollisionSide::FrontLeft, glm::vec2(0.7071f, 0.7071f) },
+			{ Collider::CollisionSide::FrontRight,  glm::vec2(-0.7071f, 0.7071f) },
+			{ Collider::CollisionSide::BackLeft,  glm::vec2(0.7071f, -0.7071f) },
+			{ Collider::CollisionSide::BackRight,   glm::vec2(-0.7071f, -0.7071f) } };;
 
+		
 };

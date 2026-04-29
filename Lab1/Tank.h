@@ -89,15 +89,30 @@ public:
 		}
 		else if (movingForward)
 		{
-			currentSpeed += acceleration * deltaTime;
-			if (currentSpeed > maxForwardSpeed)
-				currentSpeed = maxForwardSpeed;
+			if (*tankCollider->GetCollider()->GetCollisionSide() == Collider::CollisionSide::FrontRight || *tankCollider->GetCollider()->GetCollisionSide() == Collider::CollisionSide::FrontLeft)
+			{
+				currentSpeed = 0;
+			}
+			else
+			{
+				currentSpeed += acceleration * deltaTime;
+				if (currentSpeed > maxForwardSpeed)
+					currentSpeed = maxForwardSpeed;
+			}	
 		}
 		else if (movingBackward)
 		{
-			currentSpeed -= acceleration * deltaTime;
-			if (currentSpeed < -maxBackwardSpeed)
-				currentSpeed = -maxBackwardSpeed;
+			if (*tankCollider->GetCollider()->GetCollisionSide() == Collider::CollisionSide::BackRight || *tankCollider->GetCollider()->GetCollisionSide() == Collider::CollisionSide::BackLeft)
+			{
+				currentSpeed = 0;
+			}
+			else
+			{
+				currentSpeed -= acceleration * deltaTime;
+				if (currentSpeed < -maxBackwardSpeed)
+					currentSpeed = -maxBackwardSpeed;
+			}
+			
 		}
 		else
 		{
@@ -173,7 +188,13 @@ public:
 	{
 		if (collidedLastFrame)
 		{
-			return;
+			switch (*tankCollider->GetCollider()->GetCollisionSide())
+			{
+				case Collider::CollisionSide::FrontLeft :
+				case Collider::CollisionSide::BackRight :
+					return;
+				default: break;
+			}
 		}
 		//avoid infinite loop with checkMovebackwards
 		if (checkMovebackwards && movingBackward)
@@ -213,7 +234,13 @@ public:
     {
 		if (collidedLastFrame)
 		{
-			return;
+			switch (*tankCollider->GetCollider()->GetCollisionSide())
+			{
+			case Collider::CollisionSide::FrontRight:
+			case Collider::CollisionSide::BackLeft:
+				return;
+			default: break;
+			}
 		}
 		if (checkMovebackwards && movingBackward)
 		{
@@ -282,11 +309,11 @@ public:
 
 	void HandleColliison(bool collided)
 	{
-		collidedLastFrame = collided;
-		if (collided)
+		if (collided && collided != collidedLastFrame)
 		{
 			currentSpeed = 0;
 		}	
+		collidedLastFrame = collided;
 	}
 
     

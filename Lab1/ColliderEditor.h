@@ -808,17 +808,11 @@ struct ColliderEditor
 				case Collider::CollisionSide::FrontRight:
 					std::cout << "Front Right\n";
 					break;
-				case Collider::CollisionSide::Front:
-					std::cout << "Front\n";
-					break;
 				case Collider::CollisionSide::BackLeft:
 					std::cout << "Back Left\n";
 					break;
 				case Collider::CollisionSide::BackRight:
 					std::cout << "Back Right\n";
-					break;
-				case Collider::CollisionSide::Back:
-					std::cout << "Back\n";
 					break;
 				case Collider::CollisionSide::None:
 					std::cout << "None\n";
