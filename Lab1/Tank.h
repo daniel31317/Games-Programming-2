@@ -89,24 +89,16 @@ public:
 		}
 		else if (movingForward)
 		{
-			if (*tankCollider->GetCollider()->GetCollisionSide() == Collider::CollisionSide::FrontRight || *tankCollider->GetCollider()->GetCollisionSide() == Collider::CollisionSide::FrontLeft)
-			{
-				currentSpeed = 0;
-			}
-			else
+			if (*tankCollider->GetCollider()->GetCollisionSide() != Collider::CollisionSide::FrontRight && *tankCollider->GetCollider()->GetCollisionSide() != Collider::CollisionSide::FrontLeft)
 			{
 				currentSpeed += acceleration * deltaTime;
 				if (currentSpeed > maxForwardSpeed)
 					currentSpeed = maxForwardSpeed;
-			}	
+			}
 		}
 		else if (movingBackward)
 		{
-			if (*tankCollider->GetCollider()->GetCollisionSide() == Collider::CollisionSide::BackRight || *tankCollider->GetCollider()->GetCollisionSide() == Collider::CollisionSide::BackLeft)
-			{
-				currentSpeed = 0;
-			}
-			else
+			if (*tankCollider->GetCollider()->GetCollisionSide() != Collider::CollisionSide::BackRight && *tankCollider->GetCollider()->GetCollisionSide() != Collider::CollisionSide::BackLeft)
 			{
 				currentSpeed -= acceleration * deltaTime;
 				if (currentSpeed < -maxBackwardSpeed)
@@ -311,7 +303,7 @@ public:
 	{
 		if (collided && collided != collidedLastFrame)
 		{
-			currentSpeed = 0;
+			currentSpeed = -currentSpeed / 8;
 		}	
 		collidedLastFrame = collided;
 	}
@@ -381,12 +373,12 @@ private:
 	bool movingForward = false;
 	bool movingBackward = false;
 
-	const float turnSpeedPenalty = 0.75f;
+	const float turnSpeedPenalty = 0.9f;
 	const float brakeForce = 5.f;
 
 
 	const float bodyRotSpeed = 1.0f;
-	const float turretRotSpeed = 1.0f;
+	const float turretRotSpeed = 1.5f;
 
 	const float maxReloadTime = 6.0f;
 	float currentReloadTime = 0.0f;

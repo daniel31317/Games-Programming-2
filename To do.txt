@@ -1,8 +1,5 @@
 -Sky background
 
--Add buildings
-	-Collisions
-
 -Tank fight
 
 -Smoke from barrel shot
@@ -18,3 +15,7 @@
 -Rotate tank functions combination
 
 -Possible shader change with gl_position
+
+-Controls in console
+
+-Comment
