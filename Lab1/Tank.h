@@ -118,7 +118,7 @@ public:
 			glm::vec3 forward = m_body.GetTransform()->GetForward();
 			m_body.GetTransform()->move(forward * currentSpeed * deltaTime);
 			tankCollider->GetTransform()->move(forward * currentSpeed * deltaTime);
-			tankCollider->GetCollider()->UpdateCollider(*tankCollider->GetTransform()->GetPosition(), *tankCollider->GetTransform()->GetPosition());
+			tankCollider->GetCollider()->UpdateCollider(*tankCollider->GetTransform()->GetPosition(), *tankCollider->GetTransform()->GetRotation());
 			m_turret.GetTransform()->move(forward * currentSpeed * deltaTime);
 			m_muzzleFlash.GetTransform()->move(forward * currentSpeed * deltaTime);
 			camera->move(forward * currentSpeed * deltaTime);
@@ -171,6 +171,10 @@ public:
 
 	void RotateBodyLeft(float deltaTime, bool checkMovebackwards, glm::vec3& tankColliderOffset)
 	{
+		if (collidedLastFrame)
+		{
+			return;
+		}
 		//avoid infinite loop with checkMovebackwards
 		if (checkMovebackwards && movingBackward)
 		{
@@ -207,7 +211,10 @@ public:
 	//like RotateBodyLeft but with opposite rotation
     void RotateBodyRight(float deltaTime, bool checkMovebackwards, glm::vec3& tankColliderOffset)
     {
-
+		if (collidedLastFrame)
+		{
+			return;
+		}
 		if (checkMovebackwards && movingBackward)
 		{
 			RotateBodyLeft(deltaTime, false, tankColliderOffset);
@@ -271,6 +278,17 @@ public:
 		camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
     }
 
+
+
+	void HandleColliison(bool collided)
+	{
+		collidedLastFrame = collided;
+		if (collided)
+		{
+			currentSpeed = 0;
+		}	
+	}
+
     
 	void Shoot()
 	{
@@ -320,6 +338,8 @@ private:
 	GameObject* tankCollider;
 
 	MuzzleFlash muzzleFlashData;
+
+	bool collidedLastFrame;
 
 	Camera* camera;
 

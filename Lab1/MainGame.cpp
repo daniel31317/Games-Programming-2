@@ -320,9 +320,10 @@ void MainGame::update()
 	if (colliderEditorActive)
 		m_colliderEditor->UpdateEditor();
 
+	m_tank->HandleColliison(m_colliderEditor->CollisionWithTank(*m_tank));
+
 	m_tank->Update(deltaTime);
 	
-	m_colliderEditor->CollisionWithTank(*m_tank);
 }
 
 

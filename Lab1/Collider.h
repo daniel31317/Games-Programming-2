@@ -8,6 +8,20 @@
 struct Collider
 {
 	public:
+
+		enum class CollisionSide
+		{
+			None,
+			Front,
+			Back,
+			Left,
+			Right,
+			FrontLeft,
+			FrontRight,
+			BackLeft,
+			BackRight
+		};
+
 		Collider() : position(0.0f), rotation(0.0f), scale(1.0f) {}
 
 
@@ -74,15 +88,43 @@ struct Collider
 
 				// Gap found on this axis = no collision
 				if (dist > projA + projB)
-					return false;
+				{
+					lastCollisionSide = CollisionSide::None;
+					return false;					
+				}
+					
 			}
 
-			// No separating axis found = collision
+			float xDot = glm::dot(delta, axes[0]); // + = right,  - = left
+			float zDot = glm::dot(delta, axes[2]); // + = front,  - = back
+
+			glm::vec2 localDir = glm::normalize(glm::vec2(xDot, zDot));
+
+
+			bool right = localDir.x > 0.4f;
+			bool left = localDir.x < -0.4f;
+			bool front = localDir.y > 0.4f;
+			bool back = localDir.y < -0.4f;
+
+			if (front && right) lastCollisionSide = CollisionSide::FrontRight;
+			else if (front && left)  lastCollisionSide = CollisionSide::FrontLeft;
+			else if (back && right) lastCollisionSide = CollisionSide::BackRight;
+			else if (back && left)  lastCollisionSide = CollisionSide::BackLeft;
+			else if (front)          lastCollisionSide = CollisionSide::Front;
+			else if (back)           lastCollisionSide = CollisionSide::Back;
+			else if (right)          lastCollisionSide = CollisionSide::Right;
+			else                     lastCollisionSide = CollisionSide::Left;
+
+
+
+
 			return true;
 		}
 
 
 		const glm::vec3* GetAxes() const { return axes; }
+
+		const CollisionSide* GetCollisionSide() { return &lastCollisionSide; }
 
 		void SetScale(const glm::vec3& scale) { this->scale = scale; halfExtents = scale * 0.5f; }
 
@@ -93,6 +135,7 @@ struct Collider
 		glm::vec3 scale;
 		glm::vec3 halfExtents;
 		glm::vec3 axes[3];
+		CollisionSide lastCollisionSide;
 
 
 };

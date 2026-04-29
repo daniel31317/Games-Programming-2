@@ -11,6 +11,7 @@
 #include "ShaderManager.h"
 #include "TextureManager.h"
 #include "Camera.h"
+#include "Collider.h"
 
 struct ColliderEditor
 {
@@ -788,11 +789,41 @@ struct ColliderEditor
 			{
 				if (m_tankBodyCollider.GetCollider()->IsCollidingWith(m_colliders[i]->GetCollider()))
 				{
+					TempWrite();
 					return true;
 				}
 			}
-
+			TempWrite();
 			return false;
+		}
+
+
+		void TempWrite()
+		{
+			switch (*m_tankBodyCollider.GetCollider()->GetCollisionSide())
+			{
+				case Collider::CollisionSide::FrontLeft:
+					std::cout << "Front Left\n";
+					break;
+				case Collider::CollisionSide::FrontRight:
+					std::cout << "Front Right\n";
+					break;
+				case Collider::CollisionSide::Front:
+					std::cout << "Front\n";
+					break;
+				case Collider::CollisionSide::BackLeft:
+					std::cout << "Back Left\n";
+					break;
+				case Collider::CollisionSide::BackRight:
+					std::cout << "Back Right\n";
+					break;
+				case Collider::CollisionSide::Back:
+					std::cout << "Back\n";
+					break;
+				case Collider::CollisionSide::None:
+					std::cout << "None\n";
+					break;
+			}
 		}
 
 		GameObject* GetTankCollider() { return &m_tankBodyCollider; }
