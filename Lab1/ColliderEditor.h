@@ -11,6 +11,7 @@
 #include "ShaderManager.h"
 #include "TextureManager.h"
 #include "Camera.h"
+#include "Tank.h"
 
 struct ColliderEditor
 {
@@ -41,7 +42,7 @@ struct ColliderEditor
 			std::cout << "Collider Editor\nNew Collider - N\nDelete Current Collider - Backspace\nPosition - ,\n";
 			std::cout << "Rotation - .\nScale - / \nAxis - X Y Z\n";
 			std::cout << "Type Change Stat Value - V\nChange Stat + (Increase)-(Decrease)\nMultiply Change State By 10 - 1 or ! (NOT NUMPAD)\n";
-			std::cout << "Change Collider Index Up - X\nChange Collider Index Down - C\n";	
+			std::cout << "Change Collider Index Up - E\nChange Collider Index Down - Q\n";	
 			std::cout << "Hide All Meshes - H\n";
 			std::cout << "Force Save - P\n";
 			std::cout << "Last Action : \n";
@@ -52,10 +53,60 @@ struct ColliderEditor
 		}
 
 
-		void UpdateEditor()
+		void HandleInputForCreatingAndDeletingColliders(const Uint8* state)
 		{
-			const Uint8* state = SDL_GetKeyboardState(NULL);
+			//new collider
+			if (state[SDL_SCANCODE_N])
+			{
+				if (!nDown)
+				{
+					nDown = true;
+					m_colliders.push_back(std::make_unique<GameObject>());
+					m_colliders.back()->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
+					m_colliders.back()->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+					m_colliders.back()->GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
+					m_colliders.back()->SetShader(*shaderManager->GetShader(RIM_LIGHT));
+					m_colliders.back()->SetTexture(*textureManager->GetTexture(NONE));
+					m_colliders.back()->SetMesh(*meshManager->GetMesh(CUBE));
+					currentColliderIndex = m_colliders.size() - 1;
+					refreshEditorOutput();
+					std::cout << "New Collider Created\n";
+				}
 
+			}
+			else
+			{
+				nDown = false;
+			}
+
+			//delete collider
+			if (state[SDL_SCANCODE_BACKSPACE])
+			{
+				if (!backspaceDown)
+				{
+					if (m_colliders.size() > 0)
+					{
+						backspaceDown = true;
+						m_colliders.erase(m_colliders.begin() + currentColliderIndex);
+
+						if (currentColliderIndex > 0)
+							currentColliderIndex--;
+
+						refreshEditorOutput();
+						std::cout << "Collider Destoryed\n";
+					}
+
+				}
+
+			}
+			else
+			{
+				backspaceDown = false;
+			}
+		}
+
+		void HandleInputForEditorType(const Uint8* state)
+		{
 			//transform type
 			if (state[SDL_SCANCODE_COMMA])
 			{
@@ -65,9 +116,9 @@ struct ColliderEditor
 					commaDown = true;
 
 					UpdateEditorStateText();
-					
+
 				}
-				
+
 			}
 			else
 			{
@@ -77,14 +128,14 @@ struct ColliderEditor
 
 			if (state[SDL_SCANCODE_PERIOD])
 			{
-				if(!periodDown)
+				if (!periodDown)
 				{
 					currentEditorState = EditorState::ROTATION;
 					periodDown = true;
 					UpdateEditorStateText();
-					
+
 				}
-				
+
 			}
 			else
 			{
@@ -94,21 +145,22 @@ struct ColliderEditor
 
 			if (state[SDL_SCANCODE_SLASH])
 			{
-				if(!slashDown)
+				if (!slashDown)
 				{
 					currentEditorState = EditorState::SCALE;
 					slashDown = true;
 					UpdateEditorStateText();
 				}
-				
+
 			}
 			else
 			{
 				slashDown = false;
 			}
+		}
 
-
-			//axis
+		void HandleInputForAxisType(const Uint8* state)
+		{
 			if (state[SDL_SCANCODE_X])
 			{
 				if (!xDown)
@@ -116,9 +168,9 @@ struct ColliderEditor
 					currentAxisState = AxisState::X;
 					xDown = true;
 					UpdateEditorStateText();
-					
+
 				}
-				
+
 			}
 			else
 			{
@@ -128,13 +180,13 @@ struct ColliderEditor
 
 			if (state[SDL_SCANCODE_Y])
 			{
-				if(!yDown)
+				if (!yDown)
 				{
 					currentAxisState = AxisState::Y;
 					yDown = true;
-					UpdateEditorStateText();			
-				}	
-				
+					UpdateEditorStateText();
+				}
+
 			}
 			else
 			{
@@ -149,18 +201,19 @@ struct ColliderEditor
 					currentAxisState = AxisState::Z;
 					zDown = true;
 					UpdateEditorStateText();
-					
+
 				}
-				
+
 			}
 			else
 			{
 				zDown = false;
 			}
+		}
 
-
-
-			if(state[SDL_SCANCODE_V])
+		void HandleInputForTypingStatChange(const Uint8* state)
+		{
+			if (state[SDL_SCANCODE_V])
 			{
 				if (!vDown)
 				{
@@ -172,18 +225,18 @@ struct ColliderEditor
 						float currentValue = 0.0f;
 						switch (currentEditorState)
 						{
-							case EditorState::POSITION:
-								statType = "Position";
-								currentValue = changeAmountPos;
-								break;
-							case EditorState::ROTATION:
-								statType = "Rotation";
-								currentValue = changeAmountRot;
-								break;
-							case EditorState::SCALE:
-								statType = "Scale";
-								currentValue = changeAmountScale;
-								break;
+						case EditorState::POSITION:
+							statType = "Position";
+							currentValue = changeAmountPos;
+							break;
+						case EditorState::ROTATION:
+							statType = "Rotation";
+							currentValue = changeAmountRot;
+							break;
+						case EditorState::SCALE:
+							statType = "Scale";
+							currentValue = changeAmountScale;
+							break;
 
 						}
 						std::cout << "Current Change Stat Value For " + statType + " : " + std::to_string(currentValue);
@@ -220,151 +273,16 @@ struct ColliderEditor
 						}
 					}
 				}
-								
+
 			}
 			else
 			{
 				vDown = false;
 			}
+		}
 
-
-			//force save
-			if(state[SDL_SCANCODE_P])
-			{
-				if(!pDown)
-				{
-					pDown = true;
-					refreshEditorOutput();
-					saveCollidersToBinary("..\\res\\colliders.bin");
-					std::cout << "Colliders Saved\n";
-				}
-				
-			}
-			else
-			{
-				pDown = false;
-			}
-
-
-
-
-
-			//new collider
-			if(state[SDL_SCANCODE_N])
-			{
-				if(!nDown)
-				{
-					nDown = true;
-					m_colliders.push_back(std::make_unique<GameObject>());
-					m_colliders.back()->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
-					m_colliders.back()->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
-					m_colliders.back()->GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
-					m_colliders.back()->SetShader(*shaderManager->GetShader(RIM_LIGHT));
-					m_colliders.back()->SetTexture(*textureManager->GetTexture(NONE));
-					m_colliders.back()->SetMesh(*meshManager->GetMesh(CUBE));
-					currentColliderIndex = m_colliders.size() - 1;
-					refreshEditorOutput();
-					std::cout << "New Collider Created\n";
-				}
-				
-			}
-			else
-			{
-				nDown = false;
-			}
-
-			//delete collider
-			if(state[SDL_SCANCODE_BACKSPACE])
-			{
-				if(!backspaceDown)
-				{
-					if(m_colliders.size() > 0)
-					{
-						backspaceDown = true;
-						m_colliders.erase(m_colliders.begin() + currentColliderIndex);
-
-						if(currentColliderIndex > 0)
-							currentColliderIndex--;
-
-						refreshEditorOutput();
-						std::cout << "Collider Destoryed\n";
-					}
-					
-				}
-				
-			}
-			else
-			{
-				backspaceDown = false;
-			}
-
-
-
-			//hide meshes
-			if(state[SDL_SCANCODE_H])
-			{
-				if(!hDown)
-				{
-					hDown = true;
-					hideMeshes = !hideMeshes;
-					refreshEditorOutput();
-					std::cout << "Hide Meshes : " + std::string(hideMeshes ? "True" : "False") + "\n";
-				}
-				
-			}
-			else
-			{
-				hDown = false;
-			}
-
-
-			//change index
-			if(state[SDL_SCANCODE_X])
-			{
-				if(!upArrowDown)
-				{
-					upArrowDown = true;
-					if (currentColliderIndex < m_colliders.size() - 1)
-					{
-						currentColliderIndex++;
-					}
-					else
-					{
-						currentColliderIndex = 0;
-					}
-				}
-				
-			}
-			else
-			{
-				upArrowDown = false;
-			}
-
-
-			if (state[SDL_SCANCODE_C])
-			{
-				if (!downArrowDown)
-				{
-					downArrowDown = true;
-					if (currentColliderIndex > 0)
-					{
-						currentColliderIndex--;
-					}
-					else
-					{
-						currentColliderIndex = m_colliders.size() - 1;
-					}
-				}
-
-			}
-			else
-			{
-				downArrowDown = false;
-			}
-
-
-
-
+		void HandleInputForStatChanging(const Uint8* state)
+		{
 			float factor = 1.0f;
 
 			if (state[SDL_SCANCODE_1])
@@ -374,7 +292,7 @@ struct ColliderEditor
 
 
 			//add stuff
-			if(state[SDL_SCANCODE_EQUALS])
+			if (state[SDL_SCANCODE_EQUALS])
 			{
 				if (currentColliderIndex >= m_colliders.size() || m_colliders[currentColliderIndex] == nullptr)
 				{
@@ -444,18 +362,18 @@ struct ColliderEditor
 						break;
 					}
 				}
-			}			
+			}
 			else
 			{
 				plusDown = false;
 			}
 
-			
+
 
 
 
 			//minus stuff
-			if(state[SDL_SCANCODE_MINUS])
+			if (state[SDL_SCANCODE_MINUS])
 			{
 				if (currentColliderIndex >= m_colliders.size() || m_colliders[currentColliderIndex] == nullptr)
 				{
@@ -524,15 +442,129 @@ struct ColliderEditor
 					default:
 						break;
 					}
-				}		
+				}
 			}
 			else
 			{
 				minusDown = false;
 			}
+		}
 
+		void HandleInputForChangingIndex(const Uint8* state)
+		{
+
+			//change index
+			if (state[SDL_SCANCODE_E])
+			{
+				if (!eDown)
+				{
+					eDown = true;
+					if (currentColliderIndex < m_colliders.size() - 1)
+					{
+						currentColliderIndex++;
+					}
+					else
+					{
+						currentColliderIndex = 0;
+					}
+				}
+
+			}
+			else
+			{
+				eDown = false;
+			}
+
+
+			if (state[SDL_SCANCODE_Q])
+			{
+				if (!qDown)
+				{
+					qDown = true;
+					if (currentColliderIndex > 0)
+					{
+						currentColliderIndex--;
+					}
+					else
+					{
+						currentColliderIndex = m_colliders.size() - 1;
+					}
+				}
+
+			}
+			else
+			{
+				qDown = false;
+			}
+		}
+
+		void HandleInputForHidingMesh(const Uint8* state)
+		{
+			//hide meshes
+			if (state[SDL_SCANCODE_H])
+			{
+				if (!hDown)
+				{
+					hDown = true;
+					hideMeshes = !hideMeshes;
+					refreshEditorOutput();
+					std::cout << "Hide Meshes : " + std::string(hideMeshes ? "True" : "False") + "\n";
+				}
+
+			}
+			else
+			{
+				hDown = false;
+			}
+		}
+
+		void HandleInputForForceSaving(const Uint8* state)
+		{
+			//force save
+			if (state[SDL_SCANCODE_P])
+			{
+				if (!pDown)
+				{
+					pDown = true;
+					refreshEditorOutput();
+					saveCollidersToBinary("..\\res\\colliders.bin");
+					std::cout << "Colliders Saved\n";
+				}
+
+			}
+			else
+			{
+				pDown = false;
+			}
+		}
+
+		
+
+
+		void UpdateEditor()
+		{
+			const Uint8* state = SDL_GetKeyboardState(NULL);
+
+			HandleInputForCreatingAndDeletingColliders(state);
+
+			HandleInputForEditorType(state);
+
+			HandleInputForAxisType(state);
+			
+			HandleInputForTypingStatChange(state);	
+
+			HandleInputForStatChanging(state);
+			
+			HandleInputForChangingIndex(state);
+
+			HandleInputForHidingMesh(state);
+
+			HandleInputForForceSaving(state);
 
 		}
+
+
+
 
 
 		void refreshEditorOutput() {
@@ -719,13 +751,13 @@ struct ColliderEditor
 		bool nDown = false;
 		bool backspaceDown = false;
 		bool vDown = false;
-		bool upArrowDown = false;
-		bool downArrowDown = false;
+		bool eDown = false;
+		bool qDown = false;
 		bool hDown = false;
 		bool oneDown = false;
 		bool pDown = false;
 
-
+		
 
 		bool hideMeshes = false;
 
