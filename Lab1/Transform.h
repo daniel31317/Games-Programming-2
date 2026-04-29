@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include "Collider.h"
 
 
 struct Transform

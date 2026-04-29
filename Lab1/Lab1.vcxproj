@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderEditor.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Display.h" />

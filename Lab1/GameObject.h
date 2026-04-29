@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "Collider.h"
 #include <memory>
 
 struct GameObject
@@ -13,6 +14,7 @@ public:
 	GameObject(const Transform& transform)
 	{
 		this->m_transform = Transform(transform);
+		this->m_collider.UpdateCollider(*transform.GetPosition(), *transform.GetRotation(), *transform.GetScale());
 	}
 
 	GameObject() : m_transform(Transform()) {}
@@ -23,6 +25,7 @@ public:
 
 
 	Transform* GetTransform() { return &m_transform; }
+	Collider* GetCollider() { return &m_collider; }
 	Shader* GetShader() { return &m_shader; }
 	Texture* GetTexture() { return &m_texture; }
 	Mesh* GetMesh() { return &m_mesh; }
@@ -51,5 +54,5 @@ private:
 	Shader m_shader;
 	Texture m_texture;
 	Mesh m_mesh;
-    
+	Collider m_collider;
 };

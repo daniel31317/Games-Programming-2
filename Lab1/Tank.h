@@ -19,30 +19,7 @@ public:
 		bool IsAlive() { return lifetime > 0; }
 	};
 
-	float currentSpeed = 0.0f;
 
-	float acceleration = 1.5f;
-	float deceleration = 2.5f;
-
-	float maxForwardSpeed = 7.5f;
-	float maxBackwardSpeed = 3.0f;
-
-	bool movingForward = false;	
-	bool movingBackward = false;	
-
-	float turnSpeedPenalty = 0.75f;
-	float brakeForce = 5.f;
-
-
-	float bodyRotSpeed = 1.0f;
-	float turretRotSpeed = 1.0f;
-
-	float maxReloadTime = 6.0f;
-	float currentReloadTime = 0.0f;
-
-	glm::vec3 cameraOffset = glm::vec3();
-	glm::vec3 turretOffset = glm::vec3();
-	float muzzleFlashOffset = 0.0;
 
 	Tank()
 	{
@@ -163,6 +140,11 @@ public:
 		body.GetTransform()->SetScale(scale);
 		turret.GetTransform()->SetScale(scale);
     }
+
+
+
+	GameObject* GetBody() { return &body; }
+	GameObject* GetTurret() { return &turret; }
 
     void MoveForward(float deltaTime)
     {
@@ -316,4 +298,29 @@ private:
 	MuzzleFlash muzzleFlashData;
 
 	Camera* camera;
+
+	float currentSpeed = 0.0f;
+
+	float acceleration = 1.5f;
+	float deceleration = 2.5f;
+
+	float maxForwardSpeed = 7.5f;
+	float maxBackwardSpeed = 3.0f;
+
+	bool movingForward = false;
+	bool movingBackward = false;
+
+	float turnSpeedPenalty = 0.75f;
+	float brakeForce = 5.f;
+
+
+	float bodyRotSpeed = 1.0f;
+	float turretRotSpeed = 1.0f;
+
+	float maxReloadTime = 6.0f;
+	float currentReloadTime = 0.0f;
+
+	glm::vec3 cameraOffset = glm::vec3();
+	glm::vec3 turretOffset = glm::vec3();
+	float muzzleFlashOffset = 0.0;
 };
