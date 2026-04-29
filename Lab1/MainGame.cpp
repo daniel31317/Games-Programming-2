@@ -54,7 +54,9 @@ void MainGame::initGameObjects()
 
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
 
-	m_colliderEditor = std::make_unique<ColliderEditor>(&m_shaderManager, &m_textureManager, &m_meshManager);
+	m_colliderEditor = std::make_unique<ColliderEditor>(&m_shaderManager, &m_textureManager, &m_meshManager, m_tank->GetBody());
+
+	m_tank->SetTankCollider(m_colliderEditor->GetTankCollider());
 }
 
 void MainGame::gameLoop()
@@ -276,11 +278,11 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_A])
 		{
-			m_tank->RotateBodyLeft(deltaTime, true);
+			m_tank->RotateBodyLeft(deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
 		}
 		if (state[SDL_SCANCODE_D])
 		{
-			m_tank->RotateBodyRight(deltaTime, true);
+			m_tank->RotateBodyRight(deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
 		}
 		if (state[SDL_SCANCODE_LEFT])
 		{
@@ -295,6 +297,20 @@ void MainGame::processInput()
 			m_tank->Shoot();
 		}
 	}
+
+	if (state[SDL_SCANCODE_H])
+	{
+		if (!hDown)
+		{
+			hDown = true;
+			collidersShowing =! collidersShowing;
+		}
+		
+	}
+	else
+	{
+		hDown = false;
+	}
 	
 }
 
@@ -304,11 +320,9 @@ void MainGame::update()
 	if (colliderEditorActive)
 		m_colliderEditor->UpdateEditor();
 
-	m_colliderEditor->CollisionWithTank(*m_tank);
-
 	m_tank->Update(deltaTime);
 	
-
+	m_colliderEditor->CollisionWithTank(*m_tank);
 }
 
 
@@ -330,7 +344,7 @@ void MainGame::drawGame()
 		m_tank->Draw();
 	}
 		
-	if (colliderEditorActive)
+	if (colliderEditorActive || collidersShowing)
 		m_colliderEditor->DrawEditor(m_mainCamera);
 
 

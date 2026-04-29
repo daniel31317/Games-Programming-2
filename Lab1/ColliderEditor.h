@@ -11,7 +11,6 @@
 #include "ShaderManager.h"
 #include "TextureManager.h"
 #include "Camera.h"
-#include "Tank.h"
 
 struct ColliderEditor
 {
@@ -27,12 +26,14 @@ struct ColliderEditor
 		}
 
 
-		ColliderEditor(ShaderManager* shaderManager, TextureManager* textureManager, MeshManager* meshManager)
+		ColliderEditor(ShaderManager* shaderManager, TextureManager* textureManager, MeshManager* meshManager, GameObject* tankBody)
 		{
 			this->shaderManager = shaderManager;
 			this->textureManager = textureManager;
 			this->meshManager = meshManager;
+			this->tankBody = tankBody;
 
+			CreateTankBodyCollider();
 
 			loadCollidersFromBinary("..\\res\\colliders.bin");
 		}
@@ -65,6 +66,8 @@ struct ColliderEditor
 					m_colliders.back()->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
 					m_colliders.back()->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 					m_colliders.back()->GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
+					m_colliders.back()->GetCollider()->SetScale(glm::vec3(1.0, 1.0, 1.0));
+					m_colliders.back()->GetCollider()->UpdateCollider(*m_colliders.back()->GetTransform()->GetPosition(), *m_colliders.back()->GetTransform()->GetRotation());
 					m_colliders.back()->SetShader(*shaderManager->GetShader(RIM_LIGHT));
 					m_colliders.back()->SetTexture(*textureManager->GetTexture(NONE));
 					m_colliders.back()->SetMesh(*meshManager->GetMesh(CUBE));
@@ -309,12 +312,15 @@ struct ColliderEditor
 						{
 						case ColliderEditor::X:
 							m_colliders[currentColliderIndex]->GetTransform()->SetPosition(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition() + glm::vec3(changeAmountPos * factor, 0.0f, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Y:
 							m_colliders[currentColliderIndex]->GetTransform()->SetPosition(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition() + glm::vec3(0.0f, changeAmountPos * factor, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Z:
 							m_colliders[currentColliderIndex]->GetTransform()->SetPosition(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition() + glm::vec3(0.0f, 0.0f, changeAmountPos * factor));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						}
 
@@ -328,12 +334,15 @@ struct ColliderEditor
 						{
 						case ColliderEditor::X:
 							m_colliders[currentColliderIndex]->GetTransform()->SetRotation(*m_colliders[currentColliderIndex]->GetTransform()->GetRotation() + glm::vec3(glm::radians(changeAmountRot * factor), 0.0f, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Y:
 							m_colliders[currentColliderIndex]->GetTransform()->SetRotation(*m_colliders[currentColliderIndex]->GetTransform()->GetRotation() + glm::vec3(0.0f, glm::radians(changeAmountRot * factor), 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Z:
 							m_colliders[currentColliderIndex]->GetTransform()->SetRotation(*m_colliders[currentColliderIndex]->GetTransform()->GetRotation() + glm::vec3(0.0f, 0.0f, glm::radians(changeAmountRot * factor)));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						}
 
@@ -347,12 +356,18 @@ struct ColliderEditor
 						{
 						case ColliderEditor::X:
 							m_colliders[currentColliderIndex]->GetTransform()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() + glm::vec3(changeAmountScale * factor, 0.0f, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() + glm::vec3(changeAmountScale * factor, 0.0f, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Y:
 							m_colliders[currentColliderIndex]->GetTransform()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() + glm::vec3(0.0f, changeAmountScale * factor, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() + glm::vec3(0.0f, changeAmountScale * factor, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Z:
 							m_colliders[currentColliderIndex]->GetTransform()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() + glm::vec3(0.0f, 0.0f, changeAmountScale * factor));
+							m_colliders[currentColliderIndex]->GetCollider()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() + glm::vec3(0.0f, 0.0f, changeAmountScale * factor));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						}
 
@@ -390,12 +405,15 @@ struct ColliderEditor
 						{
 						case ColliderEditor::X:
 							m_colliders[currentColliderIndex]->GetTransform()->SetPosition(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition() - glm::vec3(changeAmountPos * factor, 0.0f, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Y:
 							m_colliders[currentColliderIndex]->GetTransform()->SetPosition(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition() - glm::vec3(0.0f, changeAmountPos * factor, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Z:
 							m_colliders[currentColliderIndex]->GetTransform()->SetPosition(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition() - glm::vec3(0.0f, 0.0f, changeAmountPos * factor));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						}
 
@@ -409,12 +427,15 @@ struct ColliderEditor
 						{
 						case ColliderEditor::X:
 							m_colliders[currentColliderIndex]->GetTransform()->SetRotation(*m_colliders[currentColliderIndex]->GetTransform()->GetRotation() - glm::vec3(glm::radians(changeAmountRot * factor), 0.0f, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Y:
 							m_colliders[currentColliderIndex]->GetTransform()->SetRotation(*m_colliders[currentColliderIndex]->GetTransform()->GetRotation() - glm::vec3(0.0f, glm::radians(changeAmountRot * factor), 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Z:
 							m_colliders[currentColliderIndex]->GetTransform()->SetRotation(*m_colliders[currentColliderIndex]->GetTransform()->GetRotation() - glm::vec3(0.0f, 0.0f, glm::radians(changeAmountRot * factor)));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						}
 
@@ -428,12 +449,18 @@ struct ColliderEditor
 						{
 						case ColliderEditor::X:
 							m_colliders[currentColliderIndex]->GetTransform()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() - glm::vec3(changeAmountScale * factor, 0.0f, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() - glm::vec3(changeAmountScale * factor, 0.0f, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Y:
 							m_colliders[currentColliderIndex]->GetTransform()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() - glm::vec3(0.0f, changeAmountScale * factor, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() - glm::vec3(0.0f, changeAmountScale * factor, 0.0f));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						case ColliderEditor::Z:
 							m_colliders[currentColliderIndex]->GetTransform()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() - glm::vec3(0.0f, 0.0f, changeAmountScale * factor));
+							m_colliders[currentColliderIndex]->GetCollider()->SetScale(*m_colliders[currentColliderIndex]->GetTransform()->GetScale() - glm::vec3(0.0f, 0.0f, changeAmountScale * factor));
+							m_colliders[currentColliderIndex]->GetCollider()->UpdateCollider(*m_colliders[currentColliderIndex]->GetTransform()->GetPosition(), *m_colliders[currentColliderIndex]->GetTransform()->GetRotation());
 							break;
 						}
 
@@ -603,6 +630,15 @@ struct ColliderEditor
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
+
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glLineWidth(2.0f);
+			m_tankBodyCollider.GetShader()->Bind();
+			m_tankBodyCollider.GetShader()->Update(*m_tankBodyCollider.GetTransform(), mainCamera, false);
+			m_tankBodyCollider.GetTexture()->Bind(0);
+			m_tankBodyCollider.GetMesh()->draw();
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 		}
 
 
@@ -681,11 +717,28 @@ struct ColliderEditor
 				m_colliders[i]->GetTransform()->SetPosition(positions[i]);
 				m_colliders[i]->GetTransform()->SetRotation(rotations[i]);
 				m_colliders[i]->GetTransform()->SetScale(scales[i]);
+				m_colliders[i]->GetCollider()->SetScale(*m_colliders[i]->GetTransform()->GetScale());
+				m_colliders[i]->GetCollider()->UpdateCollider(*m_colliders[i]->GetTransform()->GetPosition(), *m_colliders[i]->GetTransform()->GetRotation());
 				m_colliders[i]->SetShader(*shaderManager->GetShader(RIM_LIGHT));
 				m_colliders[i]->SetTexture(*textureManager->GetTexture(NONE));
 				m_colliders[i]->SetMesh(*meshManager->GetMesh(CUBE));
 			}
 
+		}
+
+
+		void CreateTankBodyCollider()
+		{
+			m_tankBodyCollider = GameObject();
+			m_tankBodyColliderOffset = glm::vec3(0.0, -0.15, -0.1);
+			m_tankBodyCollider.GetTransform()->SetPosition(*tankBody->GetTransform()->GetPosition() + m_tankBodyColliderOffset);
+			m_tankBodyCollider.GetTransform()->SetRotation(glm::vec3(0.0));
+			m_tankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 0.3, 1.7));
+			m_tankBodyCollider.GetCollider()->SetScale(*m_tankBodyCollider.GetTransform()->GetScale());
+			m_tankBodyCollider.GetCollider()->UpdateCollider(*m_tankBodyCollider.GetTransform()->GetPosition(), *m_tankBodyCollider.GetTransform()->GetRotation());
+			m_tankBodyCollider.SetShader(*shaderManager->GetShader(RIM_LIGHT));
+			m_tankBodyCollider.SetTexture(*textureManager->GetTexture(NONE));
+			m_tankBodyCollider.SetMesh(*meshManager->GetMesh(CUBE));
 		}
 
 
@@ -729,10 +782,21 @@ struct ColliderEditor
 
 
 
-		void CollisionWithTank(Tank& tank)
+		bool CollisionWithTank(Tank& tank)
 		{
-			
+			for (int i = 0; i < m_colliders.size(); i++)
+			{
+				if (m_tankBodyCollider.GetCollider()->IsCollidingWith(m_colliders[i]->GetCollider()))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
+
+		GameObject* GetTankCollider() { return &m_tankBodyCollider; }
+		glm::vec3* GetTankColliderOffset() { return &m_tankBodyColliderOffset; }
 
 	private:
 
@@ -777,4 +841,8 @@ struct ColliderEditor
 		ShaderManager* shaderManager;
 		TextureManager* textureManager;
 		MeshManager* meshManager;
+		GameObject* tankBody;
+
+		GameObject m_tankBodyCollider;
+		glm::vec3 m_tankBodyColliderOffset;
 };

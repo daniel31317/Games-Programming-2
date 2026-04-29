@@ -66,6 +66,9 @@ private:
 
 	bool freeCamera = false;	
 	bool colliderEditorActive = false;	
+	bool collidersShowing = false;	
 	bool updateGameTitle = false;	
+
+	bool hDown = false;
 
 };

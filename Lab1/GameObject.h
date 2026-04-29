@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "Collider.h"
 #include <memory>
 
 struct GameObject
@@ -21,6 +22,7 @@ public:
 
 
 	Transform* GetTransform() { return &m_transform; }
+	Collider* GetCollider() { return &m_collider; }
 	Shader* GetShader() { return &m_shader; }
 	Texture* GetTexture() { return &m_texture; }
 	Mesh* GetMesh() { return &m_mesh; }
@@ -46,6 +48,7 @@ public:
 private:
 
 	Transform m_transform;
+	Collider m_collider;
 	Shader m_shader;
 	Texture m_texture;
 	Mesh m_mesh;

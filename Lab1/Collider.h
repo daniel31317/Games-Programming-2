@@ -11,15 +11,14 @@ struct Collider
 		Collider() : position(0.0f), rotation(0.0f), scale(1.0f) {}
 
 
-		void UpdateCollider(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+		void UpdateCollider(glm::vec3 position, glm::vec3 rotation)
 		{
 			this->position = position;
-			this->halfExtents = scale * 0.5f;
 
 			glm::mat4 rotMatrix = glm::mat4(1.0f);
-			rotMatrix = glm::rotate(rotMatrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-			rotMatrix = glm::rotate(rotMatrix, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-			rotMatrix = glm::rotate(rotMatrix, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+			rotMatrix = glm::rotate(rotMatrix, rotation.x, glm::vec3(1, 0, 0));
+			rotMatrix = glm::rotate(rotMatrix, rotation.y, glm::vec3(0, 1, 0));
+			rotMatrix = glm::rotate(rotMatrix, rotation.z, glm::vec3(0, 0, 1));
 
 			axes[0] = glm::vec3(rotMatrix[0]); // right
 			axes[1] = glm::vec3(rotMatrix[1]); // up
@@ -84,6 +83,8 @@ struct Collider
 
 
 		const glm::vec3* GetAxes() const { return axes; }
+
+		void SetScale(const glm::vec3& scale) { this->scale = scale; halfExtents = scale * 0.5f; }
 
 
 	private:
