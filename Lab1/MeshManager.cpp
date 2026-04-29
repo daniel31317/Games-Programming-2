@@ -54,42 +54,36 @@ void MeshManager::LoadMeshes()
 	m_meshList[CUBE] = std::make_unique<Mesh>();
 
     Vertex vertices1[] = {
-        // Positions              // UVs       // Normals (facing out)
-        // Front Face (z = 1)
-        Vertex(glm::vec3(-1, -1,  1), glm::vec2(0, 0), glm::vec3(0, 0, 1)), // 0
-        Vertex(glm::vec3(1, -1,  1), glm::vec2(1, 0), glm::vec3(0, 0, 1)), // 1
-        Vertex(glm::vec3(1,  1,  1), glm::vec2(1, 1), glm::vec3(0, 0, 1)), // 2
-        Vertex(glm::vec3(-1,  1,  1), glm::vec2(0, 1), glm::vec3(0, 0, 1)), // 3
-
-        // Back Face (z = -1)
-        Vertex(glm::vec3(1, -1, -1), glm::vec2(0, 0), glm::vec3(0, 0, -1)), // 4
-        Vertex(glm::vec3(-1, -1, -1), glm::vec2(1, 0), glm::vec3(0, 0, -1)), // 5
-        Vertex(glm::vec3(-1,  1, -1), glm::vec2(1, 1), glm::vec3(0, 0, -1)), // 6
-        Vertex(glm::vec3(1,  1, -1), glm::vec2(0, 1), glm::vec3(0, 0, -1)), // 7
-
-        // Left Face (x = -1)
-        Vertex(glm::vec3(-1, -1, -1), glm::vec2(0, 0), glm::vec3(-1, 0, 0)), // 8
-        Vertex(glm::vec3(-1, -1,  1), glm::vec2(1, 0), glm::vec3(-1, 0, 0)), // 9
-        Vertex(glm::vec3(-1,  1,  1), glm::vec2(1, 1), glm::vec3(-1, 0, 0)), // 10
-        Vertex(glm::vec3(-1,  1, -1), glm::vec2(0, 1), glm::vec3(-1, 0, 0)), // 11
-
-        // Right Face (x = 1)
-        Vertex(glm::vec3(1, -1,  1), glm::vec2(0, 0), glm::vec3(1, 0, 0)),  // 12
-        Vertex(glm::vec3(1, -1, -1), glm::vec2(1, 0), glm::vec3(1, 0, 0)),  // 13
-        Vertex(glm::vec3(1,  1, -1), glm::vec2(1, 1), glm::vec3(1, 0, 0)),  // 14
-        Vertex(glm::vec3(1,  1,  1), glm::vec2(0, 1), glm::vec3(1, 0, 0)),  // 15
-
-        // Top Face (y = 1)
-        Vertex(glm::vec3(-1,  1,  1), glm::vec2(0, 0), glm::vec3(0, 1, 0)),  // 16
-        Vertex(glm::vec3(1,  1,  1), glm::vec2(1, 0), glm::vec3(0, 1, 0)),  // 17
-        Vertex(glm::vec3(1,  1, -1), glm::vec2(1, 1), glm::vec3(0, 1, 0)),  // 18
-        Vertex(glm::vec3(-1,  1, -1), glm::vec2(0, 1), glm::vec3(0, 1, 0)),  // 19
-
-        // Bottom Face (y = -1)
-        Vertex(glm::vec3(-1, -1, -1), glm::vec2(0, 0), glm::vec3(0, -1, 0)), // 20
-        Vertex(glm::vec3(1, -1, -1), glm::vec2(1, 0), glm::vec3(0, -1, 0)), // 21
-        Vertex(glm::vec3(1, -1,  1), glm::vec2(1, 1), glm::vec3(0, -1, 0)), // 22
-        Vertex(glm::vec3(-1, -1,  1), glm::vec2(0, 1), glm::vec3(0, -1, 0))  // 23
+        // Front Face (z = 0.5)
+        Vertex(glm::vec3(-0.5, -0.5,  0.5), glm::vec2(0, 0), glm::vec3(0, 0, 1)),
+        Vertex(glm::vec3(0.5, -0.5,  0.5), glm::vec2(1, 0), glm::vec3(0, 0, 1)),
+        Vertex(glm::vec3(0.5,  0.5,  0.5), glm::vec2(1, 1), glm::vec3(0, 0, 1)),
+        Vertex(glm::vec3(-0.5,  0.5,  0.5), glm::vec2(0, 1), glm::vec3(0, 0, 1)),
+        // Back Face (z = -0.5)
+        Vertex(glm::vec3(0.5, -0.5, -0.5), glm::vec2(0, 0), glm::vec3(0, 0, -1)),
+        Vertex(glm::vec3(-0.5, -0.5, -0.5), glm::vec2(1, 0), glm::vec3(0, 0, -1)),
+        Vertex(glm::vec3(-0.5,  0.5, -0.5), glm::vec2(1, 1), glm::vec3(0, 0, -1)),
+        Vertex(glm::vec3(0.5,  0.5, -0.5), glm::vec2(0, 1), glm::vec3(0, 0, -1)),
+        // Left Face (x = -0.5)
+        Vertex(glm::vec3(-0.5, -0.5, -0.5), glm::vec2(0, 0), glm::vec3(-1, 0, 0)),
+        Vertex(glm::vec3(-0.5, -0.5,  0.5), glm::vec2(1, 0), glm::vec3(-1, 0, 0)),
+        Vertex(glm::vec3(-0.5,  0.5,  0.5), glm::vec2(1, 1), glm::vec3(-1, 0, 0)),
+        Vertex(glm::vec3(-0.5,  0.5, -0.5), glm::vec2(0, 1), glm::vec3(-1, 0, 0)),
+        // Right Face (x = 0.5)
+        Vertex(glm::vec3(0.5, -0.5,  0.5), glm::vec2(0, 0), glm::vec3(1, 0, 0)),
+        Vertex(glm::vec3(0.5, -0.5, -0.5), glm::vec2(1, 0), glm::vec3(1, 0, 0)),
+        Vertex(glm::vec3(0.5,  0.5, -0.5), glm::vec2(1, 1), glm::vec3(1, 0, 0)),
+        Vertex(glm::vec3(0.5,  0.5,  0.5), glm::vec2(0, 1), glm::vec3(1, 0, 0)),
+        // Top Face (y = 0.5)
+        Vertex(glm::vec3(-0.5,  0.5,  0.5), glm::vec2(0, 0), glm::vec3(0, 1, 0)),
+        Vertex(glm::vec3(0.5,  0.5,  0.5), glm::vec2(1, 0), glm::vec3(0, 1, 0)),
+        Vertex(glm::vec3(0.5,  0.5, -0.5), glm::vec2(1, 1), glm::vec3(0, 1, 0)),
+        Vertex(glm::vec3(-0.5,  0.5, -0.5), glm::vec2(0, 1), glm::vec3(0, 1, 0)),
+        // Bottom Face (y = -0.5)
+        Vertex(glm::vec3(-0.5, -0.5, -0.5), glm::vec2(0, 0), glm::vec3(0, -1, 0)),
+        Vertex(glm::vec3(0.5, -0.5, -0.5), glm::vec2(1, 0), glm::vec3(0, -1, 0)),
+        Vertex(glm::vec3(0.5, -0.5,  0.5), glm::vec2(1, 1), glm::vec3(0, -1, 0)),
+        Vertex(glm::vec3(-0.5, -0.5,  0.5), glm::vec2(0, 1), glm::vec3(0, -1, 0))
     };
 
     unsigned int indices1[] = {

@@ -731,14 +731,7 @@ struct ColliderEditor
 
 		void CollisionWithTank(Tank& tank)
 		{
-			Collider* tankCollider = tank.GetBody()->GetCollider();
-			for (int i = 0; i < m_colliders.size(); i++)
-			{
-				if (tankCollider->IsCollidingWith(m_colliders[i]->GetCollider()))
-				{
-					std::cout << "Collision With Tank Detected\n";
-				}
-			}
+			
 		}
 
 	private:

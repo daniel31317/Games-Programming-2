@@ -115,6 +115,7 @@ public:
 			turret.GetTransform()->move(forward * currentSpeed * deltaTime);
 			muzzleFlash.GetTransform()->move(forward * currentSpeed * deltaTime);
 			camera->move(forward * currentSpeed * deltaTime);
+		
 		}
 
 		movingForward = false;
@@ -184,6 +185,7 @@ public:
 		glm::mat4 camRot = glm::rotate(turret.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
 		glm::vec3 camOffset = glm::vec3(camRot * glm::vec4(cameraOffset, 0.0f));
 		camera->SetPosition(*turret.GetTransform()->GetPosition() + camOffset);
+
 	}
 
 	//like RotateBodyLeft but with opposite rotation
