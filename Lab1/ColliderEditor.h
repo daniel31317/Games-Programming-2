@@ -43,7 +43,8 @@ struct ColliderEditor
 			std::cout << "Type Change Stat Value - V\nChange Stat + (Increase)-(Decrease)\nMultiply Change State By 10 - 1 or ! (NOT NUMPAD)\n";
 			std::cout << "Change Collider Index Up - X\nChange Collider Index Down - C\n";	
 			std::cout << "Hide All Meshes - H\n";
-			std::cout << "Last Action - \n";
+			std::cout << "Force Save - P\n";
+			std::cout << "Last Action : \n";
 
 			UpdateEditorStateText();
 
@@ -224,6 +225,24 @@ struct ColliderEditor
 			else
 			{
 				vDown = false;
+			}
+
+
+			//force save
+			if(state[SDL_SCANCODE_P])
+			{
+				if(!pDown)
+				{
+					pDown = true;
+					refreshEditorOutput();
+					saveCollidersToBinary("..\\res\\colliders.bin");
+					std::cout << "Colliders Saved\n";
+				}
+				
+			}
+			else
+			{
+				pDown = false;
 			}
 
 
@@ -517,7 +536,7 @@ struct ColliderEditor
 
 
 		void refreshEditorOutput() {
-			std::cout << "\033[15;1H";
+			std::cout << "\033[16;1H";
 
 			std::cout << "\033[J";
 
@@ -704,6 +723,7 @@ struct ColliderEditor
 		bool downArrowDown = false;
 		bool hDown = false;
 		bool oneDown = false;
+		bool pDown = false;
 
 
 
