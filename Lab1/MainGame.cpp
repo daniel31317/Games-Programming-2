@@ -63,6 +63,7 @@ void MainGame::gameLoop()
 	int fpsCounter = 0;
 	std::string words = "Game Programming 2 | FPS: ";
 	std::string words2 = " | Free Camera (TAB): ";
+	std::string words3 = " | Collider Editor (LALT): ";
 
 	std::string on = "ON";
 	std::string off = "OFF";
@@ -83,6 +84,16 @@ void MainGame::gameLoop()
 				title += on;
 			else
 				title += off;
+
+
+			title += words3;
+
+			if (colliderEditorActive)
+				title += on;
+			else
+				title += off;
+
+
 			SDL_SetWindowTitle(_gameDisplay.getWindow(), title.c_str());
 			fpsTimer = 0.0f;
 			fpsCounter = 0;
@@ -90,10 +101,21 @@ void MainGame::gameLoop()
 		else if(updateGameTitle)
 		{
 			std::string title = words + std::to_string(lastFrameCount) + words2;
+
 			if (freeCamera)
 				title += on;
 			else
 				title += off;
+
+
+			title += words3;
+
+			if (colliderEditorActive)
+				title += on;
+			else
+				title += off;
+
+
 			SDL_SetWindowTitle(_gameDisplay.getWindow(), title.c_str());
 
 			updateGameTitle = false;
@@ -118,7 +140,7 @@ void MainGame::processInput()
 			break;
 
 			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_TAB && !colliderEditor)
+				if (event.key.keysym.sym == SDLK_TAB && !colliderEditorActive)
 				{
 					freeCamera = !freeCamera;
 					if (!freeCamera)
@@ -136,8 +158,8 @@ void MainGame::processInput()
 
 				if(event.key.keysym.sym == SDLK_LALT)
 				{
-					colliderEditor = !colliderEditor;
-					if (colliderEditor)
+					colliderEditorActive = !colliderEditorActive;
+					if (colliderEditorActive)
 					{
 
 						if (!freeCamera)
@@ -280,7 +302,7 @@ void MainGame::processInput()
 void MainGame::update()
 {
 	m_tank->Update(deltaTime);
-	if(colliderEditor)
+	if(colliderEditorActive)
 		m_colliderEditor->UpdateEditor();	
 }
 
@@ -290,20 +312,21 @@ void MainGame::drawGame()
 {
 	_gameDisplay.clearDisplay();
 
-	for(int i = 0; i < NUM_GAME_OBJECTS; i++)
+	if (!m_colliderEditor->GetHideMeshes())
 	{
-		m_gameObjects[i]->GetShader()->Bind();
-		m_gameObjects[i]->GetShader()->Update(*m_gameObjects[i]->GetTransform(), m_mainCamera, true);
-		m_gameObjects[i]->GetTexture()->Bind(0);
-		m_gameObjects[i]->GetMesh()->draw();
-	}	
+		for (int i = 0; i < NUM_GAME_OBJECTS; i++)
+		{
+			m_gameObjects[i]->GetShader()->Bind();
+			m_gameObjects[i]->GetShader()->Update(*m_gameObjects[i]->GetTransform(), m_mainCamera, true);
+			m_gameObjects[i]->GetTexture()->Bind(0);
+			m_gameObjects[i]->GetMesh()->draw();
+		}
 
-
-	m_colliderEditor->DrawEditor(m_mainCamera);
-
-
-	m_tank->Draw();
-
+		m_tank->Draw();
+	}
+		
+	if (colliderEditorActive)
+		m_colliderEditor->DrawEditor(m_mainCamera);
 
 
 	glEnableClientState(GL_COLOR_ARRAY);

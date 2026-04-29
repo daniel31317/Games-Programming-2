@@ -65,7 +65,7 @@ private:
 	int lastFrameCount = 0;
 
 	bool freeCamera = false;	
-	bool colliderEditor = false;	
+	bool colliderEditorActive = false;	
 	bool updateGameTitle = false;	
 
 };
