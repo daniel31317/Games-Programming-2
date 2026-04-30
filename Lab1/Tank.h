@@ -34,7 +34,7 @@ public:
 		m_body.GetTransform()->SetPosition(glm::vec3(0.0, -0.55, -1.5));
 		m_body.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 		m_body.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
-		m_body.SetShader(*shaderManager.GetShader(ADS));
+		m_body.SetShader(*shaderManager.GetShader(TANK));
 		m_body.SetTexture(*textureManager.GetTexture(NONE));
 		m_body.SetMesh(*meshManager.GetMesh(LECLERCBODY));
 
@@ -42,7 +42,7 @@ public:
 		m_turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.625, -1.5));
 		m_turret.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 		m_turret.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
-		m_turret.SetShader(*shaderManager.GetShader(ADS));
+		m_turret.SetShader(*shaderManager.GetShader(TANK));
 		m_turret.SetTexture(*textureManager.GetTexture(NONE));
 		m_turret.SetMesh(*meshManager.GetMesh(LECLERCTURRET));
 
@@ -53,6 +53,8 @@ public:
 		m_muzzleFlash.SetShader(*shaderManager.GetShader(REMOVE_BACKGRROUND));
 		m_muzzleFlash.SetTexture(*textureManager.GetTexture(MUZZLEFLASH));
 		m_muzzleFlash.SetMesh(*meshManager.GetMesh(QUAD));
+
+		noiseTexture = textureManager.GetTexture(NOISE);
 
 		this->camera = camera;
 
@@ -71,10 +73,6 @@ public:
 
 	void Update(float deltaTime)
 	{
-		if (!alive)
-		{
-			return;
-		}
 		// Detect direction change and brake
 		bool braking = (movingForward && currentSpeed < 0) || (movingBackward && currentSpeed > 0);
 
@@ -177,12 +175,22 @@ public:
 
     void MoveForward()
     {
+		if (!alive)
+		{
+			movingForward = false;
+			return;
+		}
 		movingForward = true;
 	}
 	
 
     void MoveBackwards()
     {
+		if (!alive)
+		{
+			movingBackward = false;
+			return;
+		}
 		movingBackward = true;
     }
 
@@ -377,13 +385,15 @@ public:
 	void Draw()
 	{
 		m_body.GetShader()->Bind();
-		m_body.GetShader()->Update(*m_body.GetTransform(), *camera, false);
+		m_body.GetShader()->Update(*m_body.GetTransform(), *camera, false, alive ? 0.0f : 0.95f);
 		m_body.GetTexture()->Bind(0);
+		noiseTexture->Bind(1);
 		m_body.GetMesh()->draw();
 
 		m_turret.GetShader()->Bind();
-		m_turret.GetShader()->Update(*m_turret.GetTransform(), *camera, false);
+		m_turret.GetShader()->Update(*m_turret.GetTransform(), *camera, false, alive ? 0.0f : 0.95f);
 		m_turret.GetTexture()->Bind(0);
+		noiseTexture->Bind(1);
 		m_turret.GetMesh()->draw();
 
 		if (muzzleFlashData.IsAlive())
@@ -418,6 +428,8 @@ private:
 	GameObject m_turret;
 	GameObject m_muzzleFlash;
 	GameObject* tankCollider;
+
+	Texture* noiseTexture;
 
 	MuzzleFlash muzzleFlashData;
 

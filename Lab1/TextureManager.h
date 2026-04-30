@@ -4,10 +4,8 @@
 
 enum TextureName
 {
-	BRICKS,
-	WATER,
-	ROCK,
 	MUZZLEFLASH,
+	NOISE,
 	CITYTEXTURE,
 	NONE,
 	NUM_TEXTURES

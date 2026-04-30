@@ -42,15 +42,15 @@ Shader::Shader(const std::string& filename)
 	uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
 	uniforms[MODEL_U] = glGetUniformLocation(program, "modelMatrix");
 	uniforms[CAMPOS_U] = glGetUniformLocation(program, "camPos");
-	uniforms[RIMCOLOUR_U] = glGetUniformLocation(program, "rimColour");
-	uniforms[RIMPOWER_U] = glGetUniformLocation(program, "rimPower");
-	uniforms[FOGCOLOUR_U] = glGetUniformLocation(program, "fogColour");
+	uniforms[VIEW_U] = glGetUniformLocation(program, "view");
+	uniforms[PROJECTION_U] = glGetUniformLocation(program, "projection");
 	uniforms[DIFFUSE_U] = glGetUniformLocation(program, "diffuse");
-	uniforms[NORMALT_U] = glGetUniformLocation(program, "normalT");
 	uniforms[LIGHTPOS_U] = glGetUniformLocation(program, "lightPos");
 	uniforms[LIGHTCOLOUR_U] = glGetUniformLocation(program, "lightColour");
 	uniforms[VERTEXCOLOUR_U] = glGetUniformLocation(program, "vertexColour");
 	uniforms[HASTEXTURE_U] = glGetUniformLocation(program, "hasTexture");
+	uniforms[NOISE_TEXTURE_U] = glGetUniformLocation(program, "textureNoise");
+	uniforms[DEAD_PROGRESS_U] = glGetUniformLocation(program, "deadProgression");
 }
 
 Shader::~Shader()
@@ -143,24 +143,25 @@ void Shader::Bind()
 void Shader::Update(const Transform& transform, const Camera& camera, bool hasTexture)
 {
 	glm::mat4 model = transform.GetModel();
-	glm::mat4 mvp = camera.GetViewProjection() * model;
 	glm::vec3 cameraPosition = camera.GetPosition();
+	glm::mat4 view = camera.GetView();
+	glm::mat4 projection = camera.GetProjection();
+
+	glm::mat4 mvp = camera.GetViewProjection() * model;
 
 	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_FALSE, &mvp[0][0]);
 
-	glUniformMatrix4fv(uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);
+	glUniformMatrix4fv(uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);   
+
+	glUniformMatrix4fv(uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);         
+
+	glUniformMatrix4fv(uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
 
 	glUniform3f(uniforms[CAMPOS_U], cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	glUniform3f(uniforms[RIMCOLOUR_U], 1.0f, 0.0f, 1.0f);
-
-	glUniform1f(uniforms[RIMPOWER_U], 3.0f);
-
-	glUniform3f(uniforms[FOGCOLOUR_U], backgroundColour.r, backgroundColour.g, backgroundColour.b);
-
 	glUniform1i(uniforms[DIFFUSE_U], 0);
 
-	glUniform1i(uniforms[NORMALT_U], 1);
+	glUniform1i(uniforms[NOISE_TEXTURE_U], 1);
 
 	glUniform3f(uniforms[LIGHTPOS_U], 0.0f, 200.0f, 0.0f);
 
@@ -169,5 +170,42 @@ void Shader::Update(const Transform& transform, const Camera& camera, bool hasTe
 	glUniform3f(uniforms[VERTEXCOLOUR_U], 75.f / 255.f, 83.f / 255.f, 32.f / 255.f);
 
 	glUniform1i(uniforms[HASTEXTURE_U], hasTexture);
+}
+
+
+
+//tank update
+void Shader::Update(const Transform& transform, const Camera& camera, bool hasTexture, float deadProgression)
+{
+	glm::mat4 model = transform.GetModel();
+	glm::vec3 cameraPosition = camera.GetPosition();
+	glm::mat4 view = camera.GetView();
+	glm::mat4 projection = camera.GetProjection();
+
+	glm::mat4 mvp = camera.GetViewProjection() * model;
+
+	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_FALSE, &mvp[0][0]);
+
+	glUniformMatrix4fv(uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);   
+
+	glUniformMatrix4fv(uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);         
+
+	glUniformMatrix4fv(uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
+
+	glUniform3f(uniforms[CAMPOS_U], cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
+	glUniform1i(uniforms[DIFFUSE_U], 0);
+
+	glUniform1i(uniforms[NOISE_TEXTURE_U], 1);
+
+	glUniform3f(uniforms[LIGHTPOS_U], 0.0f, 200.0f, 0.0f);
+
+	glUniform3f(uniforms[LIGHTCOLOUR_U], 1.0f, 1.0f, 1.0f);
+
+	glUniform3f(uniforms[VERTEXCOLOUR_U], 75.f / 255.f, 83.f / 255.f, 32.f / 255.f);
+
+	glUniform1i(uniforms[HASTEXTURE_U], hasTexture);
+
+	glUniform1f(uniforms[DEAD_PROGRESS_U], deadProgression);
 }
 

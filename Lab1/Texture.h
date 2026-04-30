@@ -10,8 +10,6 @@ public:
 
 	void unload();
 
-	void CreateBlankTexture();
-
 	void Bind(unsigned int unit); // bind upto 32 textures
 
 	~Texture();

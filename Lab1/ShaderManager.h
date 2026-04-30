@@ -4,12 +4,11 @@
 
 enum ShaderName
 {
-	FOG,
-	RIM_LIGHT,
-	TOON,
-	BUMP,
+
+	COLLIDEROUTLINE,
 	ADS,
 	REMOVE_BACKGRROUND,
+	TANK,
 	NUM_SHADERS
 };
 

@@ -112,28 +112,10 @@
     <None Include="..\res\shader.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\fog.frag">
+    <None Include="..\res\ColliderOutline.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\fog.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\toon.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\toon.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\rimlight.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\rimlight.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\bump.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\bump.vert">
+    <None Include="..\res\ColliderOutline.vert">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\res\ADS.frag">
@@ -146,6 +128,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\res\RemoveBackground.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\Tank.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\Tank.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

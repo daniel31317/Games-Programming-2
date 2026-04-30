@@ -15,10 +15,8 @@ TextureManager::~TextureManager()
 
 void TextureManager::LoadTextures()
 {
-	m_textureList[BRICKS] = std::make_unique<Texture>("..\\res\\bricks.jpg");
-	m_textureList[WATER] = std::make_unique<Texture>("..\\res\\water.jpg");
-	m_textureList[ROCK] = std::make_unique<Texture>("..\\res\\rock.jpg");
 	m_textureList[MUZZLEFLASH] = std::make_unique<Texture>("..\\res\\muzzleFlash.png");
+	m_textureList[NOISE] = std::make_unique<Texture>("..\\res\\Perlin_noise.png");
 	m_textureList[CITYTEXTURE] = std::make_unique<Texture>("..\\res\\City_Final_Texture.png");
 	m_textureList[NONE] = std::make_unique<Texture>("..\\res\\White_Color.jpg");
 }

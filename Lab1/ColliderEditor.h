@@ -81,7 +81,7 @@ public:
 				m_colliders.back()->GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
 				m_colliders.back()->GetCollider()->SetScale(glm::vec3(1.0, 1.0, 1.0));
 				m_colliders.back()->GetCollider()->UpdateCollider(*m_colliders.back()->GetTransform()->GetPosition(), *m_colliders.back()->GetTransform()->GetRotation());
-				m_colliders.back()->SetShader(*shaderManager->GetShader(RIM_LIGHT));
+				m_colliders.back()->SetShader(*shaderManager->GetShader(COLLIDEROUTLINE));
 				m_colliders.back()->SetTexture(*textureManager->GetTexture(NONE));
 				m_colliders.back()->SetMesh(*meshManager->GetMesh(CUBE));
 				currentColliderIndex = m_colliders.size() - 1;
@@ -753,7 +753,7 @@ public:
 			m_colliders[i]->GetTransform()->SetScale(scales[i]);
 			m_colliders[i]->GetCollider()->SetScale(*m_colliders[i]->GetTransform()->GetScale());
 			m_colliders[i]->GetCollider()->UpdateCollider(*m_colliders[i]->GetTransform()->GetPosition(), *m_colliders[i]->GetTransform()->GetRotation());
-			m_colliders[i]->SetShader(*shaderManager->GetShader(RIM_LIGHT));
+			m_colliders[i]->SetShader(*shaderManager->GetShader(COLLIDEROUTLINE));
 			m_colliders[i]->SetTexture(*textureManager->GetTexture(NONE));
 			m_colliders[i]->SetMesh(*meshManager->GetMesh(CUBE));
 		}
@@ -770,7 +770,7 @@ public:
 		m_tankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 1.0, 1.7));
 		m_tankBodyCollider.GetCollider()->SetScale(*m_tankBodyCollider.GetTransform()->GetScale());
 		m_tankBodyCollider.GetCollider()->UpdateCollider(*m_tankBodyCollider.GetTransform()->GetPosition(), *m_tankBodyCollider.GetTransform()->GetRotation());
-		m_tankBodyCollider.SetShader(*shaderManager->GetShader(RIM_LIGHT));
+		m_tankBodyCollider.SetShader(*shaderManager->GetShader(COLLIDEROUTLINE));
 		m_tankBodyCollider.SetTexture(*textureManager->GetTexture(NONE));
 		m_tankBodyCollider.SetMesh(*meshManager->GetMesh(CUBE));
 	}
@@ -785,7 +785,7 @@ public:
 		m_enemyTankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 1.0, 1.7));
 		m_enemyTankBodyCollider.GetCollider()->SetScale(*m_enemyTankBodyCollider.GetTransform()->GetScale());
 		m_enemyTankBodyCollider.GetCollider()->UpdateCollider(*m_enemyTankBodyCollider.GetTransform()->GetPosition(), *m_enemyTankBodyCollider.GetTransform()->GetRotation());
-		m_enemyTankBodyCollider.SetShader(*shaderManager->GetShader(RIM_LIGHT));
+		m_enemyTankBodyCollider.SetShader(*shaderManager->GetShader(COLLIDEROUTLINE));
 		m_enemyTankBodyCollider.SetTexture(*textureManager->GetTexture(NONE));
 		m_enemyTankBodyCollider.SetMesh(*meshManager->GetMesh(CUBE));
 	}

@@ -106,18 +106,14 @@
   <ItemGroup>
     <None Include="..\res\ADS.frag" />
     <None Include="..\res\ADS.vert" />
-    <None Include="..\res\bump.frag" />
-    <None Include="..\res\bump.vert" />
-    <None Include="..\res\fog.frag" />
-    <None Include="..\res\fog.vert" />
+    <None Include="..\res\Tank.frag" />
+    <None Include="..\res\Tank.vert" />
     <None Include="..\res\RemoveBackground.frag" />
     <None Include="..\res\RemoveBackground.vert" />
-    <None Include="..\res\rimlight.frag" />
-    <None Include="..\res\rimlight.vert" />
+    <None Include="..\res\ColliderOutline.frag" />
+    <None Include="..\res\ColliderOutline.vert" />
     <None Include="..\res\shader.frag" />
     <None Include="..\res\shader.vert" />
-    <None Include="..\res\toon.frag" />
-    <None Include="..\res\toon.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

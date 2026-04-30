@@ -16,10 +16,8 @@ ShaderManager::~ShaderManager()
 
 void ShaderManager::LoadShaders()
 {
-	m_shaderList[FOG] = std::make_unique<Shader>("..\\res\\fog");
-	m_shaderList[RIM_LIGHT] = std::make_unique<Shader>("..\\res\\rimlight");
-	m_shaderList[TOON] = std::make_unique<Shader>("..\\res\\toon");
-	m_shaderList[BUMP] = std::make_unique<Shader>("..\\res\\bump");
+	m_shaderList[COLLIDEROUTLINE] = std::make_unique<Shader>("..\\res\\ColliderOutline");
+	m_shaderList[TANK] = std::make_unique<Shader>("..\\res\\Tank");
 	m_shaderList[REMOVE_BACKGRROUND] = std::make_unique<Shader>("..\\res\\RemoveBackground");
 	m_shaderList[ADS] = std::make_unique<Shader>("..\\res\\ADS");
 }

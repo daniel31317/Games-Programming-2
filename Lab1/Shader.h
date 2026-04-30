@@ -16,6 +16,7 @@ public:
 
 	void Bind(); //Set gpu to use our shaders
 	void Update(const Transform& transform, const Camera& camera, bool hasTexture);
+	void Update(const Transform& transform, const Camera& camera, bool hasTexture, float deadProgression);
 
 	std::string Shader::LoadShader(const std::string& fileName);
 
@@ -35,18 +36,18 @@ private:
 	{
 		TRANSFORM_U,
 		MODEL_U,     
-		CAMPOS_U,     
+		CAMPOS_U,  
+		VIEW_U,
+		PROJECTION_U,
 		CAMVIEW_U,   
-		CAMPROJ_U,
-		RIMCOLOUR_U,   
-		RIMPOWER_U,
-		FOGCOLOUR_U,
+		CAMPROJ_U,  
 		DIFFUSE_U,
-		NORMALT_U,
 		LIGHTPOS_U,
 		LIGHTCOLOUR_U,
 		VERTEXCOLOUR_U,
 		HASTEXTURE_U,
+		NOISE_TEXTURE_U,
+		DEAD_PROGRESS_U,
 		NUM_UNIFORMS
 
 	};
