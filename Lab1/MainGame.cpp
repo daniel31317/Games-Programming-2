@@ -40,6 +40,8 @@ void MainGame::initSystems()
 	m_mainCamera.initCamera(glm::vec3(0, 0.25, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
 
 	initGameObjects();
+
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 void MainGame::initGameObjects()
@@ -199,6 +201,24 @@ void MainGame::processInput()
 					updateGameTitle = true;
 				}
 
+
+
+				if(event.key.keysym.sym == SDLK_ESCAPE)
+				{					
+					
+					SDL_bool mouse = SDL_GetRelativeMouseMode();
+
+					if (mouse == SDL_TRUE)
+					{
+						SDL_SetRelativeMouseMode(SDL_FALSE);
+					}
+					else
+					{
+						SDL_SetRelativeMouseMode(SDL_TRUE);
+					}
+								
+				}
+
 				break;
 
 			case SDL_WINDOWEVENT:
@@ -224,9 +244,29 @@ void MainGame::processInput()
 	float rotAmount = 2.f;
 	float moveAmount = 10.f;
 
-	m_mainCamera.SetZooming(state[SDL_SCANCODE_T]);
+	
+
+
+
+
+	int mouseX, mouseY;
+
+	//mouseState
+	Uint32 mouseState = SDL_GetRelativeMouseState(&mouseX, &mouseY);
+
+
+	if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))
+	{
+		m_mainCamera.SetZooming(true);
+	}
+	else
+	{
+		m_mainCamera.SetZooming(false);
+	}
+
 
 	isZooming = m_mainCamera.GetZooming();
+
 
 	if (freeCamera)
 	{
@@ -300,15 +340,16 @@ void MainGame::processInput()
 		{
 			m_tank->RotateBodyRight(deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
 		}
-		if (state[SDL_SCANCODE_LEFT])
-		{
-			m_tank->RotateTurretLeft(deltaTime, isZooming);
-		}
-		if (state[SDL_SCANCODE_RIGHT])
-		{
-			m_tank->RotateTurretRight(deltaTime, isZooming);
-		}
-		if (state[SDL_SCANCODE_SPACE])
+
+
+
+		//just so sensitivity can be a normal number
+		m_targetTurretAngle += (float)mouseX * (-m_sensitivity / 1000.f);
+
+		m_tank->UpdateTurretAim(deltaTime, m_targetTurretAngle, isZooming);
+
+
+		if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
 		{
 			if (m_tank->GetIfCanShoot())
 			{

@@ -254,6 +254,8 @@ public:
 
 	}
 
+
+
 	//like RotateBodyLeft but with opposite rotation
     void RotateBodyRight(float deltaTime, bool checkMovebackwards, glm::vec3& tankColliderOffset)
     {
@@ -302,7 +304,49 @@ public:
 		
     }
 
-	void RotateTurretLeft(float deltaTime, bool isZooming)
+
+	void UpdateTurretAim(float deltaTime, float targetAngle, bool isZooming)
+	{
+		if (!alive) return;
+
+		Transform* turretTransform = m_turret.GetTransform();
+
+		//update camera to where player is aiming
+		camera->SetRotation(glm::vec3(0.0f, targetAngle, 0.0f));
+
+		//update camera position
+		glm::mat4 rotMat = glm::rotate(targetAngle, glm::vec3(0, 1, 0));
+		glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
+		camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
+
+		//turret lag behind
+		float currentTurretRot = turretTransform->GetRotation()->y;
+		float angleDiff = targetAngle - currentTurretRot;
+
+		//shortest path
+		while (angleDiff < -glm::pi<float>()) angleDiff += glm::two_pi<float>();
+		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
+
+
+		float speed = isZooming ? turretRotSpeed / 2.0f : turretRotSpeed;
+		float maxRotThisFrame = speed * deltaTime;
+
+		if (std::abs(angleDiff) > 0.001f)
+		{
+			//clamp
+			float actualMove = glm::clamp(angleDiff, -maxRotThisFrame, maxRotThisFrame);
+			turretTransform->rotate(glm::vec3(0.0f, actualMove, 0.0f));
+		}
+
+		m_muzzleFlash.GetTransform()->SetRotation(*turretTransform->GetRotation());
+		m_muzzleFlash.GetTransform()->SetPosition(*turretTransform->GetPosition()
+			+ (turretTransform->GetForward() * 1.4f)
+			+ (turretTransform->GetUp() * muzzleFlashOffset));
+	}
+
+
+
+	void RotateTurretLeftAI(float deltaTime, bool isZooming)
 	{
 		if (!alive)
 		{
@@ -330,7 +374,7 @@ public:
 
 	}
 
-    void RotateTurretRight(float deltaTime, bool isZooming)
+    void RotateTurretRightAI(float deltaTime, bool isZooming)
     {
 		if (!alive)
 		{

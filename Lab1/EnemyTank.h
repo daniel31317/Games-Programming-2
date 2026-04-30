@@ -120,12 +120,12 @@ public:
 			if (angleDiff > 0)
 			{
 				m_tank.RotateBodyLeft(deltaTime, true, *tankColliderOffset);
-				m_tank.RotateTurretLeft(deltaTime, false);
+				m_tank.RotateTurretLeftAI(deltaTime, false);
 			}
 			else
 			{
 				m_tank.RotateBodyRight(deltaTime, true, *tankColliderOffset);
-				m_tank.RotateTurretRight(deltaTime, false);
+				m_tank.RotateTurretRightAI(deltaTime, false);
 			}
 		}
 
@@ -148,12 +148,12 @@ public:
 			if (std::abs(diff) > 0.05f) {
 				if (diff > 0)
 				{
-					m_tank.RotateTurretLeft(deltaTime, false);
+					m_tank.RotateTurretLeftAI(deltaTime, false);
 				}
 
 				else
 				{
-					m_tank.RotateTurretRight(deltaTime, false);
+					m_tank.RotateTurretRightAI(deltaTime, false);
 				}
 			}
 			else
@@ -235,10 +235,10 @@ public:
 		{
 			if (angleDiff > 0) 
 			{
-				m_tank.RotateTurretLeft(deltaTime, false);
+				m_tank.RotateTurretLeftAI(deltaTime, false);
 			}
 			else {
-				m_tank.RotateTurretRight(deltaTime, false);
+				m_tank.RotateTurretRightAI(deltaTime, false);
 			}
 		}
 	}

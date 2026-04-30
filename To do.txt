@@ -4,7 +4,6 @@
 
 -Tank fight	
 	- mouse aim
-	- stop detection when dead
 
 -Smoke from barrel shot
 
