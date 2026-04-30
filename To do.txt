@@ -3,7 +3,6 @@
 - Sky background
 
 -Tank fight	
-	- crosshair/scope
 	- mouse aim
 	- stop detection when dead
 

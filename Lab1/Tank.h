@@ -435,6 +435,7 @@ public:
 	const float* GetBrakeForce() const { return &brakeForce; }
 	const bool* GetCollidedLastFrame() const { return &collidedLastFrame; }
 	const bool GetIfCanShoot() const { return canShoot && alive; }
+	const bool IsAlive() const { return alive; }
 
 
 private:

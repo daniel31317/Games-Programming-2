@@ -41,9 +41,12 @@ public:
 
 		HandleDriving();
 
-		HandleBodyRotation(deltaTime);
+		if (m_tank.IsAlive())
+		{
+			HandleBodyRotation(deltaTime);
 
-		HandleTurretRotation(deltaTime);
+			HandleTurretRotation(deltaTime);
+		}
 
 		m_tank.Update(deltaTime);
 	}
