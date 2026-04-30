@@ -61,6 +61,7 @@ void MainGame::initGameObjects()
 	m_tank->SetTankCollider(m_colliderEditor->GetTankCollider());
 
 	m_EnemyTank->GetTank()->SetTankCollider(m_colliderEditor->GetEnemyTankCollider());
+	m_EnemyTank->SetTankColliderOffset(m_colliderEditor->GetTankColliderOffset());
 }
 
 void MainGame::gameLoop()
@@ -324,7 +325,13 @@ void MainGame::update()
 	if (colliderEditorActive)
 		m_colliderEditor->UpdateEditor();
 
-	m_tank->HandleColliison(m_colliderEditor->CollisionWithTank(*m_tank));
+	m_tank->HandleColliison(m_colliderEditor->CollisionWithWalls());
+
+	bool tanksCollide = m_colliderEditor->CollisionWithTank();
+	
+	m_tank->HandleColliison(tanksCollide);
+
+	m_EnemyTank->GetTank()->HandleColliison(tanksCollide);
 
 	m_tank->Update(deltaTime);
 

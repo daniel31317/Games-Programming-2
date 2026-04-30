@@ -4,34 +4,200 @@
 #include "ShaderManager.h"
 #include "TextureManager.h"
 #include <array>
+#include <random>
+#include <cmath>
 
 struct EnemyTank
 {
 
 public:
 
+	struct MapIndex 
+	{
+		int row;
+		int col;
+	
+	};
 	EnemyTank() {}
 
 	EnemyTank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* mainCamera) : m_tank(shaderManager, textureManager, meshManager, mainCamera, false)
 	{
 
-		int indexX = 4;
-		int indexZ = 5;
+		GenerateStartingIndices(currentIndex, nextIndex, 9, 8);
 
+		m_tank.SetPosition(glm::vec3(movementGrid[currentIndex.row][currentIndex.col].x, -0.5, -movementGrid[currentIndex.row][currentIndex.col].y));
 
-		m_tank.SetPosition(glm::vec3(movementGrid[indexX][indexZ].x, -0.5, -movementGrid[indexX][indexZ].y));
+		m_positionRef = m_tank.GetBody()->GetTransform()->GetPosition();
+		m_currentSpeedRef = m_tank.GetCurrentSpeed();
+		m_brakeForceRef = m_tank.GetBrakeForce();
+		m_tankBodyRef = m_tank.GetBody();
+
+		glm::vec3 tempOffset = glm::vec3(0.0, 0.75, -3.5);
+
+		mainCamera->SetPosition(*m_positionRef + tempOffset);
 	}
 
 
 	void Update(float deltaTime)
 	{
-		//m_tank.MoveForward();
+		float stoppingDistance = (*m_currentSpeedRef * *m_currentSpeedRef) / (2.0f * *m_brakeForceRef);
+		float distanceToTarget = glm::distance(*m_positionRef, nextPoint);
+
+		//braking 
+		if (distanceToTarget <= stoppingDistance || stopMovingForward)
+		{
+			stopMovingForward = true; //stopmoving forward aimlessly
+
+			//brake
+			if (*m_currentSpeedRef > 0.1f) 
+			{
+				m_tank.MoveBackwards(); 
+			}
+			//correct overshoot
+			else if (*m_currentSpeedRef < -0.1f) 
+			{
+				m_tank.MoveForward();
+			}
+			//we have arrived
+			else 
+			{			
+				stopMovingForward = false;
+
+				//get new index
+				MapIndex tempOldCurrent = currentIndex;
+				currentIndex = nextIndex;
+				
+				nextIndex = GetNextRandomPoint(currentIndex, tempOldCurrent, 9, 8);
+
+				//update position
+				glm::vec2 gridPos = movementGrid[nextIndex.row][nextIndex.col];
+				nextPoint = glm::vec3(gridPos.x, -0.5f, -gridPos.y);
+
+				//get new rotation
+				glm::vec3 direction = nextPoint - *m_positionRef;
+				targetAngleY = std::atan2(direction.x, direction.z);
+			}
+		}
+		//driving forward forever
+		else
+		{
+			m_tank.MoveForward();
+		}
+
+
+
+		float currentAngleY = m_tankBodyRef->GetTransform()->GetRotation()->y;
+
+		//normalize between -180 to 180 so it dont do cool spin
+		float angleDiff = targetAngleY - currentAngleY;
+		while (angleDiff < -glm::pi<float>()) angleDiff += glm::two_pi<float>();
+		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
+
+		//only rotate if difference is small
+		if (std::abs(angleDiff) > 0.0045f)
+		{
+			if (angleDiff > 0)
+			{
+				m_tank.RotateBodyLeft(deltaTime, true, *tankColliderOffset);
+			}
+			else
+			{
+				m_tank.RotateBodyRight(deltaTime, true, *tankColliderOffset);
+			}
+		}
+
+
+
 		m_tank.Update(deltaTime);
+	}
+
+
+	MapIndex GetNextRandomPoint(MapIndex current, MapIndex previous, int maxRows, int maxCols) {
+		std::vector<MapIndex> validPoints;
+
+		//determine direction of previous travel
+		bool movingHorizontally = (current.row == previous.row);
+		bool movingVertically = (current.col == previous.col);
+
+		
+		//cjeck points in the same row
+		for (int c = 0; c < maxCols; ++c) {
+			if (c == current.col) continue;
+
+			if (movingHorizontally) {
+
+				//ignore previous moves to the left if we just moved right
+				if (current.col > previous.col && c < current.col) continue;
+				//vice versa
+				if (current.col < previous.col && c > current.col) continue;
+			}
+
+			validPoints.push_back({ current.row, c });
+		}
+
+		
+		//check points in same column
+		for (int r = 0; r < maxRows; ++r) {
+			if (r == current.row) continue;
+
+			if (movingVertically) {
+				//same as before but with up and down
+				if (current.row > previous.row && r < current.row) continue;
+
+				if (current.row < previous.row && r > current.row) continue;
+			}
+
+			validPoints.push_back({ r, current.col });
+		}
+
+		//if somehow no tiles are found return current tile
+		if (validPoints.empty()) return current;
+
+		//pick random valid point
+		static std::mt19937 gen(std::random_device{}());
+		std::uniform_int_distribution<> dis(0, validPoints.size() - 1);
+
+		return validPoints[dis(gen)];
+	}
+
+
+	void GenerateStartingIndices(MapIndex& start, MapIndex& previous, int maxRows, int maxCols) {
+		static std::mt19937 gen(std::random_device{}());
+		std::uniform_int_distribution<> rowDist(0, maxRows - 1);
+		std::uniform_int_distribution<> colDist(0, maxCols - 1);
+
+		
+		start.row = rowDist(gen);
+		start.col = colDist(gen);
+
+		previous = start;
 	}
 
 
 
 	Tank* GetTank() { return &m_tank; }
+
+	void SetTankColliderOffset(glm::vec3* tankColliderOffset) { this->tankColliderOffset = tankColliderOffset; }
+
+
+
+	GameObject* m_tankBodyRef = nullptr;
+	const glm::vec3* m_positionRef = nullptr;
+	const float* m_currentSpeedRef = nullptr;
+	const float* m_brakeForceRef = nullptr;
+
+	float targetAngleY = 0.0f;
+
+	MapIndex currentIndex;
+
+	MapIndex nextIndex;
+
+	bool stopMovingForward = true;
+	bool arrived = false;
+
+	glm::vec3* tankColliderOffset;
+
+	glm::vec3 nextPoint;
 
 private:
 

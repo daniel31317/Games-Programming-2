@@ -809,7 +809,7 @@ struct ColliderEditor
 
 
 
-		bool CollisionWithTank(Tank& tank)
+		bool CollisionWithWalls()
 		{
 			for (int i = 0; i < m_colliders.size(); i++)
 			{
@@ -819,6 +819,12 @@ struct ColliderEditor
 				}
 			}
 
+			return false;
+		}
+
+
+		bool CollisionWithTank()
+		{
 			if (m_tankBodyCollider.GetCollider()->IsCollidingWith(m_enemyTankBodyCollider.GetCollider()))
 			{
 				return true;
