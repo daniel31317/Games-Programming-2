@@ -20,7 +20,7 @@ public:
 	};
 	EnemyTank() {}
 
-	EnemyTank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* mainCamera) : m_tank(shaderManager, textureManager, meshManager, mainCamera, false)
+	EnemyTank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* mainCamera, GameObject* playerTank) : m_tank(shaderManager, textureManager, meshManager, mainCamera, false)
 	{
 
 		GenerateStartingIndices(currentIndex, nextIndex, 9, 8);
@@ -31,10 +31,26 @@ public:
 		m_currentSpeedRef = m_tank.GetCurrentSpeed();
 		m_brakeForceRef = m_tank.GetBrakeForce();
 		m_tankBodyRef = m_tank.GetBody();
+		m_playerRef = playerTank;
 	}
 
 
 	void Update(float deltaTime)
+	{
+		
+		HandleDriving();
+
+		HandleBodyRotation(deltaTime);
+
+		HandleTurretRotation(deltaTime);
+
+		m_tank.Update(deltaTime);
+	}
+
+
+
+
+	void HandleDriving()
 	{
 		float stoppingDistance = (*m_currentSpeedRef * *m_currentSpeedRef) / (2.0f * *m_brakeForceRef);
 		float distanceToTarget = glm::distance(*m_positionRef, nextPoint);
@@ -45,24 +61,24 @@ public:
 			stopMovingForward = true; //stopmoving forward aimlessly
 
 			//brake
-			if (*m_currentSpeedRef > 0.1f) 
+			if (*m_currentSpeedRef > 0.1f)
 			{
-				m_tank.MoveBackwards(); 
+				m_tank.MoveBackwards();
 			}
 			//correct overshoot
-			else if (*m_currentSpeedRef < -0.1f) 
+			else if (*m_currentSpeedRef < -0.1f)
 			{
 				m_tank.MoveForward();
 			}
 			//we have arrived
-			else 
-			{			
+			else
+			{
 				stopMovingForward = false;
 
 				//get new index
 				MapIndex tempOldCurrent = currentIndex;
 				currentIndex = nextIndex;
-				
+
 				nextIndex = GetNextRandomPoint(currentIndex, tempOldCurrent, 9, 8);
 
 				//update position
@@ -80,11 +96,13 @@ public:
 			if (!*m_tank.GetCollidedLastFrame())
 			{
 				m_tank.MoveForward();
-			}	
+			}
 		}
 
+	}
 
-
+	void HandleBodyRotation(float deltaTime)
+	{
 		float currentAngleYBody = m_tankBodyRef->GetTransform()->GetRotation()->y;
 
 		//normalize between -180 to 180 so it dont do cool spin
@@ -107,12 +125,14 @@ public:
 			}
 		}
 
+	}
 
-
+	void HandleTurretRotation(float deltaTime)
+	{
 		float currentAngleYTurret = m_tank.GetTurret()->GetTransform()->GetRotation()->y;
 
 		//normalize between -180 to 180 so it dont do cool spin
-		angleDiff = targetAngleY - currentAngleYTurret;
+		float angleDiff = targetAngleY - currentAngleYTurret;
 		while (angleDiff < -glm::pi<float>()) angleDiff += glm::two_pi<float>();
 		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
 
@@ -128,12 +148,7 @@ public:
 				m_tank.RotateTurretRight(deltaTime);
 			}
 		}
-
-
-
-		m_tank.Update(deltaTime);
 	}
-
 
 	MapIndex GetNextRandomPoint(MapIndex current, MapIndex previous, int maxRows, int maxCols) {
 		std::vector<MapIndex> validPoints;
@@ -204,7 +219,13 @@ public:
 
 
 
+	
+
+private:
+
+	Tank m_tank;
 	GameObject* m_tankBodyRef = nullptr;
+	GameObject* m_playerRef = nullptr;
 	const glm::vec3* m_positionRef = nullptr;
 	const float* m_currentSpeedRef = nullptr;
 	const float* m_brakeForceRef = nullptr;
@@ -221,10 +242,6 @@ public:
 	glm::vec3* tankColliderOffset;
 
 	glm::vec3 nextPoint;
-
-private:
-
-	Tank m_tank;
 
 	//really cursed layout but hey
 	//bottom left (x,z)	(0,0)																																																//top left				
