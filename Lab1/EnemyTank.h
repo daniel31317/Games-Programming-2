@@ -67,7 +67,7 @@ public:
 
 				//update position
 				glm::vec2 gridPos = movementGrid[nextIndex.row][nextIndex.col];
-				nextPoint = glm::vec3(gridPos.x, -0.5f, -gridPos.y);
+				nextPoint = glm::vec3(gridPos.x, m_positionRef->y, -gridPos.y);
 
 				//get new rotation
 				glm::vec3 direction = nextPoint - *m_positionRef;

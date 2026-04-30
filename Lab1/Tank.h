@@ -31,7 +31,7 @@ public:
 	Tank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* camera, bool isPlayer)
 	{
 		//leclerc body
-		m_body.GetTransform()->SetPosition(glm::vec3(0.0, -0.5, -1.5));
+		m_body.GetTransform()->SetPosition(glm::vec3(0.0, -0.55, -1.5));
 		m_body.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 		m_body.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
 		m_body.SetShader(*shaderManager.GetShader(ADS));
@@ -39,7 +39,7 @@ public:
 		m_body.SetMesh(*meshManager.GetMesh(LECLERCBODY));
 
 		//turret
-		m_turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.575, -1.5));
+		m_turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.625, -1.5));
 		m_turret.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 		m_turret.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
 		m_turret.SetShader(*shaderManager.GetShader(ADS));
