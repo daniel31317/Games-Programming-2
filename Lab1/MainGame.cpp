@@ -56,9 +56,11 @@ void MainGame::initGameObjects()
 
 	m_EnemyTank = std::make_unique<EnemyTank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera);
 
-	m_colliderEditor = std::make_unique<ColliderEditor>(&m_shaderManager, &m_textureManager, &m_meshManager, m_tank->GetBody());
+	m_colliderEditor = std::make_unique<ColliderEditor>(&m_shaderManager, &m_textureManager, &m_meshManager, m_tank->GetBody(), m_EnemyTank->GetTank()->GetBody());
 
 	m_tank->SetTankCollider(m_colliderEditor->GetTankCollider());
+
+	m_EnemyTank->GetTank()->SetTankCollider(m_colliderEditor->GetEnemyTankCollider());
 }
 
 void MainGame::gameLoop()
@@ -272,11 +274,11 @@ void MainGame::processInput()
 	{
 		if (state[SDL_SCANCODE_W])
 		{
-			m_tank->MoveForward(deltaTime);
+			m_tank->MoveForward();
 		}
 		if (state[SDL_SCANCODE_S])
 		{
-			m_tank->MoveBackwards(deltaTime);
+			m_tank->MoveBackwards();
 		}
 		if (state[SDL_SCANCODE_A])
 		{
@@ -326,7 +328,7 @@ void MainGame::update()
 
 	m_tank->Update(deltaTime);
 
-	m_EnemyTank->GetTank()->Update(deltaTime);
+	m_EnemyTank->Update(deltaTime);
 	
 }
 

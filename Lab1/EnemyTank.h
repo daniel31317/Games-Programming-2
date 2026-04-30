@@ -13,10 +13,15 @@ public:
 
 	EnemyTank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* mainCamera) : m_tank(shaderManager, textureManager, meshManager, mainCamera, false)
 	{
-		
+		m_tank.SetPosition(glm::vec3(2.0, -0.5, -1.5));
 	}
 
 
+	void Update(float deltaTime)
+	{
+		//m_tank.MoveForward();
+		m_tank.Update(deltaTime);
+	}
 
 
 

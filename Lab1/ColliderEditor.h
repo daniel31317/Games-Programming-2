@@ -27,14 +27,16 @@ struct ColliderEditor
 		}
 
 
-		ColliderEditor(ShaderManager* shaderManager, TextureManager* textureManager, MeshManager* meshManager, GameObject* tankBody)
+		ColliderEditor(ShaderManager* shaderManager, TextureManager* textureManager, MeshManager* meshManager, GameObject* tankBody, GameObject* enemyTankBody)
 		{
 			this->shaderManager = shaderManager;
 			this->textureManager = textureManager;
 			this->meshManager = meshManager;
 			this->tankBody = tankBody;
+			this->enemyTankBody = enemyTankBody;
 
 			CreateTankBodyCollider();
+			CreateEnemyTankBodyCollider();
 
 			loadCollidersFromBinary("..\\res\\colliders.bin");
 		}
@@ -643,6 +645,11 @@ struct ColliderEditor
 			m_tankBodyCollider.GetShader()->Update(*m_tankBodyCollider.GetTransform(), mainCamera, false);
 			m_tankBodyCollider.GetTexture()->Bind(0);
 			m_tankBodyCollider.GetMesh()->draw();
+
+			m_enemyTankBodyCollider.GetShader()->Bind();
+			m_enemyTankBodyCollider.GetShader()->Update(*m_enemyTankBodyCollider.GetTransform(), mainCamera, false);
+			m_enemyTankBodyCollider.GetTexture()->Bind(0);
+			m_enemyTankBodyCollider.GetMesh()->draw();
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		}
@@ -748,6 +755,20 @@ struct ColliderEditor
 		}
 
 
+		void CreateEnemyTankBodyCollider()
+		{
+			m_enemyTankBodyCollider = GameObject();
+			m_tankBodyColliderOffset = glm::vec3(0.0, -0.15, -0.1);
+			m_enemyTankBodyCollider.GetTransform()->SetPosition(*enemyTankBody->GetTransform()->GetPosition() + m_tankBodyColliderOffset);
+			m_enemyTankBodyCollider.GetTransform()->SetRotation(glm::vec3(0.0));
+			m_enemyTankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 0.3, 1.7));
+			m_enemyTankBodyCollider.GetCollider()->SetScale(*m_enemyTankBodyCollider.GetTransform()->GetScale());
+			m_enemyTankBodyCollider.GetCollider()->UpdateCollider(*m_enemyTankBodyCollider.GetTransform()->GetPosition(), *m_enemyTankBodyCollider.GetTransform()->GetRotation());
+			m_enemyTankBodyCollider.SetShader(*shaderManager->GetShader(RIM_LIGHT));
+			m_enemyTankBodyCollider.SetTexture(*textureManager->GetTexture(NONE));
+			m_enemyTankBodyCollider.SetMesh(*meshManager->GetMesh(CUBE));
+		}
+
 
 
 		void UpdateEditorStateText()
@@ -797,11 +818,18 @@ struct ColliderEditor
 					return true;
 				}
 			}
+
+			if (m_tankBodyCollider.GetCollider()->IsCollidingWith(m_enemyTankBodyCollider.GetCollider()))
+			{
+				return true;
+			}
+
 			return false;
 		}
 
 
 		GameObject* GetTankCollider() { return &m_tankBodyCollider; }
+		GameObject* GetEnemyTankCollider() { return &m_enemyTankBodyCollider; }
 		glm::vec3* GetTankColliderOffset() { return &m_tankBodyColliderOffset; }
 
 	private:
@@ -849,7 +877,10 @@ struct ColliderEditor
 		TextureManager* textureManager;
 		MeshManager* meshManager;
 		GameObject* tankBody;
+		GameObject* enemyTankBody;
 
 		GameObject m_tankBodyCollider;
+		GameObject m_enemyTankBodyCollider;
+
 		glm::vec3 m_tankBodyColliderOffset;
 };

@@ -170,13 +170,13 @@ public:
 	GameObject* GetBody() { return &m_body; }
 	GameObject* GetTurret() { return &m_turret; }
 
-    void MoveForward(float deltaTime)
+    void MoveForward()
     {
 		movingForward = true;
 	}
 	
 
-    void MoveBackwards(float deltaTime)
+    void MoveBackwards()
     {
 		movingBackward = true;
     }
