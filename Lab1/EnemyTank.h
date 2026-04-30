@@ -162,7 +162,7 @@ public:
 				if (m_tank.GetIfCanShoot())
 				{
 					m_tank.Shoot();
-					//m_playerRef->KillTank();
+					m_playerRef->KillTank();
 				}
 			}
 		}
