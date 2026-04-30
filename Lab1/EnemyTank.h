@@ -25,7 +25,7 @@ public:
 
 		GenerateStartingIndices(currentIndex, nextIndex, 9, 8);
 
-		m_tank.SetPosition(glm::vec3(movementGrid[currentIndex.row][currentIndex.col].x, -0.5, -movementGrid[currentIndex.row][currentIndex.col].y));
+		m_tank.SetPosition(glm::vec3(movementGrid[currentIndex.row][currentIndex.col].x, -0.94f, -movementGrid[currentIndex.row][currentIndex.col].y));
 
 		m_positionRef = m_tank.GetBody()->GetTransform()->GetPosition();
 		m_currentSpeedRef = m_tank.GetCurrentSpeed();

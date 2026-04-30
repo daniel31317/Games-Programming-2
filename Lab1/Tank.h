@@ -30,21 +30,44 @@ public:
 
 	Tank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* camera, bool isPlayer)
 	{
-		//leclerc body
-		m_body.GetTransform()->SetPosition(glm::vec3(0.0, -0.55, -1.5));
-		m_body.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
-		m_body.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
-		m_body.SetShader(*shaderManager.GetShader(TANK));
-		m_body.SetTexture(*textureManager.GetTexture(NONE));
-		m_body.SetMesh(*meshManager.GetMesh(LECLERCBODY));
 
-		//turret
-		m_turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.625, -1.5));
-		m_turret.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
-		m_turret.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
-		m_turret.SetShader(*shaderManager.GetShader(TANK));
-		m_turret.SetTexture(*textureManager.GetTexture(NONE));
-		m_turret.SetMesh(*meshManager.GetMesh(LECLERCTURRET));
+		if (isPlayer)
+		{
+			//leclerc body
+			m_body.GetTransform()->SetPosition(glm::vec3(0.0, -0.55, -1.5));
+			m_body.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+			m_body.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
+			m_body.SetShader(*shaderManager.GetShader(TANK));
+			m_body.SetTexture(*textureManager.GetTexture(NONE));
+			m_body.SetMesh(*meshManager.GetMesh(LECLERCBODY));
+
+			//turret
+			m_turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.625, -1.5));
+			m_turret.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+			m_turret.GetTransform()->SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
+			m_turret.SetShader(*shaderManager.GetShader(TANK));
+			m_turret.SetTexture(*textureManager.GetTexture(NONE));
+			m_turret.SetMesh(*meshManager.GetMesh(LECLERCTURRET));
+		}
+		else
+		{
+			//t80 body
+			m_body.GetTransform()->SetPosition(glm::vec3(0.0, -0.94, -1.5));
+			m_body.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+			m_body.GetTransform()->SetScale(glm::vec3(0.20f, 0.20f, 0.20f));
+			m_body.SetShader(*shaderManager.GetShader(TANK));
+			m_body.SetTexture(*textureManager.GetTexture(T80HULL_T));
+			m_body.SetMesh(*meshManager.GetMesh(T80BODY));
+
+			//turret
+			m_turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.94, -1.5));
+			m_turret.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+			m_turret.GetTransform()->SetScale(glm::vec3(0.20f, 0.20f, 0.20f));
+			m_turret.SetShader(*shaderManager.GetShader(TANK));
+			m_turret.SetTexture(*textureManager.GetTexture(T80TURRET_T));
+			m_turret.SetMesh(*meshManager.GetMesh(T80TURRET));
+		}
+		
 
 		//muzzle flash
 		m_muzzleFlash.GetTransform()->SetPosition(glm::vec3(0.0, -0.45, -0.1));
@@ -442,13 +465,13 @@ public:
 	void Draw()
 	{
 		m_body.GetShader()->Bind();
-		m_body.GetShader()->Update(*m_body.GetTransform(), *camera, false, alive ? 0.0f : 0.95f);
+		m_body.GetShader()->Update(*m_body.GetTransform(), *camera, !isPlayer, alive ? 0.0f : 0.95f);
 		m_body.GetTexture()->Bind(0);
 		noiseTexture->Bind(1);
 		m_body.GetMesh()->draw();
 
 		m_turret.GetShader()->Bind();
-		m_turret.GetShader()->Update(*m_turret.GetTransform(), *camera, false, alive ? 0.0f : 0.95f);
+		m_turret.GetShader()->Update(*m_turret.GetTransform(), *camera, !isPlayer, alive ? 0.0f : 0.95f);
 		m_turret.GetTexture()->Bind(0);
 		noiseTexture->Bind(1);
 		m_turret.GetMesh()->draw();
