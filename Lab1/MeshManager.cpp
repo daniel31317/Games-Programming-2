@@ -100,9 +100,43 @@ void MeshManager::LoadMeshes()
 	unsigned int numIndices1 = sizeof(indices1) / sizeof(indices1[0]);
 
 	m_meshList[CUBE]->init(vertices1, numVertices1, indices1, numIndices1);
-	m_meshList[CUBE]->setDefaultColour(glm::vec3(1, 0, 1)); // Magenta
 	m_meshList[CUBE]->uploadModelToGPU();
 
+
+
+
+    m_meshList[CROSSHAIR] = std::make_unique<Mesh>();
+
+    float width = 0.036f; 
+    float height = 0.064f; 
+
+    float thicknessX = 0.001f; 
+    float thicknessY = 0.003f; 
+
+    Vertex crosshairVertices[] = 
+    {
+
+        Vertex(glm::vec3(-width, -thicknessY, 0.0f), glm::vec2(0,0), glm::vec3(0,0,1)),
+        Vertex(glm::vec3(width, -thicknessY, 0.0f), glm::vec2(1,0), glm::vec3(0,0,1)),
+        Vertex(glm::vec3(width,  thicknessY, 0.0f), glm::vec2(1,1), glm::vec3(0,0,1)),
+        Vertex(glm::vec3(-width,  thicknessY, 0.0f), glm::vec2(0,1), glm::vec3(0,0,1)),
+
+        Vertex(glm::vec3(-thicknessX, -height, 0.0f), glm::vec2(0,0), glm::vec3(0,0,1)),
+        Vertex(glm::vec3(thicknessX, -height, 0.0f), glm::vec2(1,0), glm::vec3(0,0,1)),
+        Vertex(glm::vec3(thicknessX,  height, 0.0f), glm::vec2(1,1), glm::vec3(0,0,1)),
+        Vertex(glm::vec3(-thicknessX,  height, 0.0f), glm::vec2(0,1), glm::vec3(0,0,1))
+    };
+    unsigned int crosshairIndices[] = {
+        0, 1, 2,  2, 3, 0,
+        4, 5, 6,  6, 7, 4 
+    };
+
+    unsigned int numVertices2 = sizeof(crosshairVertices) / sizeof(crosshairVertices[0]);
+
+    unsigned int numIndices2 = sizeof(crosshairIndices) / sizeof(crosshairIndices[0]);
+
+    m_meshList[CROSSHAIR]->init(crosshairVertices, numVertices2, crosshairIndices, numIndices2);
+    m_meshList[CROSSHAIR]->uploadModelToGPU();
 
 }
 

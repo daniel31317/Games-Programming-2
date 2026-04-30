@@ -106,10 +106,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\res\shader.vert">
+    <None Include="..\res\UIElement.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\shader.frag">
+    <None Include="..\res\UIElement.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\res\ColliderOutline.frag">

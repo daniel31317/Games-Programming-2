@@ -308,7 +308,7 @@ public:
 
 	void SetTankColliderOffset(glm::vec3* tankColliderOffset) { this->tankColliderOffset = tankColliderOffset; }
 
-	void UpdateIfEnemyCanSeePlayer(bool canSee) { playerDetected = canSee; std::cout << canSee; }
+	void UpdateIfEnemyCanSeePlayer(bool canSee) { playerDetected = canSee; }
 
 
 

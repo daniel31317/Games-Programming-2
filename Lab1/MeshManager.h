@@ -9,6 +9,7 @@ enum MeshName
 {
 	QUAD,
 	CUBE,
+	CROSSHAIR,
 	LECLERCBODY,
 	LECLERCTURRET,
 	CITY,
