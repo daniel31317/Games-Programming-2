@@ -321,12 +321,12 @@ public:
 
 
 
-	void HandleColliison(bool collided)
+	void HandleColliison(bool collided, float collsionForce)
 	{
 		if (collided && collided != collidedLastFrame)
 		{
 			//dampning
-			currentSpeed = -currentSpeed / 8;
+			currentSpeed = -currentSpeed / collsionForce;
 		}	
 		collidedLastFrame = collided;
 	}
