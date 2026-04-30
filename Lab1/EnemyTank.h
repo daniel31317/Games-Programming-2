@@ -156,7 +156,7 @@ public:
 			else
 			{
 				//perry kill that man
-				if (*m_tank.GetIfCanShoot())
+				if (m_tank.GetIfCanShoot())
 				{
 					m_tank.Shoot();
 					m_playerRef->KillTank();
@@ -228,8 +228,10 @@ public:
 		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
 
 		//only rotate if the difference is enough
-		if (std::abs(angleDiff) > 0.01f) {
-			if (angleDiff > 0) {
+		if (std::abs(angleDiff) > 0.01f) 
+		{
+			if (angleDiff > 0) 
+			{
 				m_tank.RotateTurretLeft(deltaTime);
 			}
 			else {

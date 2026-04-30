@@ -430,7 +430,7 @@ public:
 	const float* GetCurrentSpeed() const { return &currentSpeed; }
 	const float* GetBrakeForce() const { return &brakeForce; }
 	const bool* GetCollidedLastFrame() const { return &collidedLastFrame; }
-	const bool* GetIfCanShoot() const { return &canShoot; }
+	const bool GetIfCanShoot() const { return canShoot && alive; }
 
 
 private:

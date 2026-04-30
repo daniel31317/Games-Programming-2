@@ -299,7 +299,7 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_SPACE])
 		{
-			if (*m_tank->GetIfCanShoot())
+			if (m_tank->GetIfCanShoot())
 			{
 				m_tank->Shoot();
 				Transform* turretTransform = m_tank->GetTurret()->GetTransform();
