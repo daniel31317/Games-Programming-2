@@ -329,6 +329,7 @@ void MainGame::update()
 
 	bool tanksCollide = m_colliderEditor->CollisionWithTank();
 	
+	//handle if tanks crash into each other
 	m_tank->HandleColliison(tanksCollide);
 
 	m_EnemyTank->GetTank()->HandleColliison(tanksCollide);
