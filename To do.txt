@@ -2,9 +2,6 @@
 
 - Sky background
 
--Tank fight	
-	- mouse aim
-
 -Smoke from barrel shot
 
 -Fume particle thing
@@ -15,9 +12,6 @@
 	-tank settings
 	-buttons
 	
--Rotate tank functions combination
-
--Possible shader change with gl_position
 
 -Controls in console
 
