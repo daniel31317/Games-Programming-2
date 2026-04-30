@@ -297,30 +297,37 @@ void MainGame::processInput()
 		}
 
 
-		if(state[SDL_SCANCODE_LEFT])
+		if (mouseX != 0)
 		{
-			m_mainCamera.rotate(rotAmount * deltaTime, glm::vec3(0, 1, 0));
+			float yawAmount = (float)mouseX * m_sensitivity / 1000.f;
+			m_mainCamera.rotate(-yawAmount, glm::vec3(0, 1, 0));
 		}
-		if(state[SDL_SCANCODE_RIGHT])
+
+		if (mouseY != 0)
 		{
-			m_mainCamera.rotate(-rotAmount * deltaTime, glm::vec3(0, 1, 0));
-		}
-		if (state[SDL_SCANCODE_UP])
-		{
-			if (m_mainCamera.GetPitch() < glm::radians(89.0f))
+			float pitchAmount = (float)mouseY * m_sensitivity / 1000.f;
+			float currentPitch = m_mainCamera.GetPitch();
+
+
+			if (pitchAmount > 0)
 			{
-				m_mainCamera.rotate(rotAmount * deltaTime, m_mainCamera.GetRight());
-				m_mainCamera.AddPitch(rotAmount * deltaTime);
+				if (currentPitch > glm::radians(-89.0f))
+				{
+					m_mainCamera.rotate(-pitchAmount, m_mainCamera.GetRight());
+					m_mainCamera.AddPitch(-pitchAmount);
+				}
+			}
+			else 
+			{
+				if (currentPitch < glm::radians(89.0f))
+				{
+					m_mainCamera.rotate(-pitchAmount, m_mainCamera.GetRight());
+					m_mainCamera.AddPitch(-pitchAmount);
+				}
 			}
 		}
-		if (state[SDL_SCANCODE_DOWN])
-		{
-			if (m_mainCamera.GetPitch() > glm::radians(-89.0f))
-			{
-				m_mainCamera.rotate(-rotAmount * deltaTime, m_mainCamera.GetRight());
-				m_mainCamera.AddPitch(-rotAmount * deltaTime);
-			}
-		}
+
+
 	}
 	else
 	{
