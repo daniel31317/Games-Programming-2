@@ -54,7 +54,7 @@ void MainGame::initGameObjects()
 
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera, true);
 
-	m_EnemyTank = std::make_unique<EnemyTank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera, m_tank->GetBody());
+	m_EnemyTank = std::make_unique<EnemyTank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera, m_tank.get());
 
 	m_colliderEditor = std::make_unique<ColliderEditor>(&m_shaderManager, &m_textureManager, &m_meshManager, m_tank.get(), m_EnemyTank->GetTank());
 
@@ -299,9 +299,12 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_SPACE])
 		{
-			m_tank->Shoot();
-			Transform* turretTransform = m_tank->GetTurret()->GetTransform();
-			m_colliderEditor->ShootDetection(*turretTransform->GetPosition(), turretTransform->GetForward(), true);
+			if (*m_tank->GetIfCanShoot())
+			{
+				m_tank->Shoot();
+				Transform* turretTransform = m_tank->GetTurret()->GetTransform();
+				m_colliderEditor->ShootDetection(*turretTransform->GetPosition(), turretTransform->GetForward(), true);
+			}	
 		}
 	}
 

@@ -12,15 +12,15 @@ struct EnemyTank
 
 public:
 
-	struct MapIndex 
+	struct MapIndex
 	{
 		int row;
 		int col;
-	
+
 	};
 	EnemyTank() {}
 
-	EnemyTank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* mainCamera, GameObject* playerTank) : m_tank(shaderManager, textureManager, meshManager, mainCamera, false)
+	EnemyTank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* mainCamera, Tank* playerTank) : m_tank(shaderManager, textureManager, meshManager, mainCamera, false)
 	{
 
 		GenerateStartingIndices(currentIndex, nextIndex, 9, 8);
@@ -32,12 +32,13 @@ public:
 		m_brakeForceRef = m_tank.GetBrakeForce();
 		m_tankBodyRef = m_tank.GetBody();
 		m_playerRef = playerTank;
+		m_playerBodyRef = playerTank->GetBody();
 	}
 
 
 	void Update(float deltaTime)
 	{
-		
+
 		HandleDriving();
 
 		HandleBodyRotation(deltaTime);
@@ -129,26 +130,114 @@ public:
 
 	void HandleTurretRotation(float deltaTime)
 	{
-		float currentAngleYTurret = m_tank.GetTurret()->GetTransform()->GetRotation()->y;
-
-		//normalize between -180 to 180 so it dont do cool spin
-		float angleDiff = targetAngleY - currentAngleYTurret;
-		while (angleDiff < -glm::pi<float>()) angleDiff += glm::two_pi<float>();
-		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
-
-		//only rotate if difference is small
-		if (std::abs(angleDiff) > 0.0045f)
+		if (playerDetected) 
 		{
-			if (angleDiff > 0)
-			{
-				m_tank.RotateTurretLeft(deltaTime);
+			//lock on and shoot the player
+			glm::vec3 toPlayer = *m_playerBodyRef->GetTransform()->GetPosition() - *m_positionRef;
+			float angleToPlayer = std::atan2(toPlayer.x, toPlayer.z);
+
+			//shortest path to rotation logic
+			float currentTurretRot = m_tank.GetTurret()->GetTransform()->GetRotation()->y;
+			float diff = angleToPlayer - currentTurretRot;
+			while (diff < -glm::pi<float>()) diff += glm::two_pi<float>();
+			while (diff > glm::pi<float>()) diff -= glm::two_pi<float>();
+
+			if (std::abs(diff) > 0.05f) {
+				if (diff > 0)
+				{
+					m_tank.RotateTurretLeft(deltaTime);
+				}
+
+				else
+				{
+					m_tank.RotateTurretRight(deltaTime);
+				}
 			}
 			else
 			{
+				//perry kill that man
+				if (*m_tank.GetIfCanShoot())
+				{
+					m_tank.Shoot();
+					m_playerRef->KillTank();
+				}
+			}
+		}
+		else
+		{
+			bool isGlancing = false;
+
+			//determine if moving on row or column
+			bool movingOnRow = (currentIndex.row == nextIndex.row);
+
+			if (movingOnRow) 
+			{
+				//check all columns in row to see if we are passing intersection
+				for (int c = 0; c < 8; ++c) 
+				{ 
+					glm::vec2 intersectionPos = movementGrid[currentIndex.row][c];
+					float distToIntersection = glm::distance(glm::vec2(m_positionRef->x, -m_positionRef->z), intersectionPos);
+
+					//if near enough
+					if (distToIntersection < 8.0f && distToIntersection > 0.5f) 
+					{
+						//look down street
+						float scanAngle = (c % 2 == 0) ? 0.0f : glm::pi<float>(); 
+						RotateTurretToAngle(scanAngle, deltaTime);
+						isGlancing = true;
+						break;
+					}
+				}
+			}
+			else 
+			{
+				//same as before but rows
+				for (int r = 0; r < 9; ++r) 
+				{ 
+					glm::vec2 intersectionPos = movementGrid[r][currentIndex.col];
+					float distToIntersection = glm::distance(glm::vec2(m_positionRef->x, -m_positionRef->z), intersectionPos);
+
+					if (distToIntersection < 8.0f && distToIntersection > 0.5f) 
+					{
+						float scanAngle = (r % 2 == 0) ? 1.57f : -1.57f;
+						RotateTurretToAngle(scanAngle, deltaTime);
+						isGlancing = true;
+						break;
+					}
+				}
+			}
+
+			//if not near intersection look hull down 
+			if (!isGlancing) 
+			{
+				RotateTurretToAngle(targetAngleY, deltaTime);
+			}
+		}
+	}
+
+
+	void RotateTurretToAngle(float targetAngle, float deltaTime) 
+	{
+	
+		float currentTurretRot = m_tank.GetTurret()->GetTransform()->GetRotation()->y;
+
+		float angleDiff = targetAngle - currentTurretRot;
+
+		//normalize angle between pis
+		while (angleDiff < -glm::pi<float>()) angleDiff += glm::two_pi<float>();
+		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
+
+		//only rotate if the difference is enough
+		if (std::abs(angleDiff) > 0.01f) {
+			if (angleDiff > 0) {
+				m_tank.RotateTurretLeft(deltaTime);
+			}
+			else {
 				m_tank.RotateTurretRight(deltaTime);
 			}
 		}
 	}
+
 
 	MapIndex GetNextRandomPoint(MapIndex current, MapIndex previous, int maxRows, int maxCols) {
 		std::vector<MapIndex> validPoints;
@@ -157,7 +246,7 @@ public:
 		bool movingHorizontally = (current.row == previous.row);
 		bool movingVertically = (current.col == previous.col);
 
-		
+
 		//cjeck points in the same row
 		for (int c = 0; c < maxCols; ++c) {
 			if (c == current.col) continue;
@@ -173,7 +262,7 @@ public:
 			validPoints.push_back({ current.row, c });
 		}
 
-		
+
 		//check points in same column
 		for (int r = 0; r < maxRows; ++r) {
 			if (r == current.row) continue;
@@ -204,7 +293,7 @@ public:
 		std::uniform_int_distribution<> rowDist(0, maxRows - 1);
 		std::uniform_int_distribution<> colDist(0, maxCols - 1);
 
-		
+
 		start.row = rowDist(gen);
 		start.col = colDist(gen);
 
@@ -219,13 +308,14 @@ public:
 
 	void UpdateIfEnemyCanSeePlayer(bool canSee) { playerDetected = canSee; std::cout << canSee; }
 
-	
+
 
 private:
 
 	Tank m_tank;
 	GameObject* m_tankBodyRef = nullptr;
-	GameObject* m_playerRef = nullptr;
+	GameObject* m_playerBodyRef = nullptr;
+	Tank* m_playerRef = nullptr;
 	const glm::vec3* m_positionRef = nullptr;
 	const float* m_currentSpeedRef = nullptr;
 	const float* m_brakeForceRef = nullptr;

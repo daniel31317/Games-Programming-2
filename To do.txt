@@ -2,10 +2,8 @@
 
 - Sky background
 
--Tank fight
-	- chill guy slime (kind of)
-	- index issue when going off map in tank ai
-	- crosshair
+-Tank fight	
+	- crosshair/scope
 
 -Smoke from barrel shot
 

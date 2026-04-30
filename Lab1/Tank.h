@@ -148,6 +148,11 @@ public:
 
 		muzzleFlashData.lifetime -= deltaTime;
 		currentReloadTime -= deltaTime;
+
+		if (currentReloadTime < 0)
+		{
+			canShoot = true;
+		}
 	}
 
     void SetPosition(glm::vec3 position)
@@ -372,6 +377,8 @@ public:
 		{
 			return;
 		}
+
+		canShoot = false;
 		muzzleFlashData.lifetime = muzzleFlashData.maxLifetime;
 		currentReloadTime = maxReloadTime;
 	}
@@ -423,6 +430,7 @@ public:
 	const float* GetCurrentSpeed() const { return &currentSpeed; }
 	const float* GetBrakeForce() const { return &brakeForce; }
 	const bool* GetCollidedLastFrame() const { return &collidedLastFrame; }
+	const bool* GetIfCanShoot() const { return &canShoot; }
 
 
 private:
@@ -460,6 +468,9 @@ private:
 	const float maxReloadTime = 6.0f;
 	float currentReloadTime = 0.0f;
 
+
+	bool canShoot = true;
+
 	bool alive = true;
 
 	bool isPlayer = false;
@@ -467,4 +478,6 @@ private:
 	glm::vec3 cameraOffset = glm::vec3();
 	glm::vec3 turretOffset = glm::vec3();
 	float muzzleFlashOffset = 0.0;
+
+	
 };
