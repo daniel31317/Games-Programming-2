@@ -302,7 +302,7 @@ public:
 		
     }
 
-	void RotateTurretLeft(float deltaTime)
+	void RotateTurretLeft(float deltaTime, bool isZooming)
 	{
 		if (!alive)
 		{
@@ -310,7 +310,9 @@ public:
 		}
 		Transform* turretTransform = m_turret.GetTransform();
 
-		turretTransform->rotate(glm::vec3(0.0f, turretRotSpeed * deltaTime, 0.0f));
+		float rotSpeed = isZooming ? turretRotSpeed / 2 : turretRotSpeed;
+
+		turretTransform->rotate(glm::vec3(0.0f, rotSpeed * deltaTime, 0.0f));
 
 		m_muzzleFlash.GetTransform()->SetRotation(*turretTransform->GetRotation());
 
@@ -320,7 +322,7 @@ public:
 
 		if (isPlayer)
 		{
-			camera->rotate(turretRotSpeed * deltaTime, glm::vec3(0, 1, 0));
+			camera->rotate(rotSpeed * deltaTime, glm::vec3(0, 1, 0));
 			glm::mat4 rotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
 			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
 			camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
@@ -328,7 +330,7 @@ public:
 
 	}
 
-    void RotateTurretRight(float deltaTime)
+    void RotateTurretRight(float deltaTime, bool isZooming)
     {
 		if (!alive)
 		{
@@ -336,7 +338,9 @@ public:
 		}
 		Transform* turretTransform = m_turret.GetTransform();
 
-		turretTransform->rotate(glm::vec3(0.0f, -turretRotSpeed * deltaTime, 0.0f));
+		float rotSpeed = isZooming ? turretRotSpeed / 2 : turretRotSpeed;
+
+		turretTransform->rotate(glm::vec3(0.0f, -rotSpeed * deltaTime, 0.0f));
 
 		m_muzzleFlash.GetTransform()->SetRotation(*turretTransform->GetRotation());
 
@@ -346,7 +350,7 @@ public:
 
 		if (isPlayer)
 		{
-			camera->rotate(-turretRotSpeed * deltaTime, glm::vec3(0, 1, 0));
+			camera->rotate(-rotSpeed * deltaTime, glm::vec3(0, 1, 0));
 			glm::mat4 rotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
 			glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
 			camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);

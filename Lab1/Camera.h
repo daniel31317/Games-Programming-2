@@ -17,7 +17,7 @@ struct Camera
 		this->up = glm::vec3(0.0f, 1.0f, 0.0f);
 		this->right = glm::vec3(1.0f, 0.0f, 0.0f);
 		this->projection = glm::perspective(fov, aspect, nearClip, farClip);
-
+		this->m_aspectRatio = aspect;
 	}
 
 	void move(const glm::vec3& movement)
@@ -101,6 +101,25 @@ struct Camera
 		projection = glm::perspective(fov, aspect, nearClip, farClip);
 	}
 
+	
+
+	void UpdateZoom(float deltaTime)
+	{
+		// Determine which FOV we are aiming for
+		float targetFOV = m_isZooming ? m_zoomFOV : m_defaultFOV;
+
+		// Smoothly interpolate (Lerp) the current FOV toward the target
+		// 10.0f is the zoom speed
+		m_currentFOV = glm::mix(m_currentFOV, targetFOV, deltaTime * 10.0f);
+
+		// Update the projection matrix with the new FOV
+		// Pass your existing aspect ratio, near, and far clips
+		updateProjection(m_currentFOV, m_aspectRatio, 0.1f, 1000.0f);
+	}
+
+
+	bool GetZooming() { return m_isZooming; }
+	void SetZooming(bool active) { m_isZooming = active; }
 	float GetPitch() const { return m_pitch; }
 	void AddPitch(float angle) { m_pitch += angle; }
 	void ResetPitch() { m_pitch = 0.0f; }
@@ -112,6 +131,13 @@ private:
 	glm::vec3 forward;
 	glm::vec3 up;
 	glm::vec3 right;
+
+	float m_aspectRatio;
+
+	float m_defaultFOV = glm::radians(50.0f); // Standard view
+	float m_zoomFOV = glm::radians(15.0f);    // Zoomed view
+	float m_currentFOV = glm::radians(50.0f);
+	bool m_isZooming = false;
 
 	float m_pitch = 0.0f;
 

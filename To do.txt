@@ -4,6 +4,8 @@
 
 -Tank fight	
 	- crosshair/scope
+	- mouse aim
+	- stop detection when dead
 
 -Smoke from barrel shot
 

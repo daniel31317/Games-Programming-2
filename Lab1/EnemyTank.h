@@ -117,12 +117,12 @@ public:
 			if (angleDiff > 0)
 			{
 				m_tank.RotateBodyLeft(deltaTime, true, *tankColliderOffset);
-				m_tank.RotateTurretLeft(deltaTime);
+				m_tank.RotateTurretLeft(deltaTime, false);
 			}
 			else
 			{
 				m_tank.RotateBodyRight(deltaTime, true, *tankColliderOffset);
-				m_tank.RotateTurretRight(deltaTime);
+				m_tank.RotateTurretRight(deltaTime, false);
 			}
 		}
 
@@ -145,12 +145,12 @@ public:
 			if (std::abs(diff) > 0.05f) {
 				if (diff > 0)
 				{
-					m_tank.RotateTurretLeft(deltaTime);
+					m_tank.RotateTurretLeft(deltaTime, false);
 				}
 
 				else
 				{
-					m_tank.RotateTurretRight(deltaTime);
+					m_tank.RotateTurretRight(deltaTime, false);
 				}
 			}
 			else
@@ -159,7 +159,7 @@ public:
 				if (m_tank.GetIfCanShoot())
 				{
 					m_tank.Shoot();
-					m_playerRef->KillTank();
+					//m_playerRef->KillTank();
 				}
 			}
 		}
@@ -232,10 +232,10 @@ public:
 		{
 			if (angleDiff > 0) 
 			{
-				m_tank.RotateTurretLeft(deltaTime);
+				m_tank.RotateTurretLeft(deltaTime, false);
 			}
 			else {
-				m_tank.RotateTurretRight(deltaTime);
+				m_tank.RotateTurretRight(deltaTime, false);
 			}
 		}
 	}

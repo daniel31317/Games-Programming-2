@@ -76,5 +76,6 @@ private:
 
 	bool hDown = false;
 	bool cDown = false;
+	bool tDown = false;
 
 };

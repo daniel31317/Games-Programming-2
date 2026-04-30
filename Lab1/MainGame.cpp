@@ -215,7 +215,9 @@ void MainGame::processInput()
 	float rotAmount = 2.f;
 	float moveAmount = 10.f;
 
+	m_mainCamera.SetZooming(state[SDL_SCANCODE_T]);
 
+	bool isZooming = m_mainCamera.GetZooming();
 
 	if (freeCamera)
 	{
@@ -291,11 +293,11 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_LEFT])
 		{
-			m_tank->RotateTurretLeft(deltaTime);
+			m_tank->RotateTurretLeft(deltaTime, isZooming);
 		}
 		if (state[SDL_SCANCODE_RIGHT])
 		{
-			m_tank->RotateTurretRight(deltaTime);
+			m_tank->RotateTurretRight(deltaTime, isZooming);
 		}
 		if (state[SDL_SCANCODE_SPACE])
 		{
@@ -306,6 +308,11 @@ void MainGame::processInput()
 				m_colliderEditor->ShootDetection(*turretTransform->GetPosition(), turretTransform->GetForward(), true);
 			}	
 		}
+
+
+
+		
+
 	}
 
 	if (state[SDL_SCANCODE_H])
@@ -366,6 +373,8 @@ void MainGame::update()
 	m_tank->Update(deltaTime);
 
 	m_EnemyTank->Update(deltaTime);
+
+	m_mainCamera.UpdateZoom(deltaTime);
 	
 }
 
