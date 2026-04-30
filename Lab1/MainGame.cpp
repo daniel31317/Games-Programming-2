@@ -342,6 +342,8 @@ void MainGame::update()
 	if (colliderEditorActive)
 		m_colliderEditor->UpdateEditor();
 
+
+
 	std::array<bool, 2> tankCollision = m_colliderEditor->CollisionDetection();
 	
 	//handle if tanks crash into each other
@@ -356,7 +358,7 @@ void MainGame::update()
 		m_tank->HandleColliison(tankCollision[0], 8);
 	}
 
-	
+	m_EnemyTank->UpdateIfEnemyCanSeePlayer(m_colliderEditor->CheckForPlayer());
 
 	m_tank->Update(deltaTime);
 

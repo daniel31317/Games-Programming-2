@@ -925,11 +925,64 @@ public:
 
 		return &hits[closestIndex];
 	}
+
+
+
+
+	bool CheckForPlayer()
+	{
+		glm::vec3 enemyPos = *enemyTankRef->GetBody()->GetTransform()->GetPosition();
+		glm::vec3 playerPos = *playerTankRef->GetBody()->GetTransform()->GetPosition();
+		glm::vec3 toPlayer = glm::normalize(playerPos - enemyPos);
+
+
+		//180 degree radius in front
+		float turretRot = enemyTankRef->GetTurret()->GetTransform()->GetRotation()->y;
+		glm::vec3 turretForward = glm::vec3(std::sin(turretRot), 0, std::cos(turretRot));
+		float dot = glm::dot(turretForward, toPlayer);
+
+		//if the player is behind the turret dont bother
+		if (dot <= 0.0f) 
+		{
+			return false;
+		}
+
+		//things for line of sight checks
+		float distToPlayer = glm::distance(enemyPos, playerPos);
+		float closestObstacleDist = 100000.0f;
+		bool buildingInWay = false;
+
+		
+		//check if it hit any buildings
+		for (int i = 0; i < m_colliders.size(); i++)
+		{
+			float d = 0.0f;
+			Collider* collider = m_colliders[i]->GetCollider();
+			if (collider->CheckRayHit(enemyPos, toPlayer, *collider, d))
+			{
+				if (d < closestObstacleDist) 
+				{
+					closestObstacleDist = d;
+				}
+			}
+		}
+			
+
+		//if the closest thing we hit was closer than the player then we didnt hit the plyer
+		if (closestObstacleDist > distToPlayer) 
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
 	
 
-		GameObject* GetTankCollider() { return &m_tankBodyCollider; }
-		GameObject* GetEnemyTankCollider() { return &m_enemyTankBodyCollider; }
-		glm::vec3* GetTankColliderOffset() { return &m_tankBodyColliderOffset; }
+	GameObject* GetTankCollider() { return &m_tankBodyCollider; }
+	GameObject* GetEnemyTankCollider() { return &m_enemyTankBodyCollider; }
+	glm::vec3* GetTankColliderOffset() { return &m_tankBodyColliderOffset; }
 
 	private:
 
