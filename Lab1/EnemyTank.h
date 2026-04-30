@@ -85,10 +85,10 @@ public:
 
 
 
-		float currentAngleY = m_tankBodyRef->GetTransform()->GetRotation()->y;
+		float currentAngleYBody = m_tankBodyRef->GetTransform()->GetRotation()->y;
 
 		//normalize between -180 to 180 so it dont do cool spin
-		float angleDiff = targetAngleY - currentAngleY;
+		float angleDiff = targetAngleY - currentAngleYBody;
 		while (angleDiff < -glm::pi<float>()) angleDiff += glm::two_pi<float>();
 		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
 
@@ -98,10 +98,34 @@ public:
 			if (angleDiff > 0)
 			{
 				m_tank.RotateBodyLeft(deltaTime, true, *tankColliderOffset);
+				m_tank.RotateTurretLeft(deltaTime);
 			}
 			else
 			{
 				m_tank.RotateBodyRight(deltaTime, true, *tankColliderOffset);
+				m_tank.RotateTurretRight(deltaTime);
+			}
+		}
+
+
+
+		float currentAngleYTurret = m_tank.GetTurret()->GetTransform()->GetRotation()->y;
+
+		//normalize between -180 to 180 so it dont do cool spin
+		angleDiff = targetAngleY - currentAngleYTurret;
+		while (angleDiff < -glm::pi<float>()) angleDiff += glm::two_pi<float>();
+		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
+
+		//only rotate if difference is small
+		if (std::abs(angleDiff) > 0.0045f)
+		{
+			if (angleDiff > 0)
+			{
+				m_tank.RotateTurretLeft(deltaTime);
+			}
+			else
+			{
+				m_tank.RotateTurretRight(deltaTime);
 			}
 		}
 
