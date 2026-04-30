@@ -316,6 +316,21 @@ void MainGame::processInput()
 	{
 		hDown = false;
 	}
+
+
+	if (state[SDL_SCANCODE_C])
+	{
+		if (!cDown)
+		{
+			cDown = true;
+			wallHacks = !wallHacks;
+		}
+		
+	}
+	else
+	{
+		cDown = false;
+	}
 	
 }
 
@@ -363,6 +378,16 @@ void MainGame::drawGame()
 		
 	if (colliderEditorActive || collidersShowing)
 		m_colliderEditor->DrawEditor(m_mainCamera);
+
+
+	if (wallHacks)
+	{
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		m_colliderEditor->WallHacks(m_mainCamera);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+	}
 
 
 	glEnableClientState(GL_COLOR_ARRAY);

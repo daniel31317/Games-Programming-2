@@ -77,7 +77,10 @@ public:
 		//driving forward forever
 		else
 		{
-			m_tank.MoveForward();
+			if (!*m_tank.GetCollidedLastFrame())
+			{
+				m_tank.MoveForward();
+			}	
 		}
 
 

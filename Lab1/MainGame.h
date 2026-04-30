@@ -72,6 +72,9 @@ private:
 	bool collidersShowing = false;	
 	bool updateGameTitle = false;	
 
+	bool wallHacks = false;
+
 	bool hDown = false;
+	bool cDown = false;
 
 };

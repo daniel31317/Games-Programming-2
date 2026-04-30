@@ -622,10 +622,11 @@ struct ColliderEditor
 
 		void DrawEditor(Camera& mainCamera)
 		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glLineWidth(2.0f);
 			for (int i = 0; i < m_colliders.size(); i++)
 			{
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				glLineWidth(2.0f);
+
 				m_colliders[i]->GetShader()->Bind();
 
 				if(i == currentColliderIndex)
@@ -636,11 +637,9 @@ struct ColliderEditor
 				m_colliders[i]->GetTexture()->Bind(0);
 				m_colliders[i]->GetMesh()->draw();
 
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glLineWidth(2.0f);
+			
 			m_tankBodyCollider.GetShader()->Bind();
 			m_tankBodyCollider.GetShader()->Update(*m_tankBodyCollider.GetTransform(), mainCamera, false);
 			m_tankBodyCollider.GetTexture()->Bind(0);
@@ -652,6 +651,18 @@ struct ColliderEditor
 			m_enemyTankBodyCollider.GetMesh()->draw();
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+		}
+
+
+		void WallHacks(Camera& mainCamera)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glLineWidth(2.0f);
+			m_enemyTankBodyCollider.GetShader()->Bind();
+			m_enemyTankBodyCollider.GetShader()->Update(*m_enemyTankBodyCollider.GetTransform(), mainCamera, false);
+			m_enemyTankBodyCollider.GetTexture()->Bind(0);
+			m_enemyTankBodyCollider.GetMesh()->draw();
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
 

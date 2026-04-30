@@ -375,6 +375,7 @@ public:
 
 	const float* GetCurrentSpeed() const { return &currentSpeed; }
 	const float* GetBrakeForce() const { return &brakeForce; }
+	const bool* GetCollidedLastFrame() const { return &collidedLastFrame; }
 
 
 private:
