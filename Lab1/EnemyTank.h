@@ -31,10 +31,6 @@ public:
 		m_currentSpeedRef = m_tank.GetCurrentSpeed();
 		m_brakeForceRef = m_tank.GetBrakeForce();
 		m_tankBodyRef = m_tank.GetBody();
-
-		glm::vec3 tempOffset = glm::vec3(0.0, 0.75, -3.5);
-
-		mainCamera->SetPosition(*m_positionRef + tempOffset);
 	}
 
 
