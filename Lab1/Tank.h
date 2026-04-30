@@ -91,7 +91,8 @@ public:
 		}
 		else if (movingForward)
 		{
-			if (*tankCollider->GetCollider()->GetCollisionSide() != Collider::CollisionSide::FrontRight && *tankCollider->GetCollider()->GetCollisionSide() != Collider::CollisionSide::FrontLeft)
+			Collider::CollisionSide collision = *tankCollider->GetCollider()->GetCollisionSide();
+			if (collision != Collider::CollisionSide::FrontRight && collision != Collider::CollisionSide::FrontLeft)
 			{
 				currentSpeed += acceleration * deltaTime;
 				if (currentSpeed > maxForwardSpeed)
@@ -100,7 +101,8 @@ public:
 		}
 		else if (movingBackward)
 		{
-			if (*tankCollider->GetCollider()->GetCollisionSide() != Collider::CollisionSide::BackRight && *tankCollider->GetCollider()->GetCollisionSide() != Collider::CollisionSide::BackLeft)
+			Collider::CollisionSide collision = *tankCollider->GetCollider()->GetCollisionSide();
+			if (collision != Collider::CollisionSide::BackRight && collision != Collider::CollisionSide::BackLeft)
 			{
 				currentSpeed -= acceleration * deltaTime;
 				if (currentSpeed < -maxBackwardSpeed)
@@ -353,7 +355,7 @@ public:
 	{
 		if (collided && collided != collidedLastFrame)
 		{
-			//dampning
+			//dampening
 			currentSpeed = -currentSpeed / collsionForce;
 		}	
 		collidedLastFrame = collided;

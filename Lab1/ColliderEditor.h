@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <array>
 #include "GameObject.h"
 #include "MeshManager.h"
 #include "ShaderManager.h"
@@ -831,31 +832,28 @@ public:
 
 
 
-
-	bool CollisionWithWalls()
+	//{collided with anything, collided with tank}
+	std::array<bool, 2> CollisionDetection()
 	{
+
+		if (m_tankBodyCollider.GetCollider()->IsCollidingWith(m_enemyTankBodyCollider.GetCollider()))
+		{
+			return { true, true };
+		}
+
+
 		for (int i = 0; i < m_colliders.size(); i++)
 		{
 			if (m_tankBodyCollider.GetCollider()->IsCollidingWith(m_colliders[i]->GetCollider()))
 			{
-				return true;
+				return { true, false };
 			}
 		}
 
-		return false;
+		
+
+		return { false, false };
 	}
-
-
-	bool CollisionWithTank()
-	{
-		if (m_tankBodyCollider.GetCollider()->IsCollidingWith(m_enemyTankBodyCollider.GetCollider()))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
 
 
 	void ShootDetection(const glm::vec3& rayStartPos, const glm::vec3& rayDirection, bool isPlayer)

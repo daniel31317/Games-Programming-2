@@ -342,14 +342,21 @@ void MainGame::update()
 	if (colliderEditorActive)
 		m_colliderEditor->UpdateEditor();
 
-	m_tank->HandleColliison(m_colliderEditor->CollisionWithWalls(), 8);
-
-	bool tanksCollide = m_colliderEditor->CollisionWithTank();
+	std::array<bool, 2> tankCollision = m_colliderEditor->CollisionDetection();
 	
 	//handle if tanks crash into each other
-	m_tank->HandleColliison(tanksCollide, 4);
+	if (tankCollision[1])
+	{
+		m_tank->HandleColliison(tankCollision[1], 4);
 
-	m_EnemyTank->GetTank()->HandleColliison(tanksCollide, 4);
+		m_EnemyTank->GetTank()->HandleColliison(tankCollision[1], 4);
+	}
+	else
+	{
+		m_tank->HandleColliison(tankCollision[0], 8);
+	}
+
+	
 
 	m_tank->Update(deltaTime);
 
