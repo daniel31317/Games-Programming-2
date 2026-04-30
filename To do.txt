@@ -5,6 +5,8 @@
 -Tank fight
 	- me slime (very important)
 	- chill guy slime (kind of)
+	- index issue when going off map in tank ai
+	- City floor
 
 -Smoke from barrel shot
 
