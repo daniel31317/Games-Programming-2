@@ -54,6 +54,61 @@ struct Collider
 
 
 
+		bool CheckRayHit(glm::vec3 rayOrigin, glm::vec3 rayDir, const Collider& target, float& distance) {
+			//start distance
+			float tMin = 0.0f;     
+			//max distnace
+			float tMax = 100000.0f;    
+
+			glm::vec3 worldPos = target.GetPosition(); 
+			glm::vec3 delta = worldPos - rayOrigin;
+
+			//slabs algorithm for obb
+			for (int i = 0; i < 3; i++) {
+				glm::vec3 axis = target.GetAxes()[i];
+				float e = glm::dot(axis, delta);
+				float f = glm::dot(rayDir, axis);
+
+				//if the ray is not parallel to the planes
+				if (std::abs(f) > 0.0001f) 
+				{
+					//get extent
+					float t1 = (e + target.GetHalfExtents()->x) / f; 
+
+					//objects are indexed by i so we map extents
+					float extent = (i == 0) ? target.GetHalfExtents()->x :
+						(i == 1) ? target.GetHalfExtents()->y :
+						target.GetHalfExtents()->z;
+
+					//intersection logic
+					float t1_actual = (e + extent) / f;
+					float t2_actual = (e - extent) / f;
+
+					if (t1_actual > t2_actual) std::swap(t1_actual, t2_actual);
+
+					if (t1_actual > tMin) tMin = t1_actual;
+					if (t2_actual < tMax) tMax = t2_actual;
+
+					//missed
+					if (tMin > tMax) return false;
+					//box beyond the ray
+					if (tMax < 0) return false;   
+				}
+				else {
+					//ray is parrallel so check if the origin is inside the slab
+					float extent = (i == 0) ? target.GetHalfExtents()->x :
+						(i == 1) ? target.GetHalfExtents()->y :
+						target.GetHalfExtents()->z;
+					if (-e - extent > 0 || -e + extent < 0) return false;
+				}
+			}
+
+			distance = tMin;
+			return true;
+		}
+
+
+
 		bool IsCollidingWith(const Collider* b)
 		{
 			Collider a = *this;
@@ -134,6 +189,7 @@ struct Collider
 
 		const glm::vec3* GetAxes() const { return axes; }
 		const glm::vec3* GetHalfExtents() const { return &halfExtents; }
+		const glm::vec3& GetPosition() const { return position; }
 
 		const CollisionSide* GetCollisionSide() { return &lastCollisionSide; }
 

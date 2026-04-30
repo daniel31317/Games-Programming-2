@@ -300,6 +300,8 @@ void MainGame::processInput()
 		if (state[SDL_SCANCODE_SPACE])
 		{
 			m_tank->Shoot();
+			Transform* turretTransform = m_tank->GetTurret()->GetTransform();
+			m_colliderEditor->ShootDetection(*turretTransform->GetPosition(), turretTransform->GetForward(), true);
 		}
 	}
 
