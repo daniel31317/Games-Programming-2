@@ -30,17 +30,20 @@ public:
 		shaderManager = nullptr;
 		textureManager = nullptr;
 		meshManager = nullptr;
-
+		enemyTankBody = nullptr;
+		playerTankBody = nullptr;
 	}
 
 
-	ColliderEditor(ShaderManager* shaderManager, TextureManager* textureManager, MeshManager* meshManager, GameObject* tankBody, GameObject* enemyTankBody)
+	ColliderEditor(ShaderManager* shaderManager, TextureManager* textureManager, MeshManager* meshManager, Tank* playerTank, Tank* enemyTank)
 	{
 		this->shaderManager = shaderManager;
 		this->textureManager = textureManager;
 		this->meshManager = meshManager;
-		this->tankBody = tankBody;
-		this->enemyTankBody = enemyTankBody;
+		this->playerTankRef = playerTank;
+		this->enemyTankRef = enemyTank;
+		this->playerTankBody = playerTankRef->GetBody();
+		this->enemyTankBody = enemyTankRef->GetBody();
 
 		CreateTankBodyCollider();
 		CreateEnemyTankBodyCollider();
@@ -762,7 +765,7 @@ public:
 	{
 		m_tankBodyCollider = GameObject();
 		m_tankBodyColliderOffset = glm::vec3(0.0, 0.1, -0.1);
-		m_tankBodyCollider.GetTransform()->SetPosition(*tankBody->GetTransform()->GetPosition() + m_tankBodyColliderOffset);
+		m_tankBodyCollider.GetTransform()->SetPosition(*playerTankBody->GetTransform()->GetPosition() + m_tankBodyColliderOffset);
 		m_tankBodyCollider.GetTransform()->SetRotation(glm::vec3(0.0));
 		m_tankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 1.0, 1.7));
 		m_tankBodyCollider.GetCollider()->SetScale(*m_tankBodyCollider.GetTransform()->GetScale());
@@ -887,12 +890,12 @@ public:
 				{
 					if (distance < closestHit->distance)
 					{
-						std::cout << "Chill guy dead\n";
+						enemyTankRef->KillTank();
 					}
 				}
 				else
 				{
-					std::cout << "Chill guy dead\n";
+					enemyTankRef->KillTank();
 				}
 			}
 		}
@@ -974,8 +977,11 @@ public:
 		ShaderManager* shaderManager;
 		TextureManager* textureManager;
 		MeshManager* meshManager;
-		GameObject* tankBody;
+		GameObject* playerTankBody;
 		GameObject* enemyTankBody;
+
+		Tank* playerTankRef = nullptr;
+		Tank* enemyTankRef = nullptr;
 
 		GameObject m_tankBodyCollider;
 		GameObject m_enemyTankBodyCollider;

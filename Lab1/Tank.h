@@ -71,6 +71,10 @@ public:
 
 	void Update(float deltaTime)
 	{
+		if (!alive)
+		{
+			return;
+		}
 		// Detect direction change and brake
 		bool braking = (movingForward && currentSpeed < 0) || (movingBackward && currentSpeed > 0);
 
@@ -184,6 +188,10 @@ public:
 
 	void RotateBodyLeft(float deltaTime, bool checkMovebackwards, glm::vec3& tankColliderOffset)
 	{
+		if (!alive)
+		{
+			return;
+		}
 		if (collidedLastFrame)
 		{
 			switch (*tankCollider->GetCollider()->GetCollisionSide())
@@ -234,6 +242,10 @@ public:
 	//like RotateBodyLeft but with opposite rotation
     void RotateBodyRight(float deltaTime, bool checkMovebackwards, glm::vec3& tankColliderOffset)
     {
+		if (!alive)
+		{
+			return;
+		}
 		if (collidedLastFrame)
 		{
 			switch (*tankCollider->GetCollider()->GetCollisionSide())
@@ -277,6 +289,10 @@ public:
 
 	void RotateTurretLeft(float deltaTime)
 	{
+		if (!alive)
+		{
+			return;
+		}
 		Transform* turretTransform = m_turret.GetTransform();
 
 		turretTransform->rotate(glm::vec3(0.0f, turretRotSpeed * deltaTime, 0.0f));
@@ -299,6 +315,10 @@ public:
 
     void RotateTurretRight(float deltaTime)
     {
+		if (!alive)
+		{
+			return;
+		}
 		Transform* turretTransform = m_turret.GetTransform();
 
 		turretTransform->rotate(glm::vec3(0.0f, -turretRotSpeed * deltaTime, 0.0f));
@@ -334,6 +354,10 @@ public:
     
 	void Shoot()
 	{
+		if (!alive)
+		{
+			return;
+		}
 		if(currentReloadTime > 0.0f)
 		{
 			return;
@@ -369,6 +393,17 @@ public:
 			m_muzzleFlash.GetTexture()->Bind(0);
 			m_muzzleFlash.GetMesh()->draw();
 		}
+	}
+
+
+	void KillTank()
+	{
+		alive = false;
+	}
+
+	void RespawnTank()
+	{
+		alive = true;
 	}
 
 
@@ -410,6 +445,8 @@ private:
 
 	const float maxReloadTime = 6.0f;
 	float currentReloadTime = 0.0f;
+
+	bool alive = true;
 
 	bool isPlayer = false;
 
