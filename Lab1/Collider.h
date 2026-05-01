@@ -83,15 +83,15 @@ struct Collider
 					float extent;
 					if (i == 0) 
 					{
-						extent = halfExtents.x;
+						extent = target.GetHalfExtents()->x;
 					}
 					else if (i == 1) 
 					{
-						extent = halfExtents.y;
+						extent = target.GetHalfExtents()->y;
 					}
 					else
 					{
-						extent = halfExtents.z;
+						extent = target.GetHalfExtents()->z;
 					}
 
 					//intersection logic
@@ -121,15 +121,15 @@ struct Collider
 
 					if (i == 0) 
 					{
-						extent = halfExtents.x;
+						extent = target.GetHalfExtents()->x;
 					}
 					else if (i == 1) 
 					{
-						extent = halfExtents.y;
+						extent = target.GetHalfExtents()->y;
 					}
 					else 
 					{
-						extent = halfExtents.z;
+						extent = target.GetHalfExtents()->z;
 					}
 
 
