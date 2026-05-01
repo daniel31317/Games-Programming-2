@@ -98,6 +98,7 @@
     <ClInclude Include="obj_loader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="Texture.h" />
@@ -106,6 +107,8 @@
   <ItemGroup>
     <None Include="..\res\ADS.frag" />
     <None Include="..\res\ADS.vert" />
+    <None Include="..\res\Skybox.frag" />
+    <None Include="..\res\Skybox.vert" />
     <None Include="..\res\Tank.frag" />
     <None Include="..\res\Tank.vert" />
     <None Include="..\res\RemoveBackground.frag" />

@@ -51,6 +51,7 @@ Shader::Shader(const std::string& filename)
 	uniforms[HASTEXTURE_U] = glGetUniformLocation(program, "hasTexture");
 	uniforms[NOISE_TEXTURE_U] = glGetUniformLocation(program, "textureNoise");
 	uniforms[DEAD_PROGRESS_U] = glGetUniformLocation(program, "deadProgression");
+	uniforms[SKYBOX_U] = glGetUniformLocation(program, "skybox");
 }
 
 Shader::~Shader()
@@ -186,9 +187,9 @@ void Shader::Update(const Transform& transform, const Camera& camera, bool hasTe
 
 	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_FALSE, &mvp[0][0]);
 
-	glUniformMatrix4fv(uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);   
+	glUniformMatrix4fv(uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);
 
-	glUniformMatrix4fv(uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);         
+	glUniformMatrix4fv(uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);
 
 	glUniformMatrix4fv(uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
 
@@ -208,4 +209,31 @@ void Shader::Update(const Transform& transform, const Camera& camera, bool hasTe
 
 	glUniform1f(uniforms[DEAD_PROGRESS_U], deadProgression);
 }
+
+	
+void Shader::Update(const Camera& camera, bool isStatic)
+{
+	glm::mat4 view = camera.GetView();
+	glm::mat4 projection = camera.GetProjection();
+
+	if (isStatic)
+	{
+		glm::mat4 staticView = glm::mat4(glm::mat3(view));
+		glUniformMatrix4fv(uniforms[VIEW_U], 1, GL_FALSE, &staticView[0][0]);
+	}
+	else
+	{
+		glUniformMatrix4fv(uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);
+	}
+
+
+	glUniformMatrix4fv(uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
+
+	glUniform1i(uniforms[SKYBOX_U], 0);
+
+
+}
+
+
+
 

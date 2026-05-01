@@ -1,5 +1,3 @@
-- one more model
-
 - Sky background
 
 -Smoke from barrel shot

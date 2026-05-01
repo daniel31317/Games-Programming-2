@@ -17,6 +17,7 @@ public:
 	void Bind(); //Set gpu to use our shaders
 	void Update(const Transform& transform, const Camera& camera, bool hasTexture);
 	void Update(const Transform& transform, const Camera& camera, bool hasTexture, float deadProgression);
+	void Update(const Camera& camera, bool isStaticView);
 
 	std::string Shader::LoadShader(const std::string& fileName);
 
@@ -48,6 +49,7 @@ private:
 		HASTEXTURE_U,
 		NOISE_TEXTURE_U,
 		DEAD_PROGRESS_U,
+		SKYBOX_U,
 		NUM_UNIFORMS
 
 	};

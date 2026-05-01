@@ -41,6 +41,9 @@ void MainGame::initSystems()
 
 	initGameObjects();
 
+	skybox.initSkyBox();
+	skybox.SetShader(m_shaderManager.GetShader(SKYBOX));
+
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
@@ -459,6 +462,7 @@ void MainGame::drawGame()
 	if (colliderEditorActive || collidersShowing)
 		m_colliderEditor->DrawEditor(m_mainCamera);
 
+	skybox.Draw(m_mainCamera);
 
 	if (wallHacks)
 	{

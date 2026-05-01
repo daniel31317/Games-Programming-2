@@ -13,6 +13,7 @@
 #include "Tank.h"
 #include "ColliderEditor.h"
 #include "EnemyTank.h"
+#include "SkyBox.h"
 
 enum class GameState { PLAY, EXIT };
 
@@ -50,6 +51,7 @@ private:
 
 	std::unique_ptr<GameObject> m_gameObjects[NUM_GAME_OBJECTS];
 
+	Skybox skybox;
 
 	std::unique_ptr<Tank> m_tank;
 

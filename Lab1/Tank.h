@@ -521,21 +521,21 @@ private:
 
 	float currentSpeed = 0.0f;
 
-	const float acceleration = 1.5f;
+	const float acceleration = 1.f;
 	const float deceleration = 2.5f;
 
-	const float maxForwardSpeed = 7.5f;
-	const float maxBackwardSpeed = 3.0f;
+	const float maxForwardSpeed = 7.0f;
+	const float maxBackwardSpeed = 2.5f;
 
 	bool movingForward = false;
 	bool movingBackward = false;
 
-	const float turnSpeedPenalty = 0.9f;
-	const float brakeForce = 5.f;
+	const float turnSpeedPenalty = 0.8f;
+	const float brakeForce = 7.f;
 
 
 	const float bodyRotSpeed = 1.0f;
-	const float turretRotSpeed = 1.5f;
+	const float turretRotSpeed = 1.0f;
 
 	const float maxReloadTime = 6.0f;
 	float currentReloadTime = 0.0f;

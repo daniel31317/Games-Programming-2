@@ -21,6 +21,7 @@ void ShaderManager::LoadShaders()
 	m_shaderList[UIELEMENT] = std::make_unique<Shader>("..\\res\\UIElement");
 	m_shaderList[REMOVE_BACKGRROUND] = std::make_unique<Shader>("..\\res\\RemoveBackground");
 	m_shaderList[ADS] = std::make_unique<Shader>("..\\res\\ADS");
+	m_shaderList[SKYBOX] = std::make_unique<Shader>("..\\res\\Skybox");
 }
 
 Shader* ShaderManager::GetShader(ShaderName name)
