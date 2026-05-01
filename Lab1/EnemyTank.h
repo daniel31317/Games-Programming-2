@@ -334,6 +334,12 @@ public:
 		start.row = rowDist(gen);
 		start.col = colDist(gen);
 
+		//so the ai doesnt spawn on the same row as player and insta kill them
+		if (start.row == 4)
+		{
+			start.row--;
+		}
+
 		previous = start;
 	}
 

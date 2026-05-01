@@ -50,6 +50,7 @@ public:
 		CreateEnemyTankBodyCollider();
 
 		//we save colliders to a binary file for quick loading
+		//if this file is deleted the player will be shot thorugh all walls
 		loadCollidersFromBinary("..\\res\\Binary\\DONTDELETE\\colliders.bin");
 	}
 
