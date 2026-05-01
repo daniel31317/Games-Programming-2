@@ -64,6 +64,15 @@ public:
 			muzzleFlashOffset = 0.6;
 
 			m_muzzleFlash.GetTransform()->SetPosition(glm::vec3(0.0, m_barrel.GetTransform()->GetPosition()->y + muzzleFlashOffset, -0.1));
+
+
+			//crosshair
+			m_crosshair.GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
+			m_crosshair.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+			m_crosshair.GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
+			m_crosshair.SetShader(*shaderManager.GetShader(UIELEMENT));
+			m_crosshair.SetTexture(*textureManager.GetTexture(NONE));
+			m_crosshair.SetMesh(*meshManager.GetMesh(CROSSHAIR_M));
 		}
 		else
 		{
@@ -346,7 +355,7 @@ public:
     }
 
 
-	void UpdateTurretAim(float deltaTime, float targetHorizontalAngle, float& targetPitch, bool isZooming)
+	void UpdateTurretAim(float deltaTime, float targetHorizontalAngle, float& targetPitch, bool isZooming, float distanceToTarget) 
 	{
 		if (!alive) return;
 		Transform* turretTransform = m_turret.GetTransform();
@@ -396,6 +405,20 @@ public:
 		glm::mat4 barrelMatrix = m_barrel.GetTransform()->GetModel();
 		glm::vec3 finalFlashPos = glm::vec3(barrelMatrix * localOffset);
 		m_muzzleFlash.GetTransform()->SetPosition(finalFlashPos);
+
+
+		//update crossahair
+		glm::vec3 barrelTip = finalFlashPos;
+		glm::vec3 barrelForward = m_barrel.GetTransform()->GetForward();
+		glm::vec3 aimPoint = barrelTip + barrelForward * distanceToTarget;
+
+		glm::mat4 viewProj = camera->GetProjection() * camera->GetView();
+		glm::vec4 clipPos = viewProj * glm::vec4(aimPoint, 1.0f);
+		glm::vec3 ndcPos = glm::vec3(clipPos) / clipPos.w;
+		ndcPos.z = -0.99f; // force to always be in front in depth buffer
+		m_crosshair.GetTransform()->SetPosition(ndcPos);
+
+		m_crosshair.GetTransform()->SetPosition(ndcPos);
 	}
 
 
@@ -515,6 +538,14 @@ public:
 			m_barrel.GetTexture()->Bind(0);
 			noiseTexture->Bind(1);
 			m_barrel.GetMesh()->draw();
+
+
+			glDisable(GL_DEPTH_TEST);
+			m_crosshair.GetShader()->Bind();
+			m_crosshair.GetShader()->Update(*m_crosshair.GetTransform(), *camera, true, alive ? 0.0f : 0.95f);
+			m_crosshair.GetTexture()->Bind(0);
+			m_crosshair.GetMesh()->draw();
+			glEnable(GL_DEPTH_TEST);
 		}
 
 
@@ -552,6 +583,7 @@ private:
 	GameObject m_turret;
 	GameObject m_barrel;
 	GameObject m_muzzleFlash;
+	GameObject m_crosshair;
 	GameObject* tankCollider;
 
 	Texture* noiseTexture;

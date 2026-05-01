@@ -765,10 +765,10 @@ public:
 	void CreateTankBodyCollider()
 	{
 		m_tankBodyCollider = GameObject();
-		m_tankBodyColliderOffset = glm::vec3(0.0, 0.1, -0.1);
+		m_tankBodyColliderOffset = glm::vec3(0.0, 0.3, 0.1);
 		m_tankBodyCollider.GetTransform()->SetPosition(*playerTankBody->GetTransform()->GetPosition() + m_tankBodyColliderOffset);
 		m_tankBodyCollider.GetTransform()->SetRotation(glm::vec3(0.0));
-		m_tankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 1.0, 1.7));
+		m_tankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 0.6, 1.5));
 		m_tankBodyCollider.GetCollider()->SetScale(*m_tankBodyCollider.GetTransform()->GetScale());
 		m_tankBodyCollider.GetCollider()->UpdateCollider(*m_tankBodyCollider.GetTransform()->GetPosition(), *m_tankBodyCollider.GetTransform()->GetRotation());
 		m_tankBodyCollider.SetShader(*shaderManager->GetShader(COLLIDEROUTLINE));
@@ -780,10 +780,10 @@ public:
 	void CreateEnemyTankBodyCollider()
 	{
 		m_enemyTankBodyCollider = GameObject();
-		m_tankBodyColliderOffset = glm::vec3(0.0, 0.5, -0.1);
+		m_tankBodyColliderOffset = glm::vec3(0.0, 0.3, 0.0);
 		m_enemyTankBodyCollider.GetTransform()->SetPosition(*enemyTankBody->GetTransform()->GetPosition() + m_tankBodyColliderOffset);
 		m_enemyTankBodyCollider.GetTransform()->SetRotation(glm::vec3(0.0));
-		m_enemyTankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 1.0, 1.7));
+		m_enemyTankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 0.6, 1.5));
 		m_enemyTankBodyCollider.GetCollider()->SetScale(*m_enemyTankBodyCollider.GetTransform()->GetScale());
 		m_enemyTankBodyCollider.GetCollider()->UpdateCollider(*m_enemyTankBodyCollider.GetTransform()->GetPosition(), *m_enemyTankBodyCollider.GetTransform()->GetRotation());
 		m_enemyTankBodyCollider.SetShader(*shaderManager->GetShader(COLLIDEROUTLINE));
@@ -856,7 +856,7 @@ public:
 	}
 
 
-	void ShootDetection(const glm::vec3& rayStartPos, const glm::vec3& rayDirection, bool isPlayer)
+	glm::vec3 ShootDetection(const glm::vec3& rayStartPos, const glm::vec3& rayDirection, bool isPlayer, bool kill)
 	{
 		std::vector<BulletHitData> bullletHitData = std::vector<BulletHitData>();
 
@@ -879,25 +879,40 @@ public:
 		BulletHitData* closestHit = GetClosestHit(bullletHitData);
 
 
-		if (isPlayer)
+
+		float distance = 0.0f;
+		if (m_enemyTankBodyCollider.GetCollider()->CheckRayHit(rayStartPos, rayDirection, *m_enemyTankBodyCollider.GetCollider(), distance))
 		{
-			float distance = 0.0f;
-			if (m_enemyTankBodyCollider.GetCollider()->CheckRayHit(rayStartPos, rayDirection, *m_enemyTankBodyCollider.GetCollider(), distance))
+			if (closestHit != nullptr)
 			{
-				if (closestHit != nullptr)
+				if (distance < closestHit->distance)
 				{
-					if (distance < closestHit->distance)
+					if (kill)
 					{
 						enemyTankRef->KillTank();
-					}
+					}			
+					return *enemyTankRef->GetBody()->GetTransform()->GetPosition();
 				}
-				else
+			}
+			else
+			{
+				if (kill)
 				{
 					enemyTankRef->KillTank();
 				}
+				return *enemyTankRef->GetBody()->GetTransform()->GetPosition();
 			}
 		}
-				
+
+
+
+		if (closestHit != nullptr)
+		{
+			return closestHit->colliderHit->GetPosition();
+		}
+
+		
+		return glm::vec3(50.0);
 	}
 
 

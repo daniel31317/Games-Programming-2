@@ -59,14 +59,6 @@ void MainGame::initGameObjects()
 	m_gameObjects[0]->SetTexture(*m_textureManager.GetTexture(CITYTEXTURE));
 	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(CITY_M));
 
-	//crosshair
-	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
-	m_gameObjects[1]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
-	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
-	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(UIELEMENT));
-	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(NONE));
-	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(CROSSHAIR_M));
-
 
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera, true);
 
@@ -360,23 +352,19 @@ void MainGame::processInput()
 
 		m_targetBarrelPitch += (float)mouseY * (m_sensitivity / 1000.f);
 
-		m_tank->UpdateTurretAim(deltaTime, m_targetTurretAngle, m_targetBarrelPitch, isZooming);
+		m_tank->UpdateTurretAim(deltaTime, m_targetTurretAngle, m_targetBarrelPitch, isZooming, 
+			glm::distance(*m_tank->GetBody()->GetTransform()->GetPosition(), m_colliderEditor->ShootDetection(*m_tank->GetBarrel()->GetTransform()->GetPosition(), m_tank->GetBarrel()->GetTransform()->GetForward(), true, true)));
 
 
-		if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
+		if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
 		{
 			if (m_tank->GetIfCanShoot())
 			{
 				m_tank->Shoot();
 				Transform* turretTransform = m_tank->GetTurret()->GetTransform();
-				m_colliderEditor->ShootDetection(*turretTransform->GetPosition(), turretTransform->GetForward(), true);
-			}	
-		}
-
-
-
-		
-
+				m_colliderEditor->ShootDetection(*m_tank->GetBarrel()->GetTransform()->GetPosition(), m_tank->GetBarrel()->GetTransform()->GetForward(), true, true);
+			}
+		}	
 	}
 
 	if (state[SDL_SCANCODE_H])
@@ -448,6 +436,8 @@ void MainGame::drawGame()
 {
 	_gameDisplay.clearDisplay();
 
+	skybox.Draw(m_mainCamera);
+
 	if (!m_colliderEditor->GetHideMeshes())
 	{
 		for (int i = 0; i < NUM_GAME_OBJECTS; i++)
@@ -458,15 +448,14 @@ void MainGame::drawGame()
 			m_gameObjects[i]->GetMesh()->draw();
 		}
 
-		m_tank->Draw();
-
 		m_EnemyTank->GetTank()->Draw();
+		m_tank->Draw();
 	}
 		
 	if (colliderEditorActive || collidersShowing)
 		m_colliderEditor->DrawEditor(m_mainCamera);
 
-	skybox.Draw(m_mainCamera);
+	
 
 	if (wallHacks)
 	{
@@ -484,6 +473,3 @@ void MainGame::drawGame()
 	_gameDisplay.swapBuffer();
 
 }
-
-
-
