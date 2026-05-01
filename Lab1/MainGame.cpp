@@ -367,9 +367,7 @@ void MainGame::processInput()
 
 		m_tank->UpdateTurretAim(deltaTime, m_targetTurretAngle, m_targetBarrelPitch, isZooming, 
 			glm::distance(*m_tank->GetBody()->GetTransform()->GetPosition(), m_colliderEditor->ShootDetection(*m_tank->GetBarrel()->GetTransform()->GetPosition(), m_tank->GetBarrel()->GetTransform()->GetForward(), true, false)));
-
-
-		std::cout << std::to_string(glm::distance(*m_tank->GetBody()->GetTransform()->GetPosition(), m_colliderEditor->ShootDetection(*m_tank->GetBarrel()->GetTransform()->GetPosition(), m_tank->GetBarrel()->GetTransform()->GetForward(), true, false))) << std::endl;
+		
 
 
 		if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
