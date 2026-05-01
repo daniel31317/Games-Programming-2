@@ -410,7 +410,7 @@ public:
 		//update crossahair
 		glm::vec3 barrelTip = finalFlashPos;
 		glm::vec3 barrelForward = m_barrel.GetTransform()->GetForward();
-		glm::vec3 aimPoint = barrelTip + barrelForward * (distanceToTarget - 5.0f);
+		glm::vec3 aimPoint = barrelTip + barrelForward * (distanceToTarget);
 
 		glm::mat4 viewProj = camera->GetProjection() * camera->GetView();
 		glm::vec4 clipPos = viewProj * glm::vec4(aimPoint, 1.0f);
