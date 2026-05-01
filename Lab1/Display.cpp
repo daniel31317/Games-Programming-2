@@ -72,9 +72,23 @@ void Display::initDisplay()
 	glEnable(GL_CULL_FACE); //dont draw faces that are not pointing at the camera
 	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
 
-	SDL_GL_SetSwapInterval(0); //disable vsync 
+	
+	SDL_GL_SetSwapInterval(1);//enable vsync 
+
+}
 
 
+void Display::toggleVSync()
+{
+	vsyncOn = !vsyncOn;
+	if (vsyncOn)
+	{
+		SDL_GL_SetSwapInterval(1);
+	}
+	else
+	{
+		SDL_GL_SetSwapInterval(0);
+	}
 }
 
 

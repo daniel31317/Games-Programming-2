@@ -83,5 +83,6 @@ private:
 	bool hDown = false;
 	bool xDown = false;
 	bool rDown = false;
+	bool vDown = false;
 
 };

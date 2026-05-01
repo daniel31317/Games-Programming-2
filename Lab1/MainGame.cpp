@@ -411,6 +411,21 @@ void MainGame::processInput()
 	{
 		xDown = false;
 	}
+
+
+	if (state[SDL_SCANCODE_V])
+	{
+		if (!vDown)
+		{
+			vDown = true;
+			_gameDisplay.toggleVSync();
+		}
+		
+	}
+	else
+	{
+		vDown = false;
+	}
 	
 }
 

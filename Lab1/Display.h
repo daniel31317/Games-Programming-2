@@ -17,6 +17,8 @@ public:
 	void clearDisplay(float r, float g, float b, float a);
 	void clearDisplay();
 
+	void toggleVSync();
+
 	const float getWidth() const;
 	const float getHeight() const;
 
@@ -29,5 +31,7 @@ private:
 	SDL_Window* _sdlWindow; //holds pointer to out window
 	float _screenWidth;
 	float _screenHeight;
+
+	bool vsyncOn = true;
 
 };
