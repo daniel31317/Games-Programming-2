@@ -10,7 +10,7 @@ Shader::Shader()
 	
 Shader::Shader(const std::string& filename)
 {
-
+	std::cout << "Loading Shader - " + filename + "\n";
 	program = glCreateProgram();
 
 	//load shaders
@@ -52,6 +52,8 @@ Shader::Shader(const std::string& filename)
 	uniforms[NOISE_TEXTURE_U] = glGetUniformLocation(program, "textureNoise");
 	uniforms[DEAD_PROGRESS_U] = glGetUniformLocation(program, "deadProgression");
 	uniforms[SKYBOX_U] = glGetUniformLocation(program, "skybox");
+
+	std::cout << "Finished Loading Shader - " + filename + "\n";
 }
 
 Shader::~Shader()

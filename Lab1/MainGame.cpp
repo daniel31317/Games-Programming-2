@@ -34,8 +34,10 @@ void MainGame::initSystems()
 	_gameDisplay.initDisplay();
 
 	m_shaderManager.LoadShaders();
-	m_meshManager.LoadMeshes();
+	
 	m_textureManager.LoadTextures();
+
+	m_meshManager.LoadMeshes();
 
 	m_mainCamera.initCamera(glm::vec3(0, 0.25, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
 
@@ -432,7 +434,7 @@ void MainGame::update()
 
 	m_tank->Update(deltaTime);
 
-	m_EnemyTank->Update(deltaTime);
+	//m_EnemyTank->Update(deltaTime);
 
 	m_mainCamera.UpdateZoom(deltaTime);
 	

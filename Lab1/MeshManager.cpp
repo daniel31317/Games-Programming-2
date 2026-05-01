@@ -1,6 +1,4 @@
 #include "MeshManager.h"
-#include <thread>
-
 MeshManager::MeshManager()
 {
 
@@ -16,28 +14,22 @@ MeshManager::~MeshManager()
 void MeshManager::LoadMeshes()
 {
 	
-	m_meshList[T80BODY] = std::make_unique<Mesh>();
+	m_meshList[T80HULL] = std::make_unique<Mesh>();
 	m_meshList[T80TURRET] = std::make_unique<Mesh>();
-	m_meshList[LECLERCBODY] = std::make_unique<Mesh>();
+	m_meshList[LECLERCHULL] = std::make_unique<Mesh>();
 	m_meshList[LECLERCTURRET] = std::make_unique<Mesh>();
 	m_meshList[CITY] = std::make_unique<Mesh>();
 
 
-	std::thread thread1{ &Mesh::loadModel, m_meshList[T80BODY].get(), "..\\res\\T_80_Hull" };
-	std::thread thread2{ &Mesh::loadModel, m_meshList[T80TURRET].get(), "..\\res\\T_80_Turret" };
-	std::thread thread3{ &Mesh::loadModel, m_meshList[LECLERCBODY].get(), "..\\res\\LeclercBody" };
-	std::thread thread4{ &Mesh::loadModel, m_meshList[LECLERCTURRET].get(), "..\\res\\LeclercTurret" };
-	std::thread thread5{ &Mesh::loadModel, m_meshList[CITY].get(), "..\\res\\City" };
+	m_meshList[T80HULL]->loadModel("..\\res\\T_80_Hull");
+	m_meshList[T80TURRET]->loadModel("..\\res\\T_80_Turret");
+	m_meshList[LECLERCHULL]->loadModel("..\\res\\LeclercHull");
+	m_meshList[LECLERCTURRET]->loadModel("..\\res\\LeclercTurret");
+	m_meshList[CITY]->loadModel("..\\res\\City");
 
-	thread1.join();
-	thread2.join();
-	thread3.join();
-	thread4.join();
-	thread5.join();
-
-	m_meshList[T80BODY]->uploadModelToGPU();
+	m_meshList[T80HULL]->uploadModelToGPU();
 	m_meshList[T80TURRET]->uploadModelToGPU();
-	m_meshList[LECLERCBODY]->uploadModelToGPU();
+	m_meshList[LECLERCHULL]->uploadModelToGPU();
 	m_meshList[LECLERCTURRET]->uploadModelToGPU();
 	m_meshList[CITY]->uploadModelToGPU();
 

@@ -10,6 +10,7 @@ Texture::Texture()
 }
 Texture::Texture(const std::string& fileName)
 {
+	std::cout << "Loading Texture - " + fileName + "\n";
 	int width, height, numberOfComponents;
 
 	unsigned char* imageData = stbi_load((fileName).c_str(), &width, &height, &numberOfComponents, 4);
@@ -41,6 +42,8 @@ Texture::Texture(const std::string& fileName)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); 
 
 	stbi_image_free(imageData);
+
+	std::cout << "Finished Loading Texture - " + fileName + "\n";
 }
 
 Texture::~Texture()

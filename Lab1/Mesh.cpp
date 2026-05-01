@@ -42,12 +42,16 @@ void Mesh::loadModel(const std::string& filename)
 
 	if (f.good())
 	{
+		std::cout << "Loading Mesh - " + filename + ".bin\n";
 		loadModelAsBinary(binPath);
+		std::cout << "Finished Loading Mesh - " + filename + ".bin\n";
 	}
 	else
 	{
+		std::cout << "Loading Mesh - " + filename + ".obj\n";
 		model = OBJModel(filename + ".obj", defaultColour).ToIndexedModel();
 		saveModelAsBinary(binPath);
+		std::cout << "Finished Loading Mesh - " + filename + ".obj\n";
 	}
 	
 }
