@@ -96,6 +96,8 @@ private :
     Shader* m_shaderRef = nullptr;
     Transform transform;
 
+
+    //https://github.com/fegennari/3DWorld/tree/master/textures/skybox/water_scene
     const std::vector<std::string> faces = {
     "..\\res\\Textures\\right.jpg",
     "..\\res\\Textures\\left.jpg",
