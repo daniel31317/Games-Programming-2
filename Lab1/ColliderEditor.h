@@ -54,13 +54,25 @@ public:
 
 	void OpenEditor()
 	{
+		std::system("cls");
+
+		std::cout << "Move Forward - W\nMove Backward - S\n";
+		std::cout << "Move Left - A\nMove Right - D\n";
+		std::cout << "Move Up - LSHIFT\nMove Down - LCTRL\n";
+		std::cout << "Look Around - Mouse\n\n\n";
+
 		std::cout << "Collider Editor\nNew Collider - N\nDelete Current Collider - Backspace\nPosition - ,\n";
 		std::cout << "Rotation - .\nScale - / \nAxis - X Y Z\n";
 		std::cout << "Type Change Stat Value - V\nChange Stat + (Increase)-(Decrease)\nMultiply Change State By 10,100 - 1,2 (NOT NUMPAD)\n";
 		std::cout << "Change Collider Index Up - E\nChange Collider Index Down - Q\n";
 		std::cout << "Hide All Meshes - H\n";
-		std::cout << "Force Save - P\n";
+		std::cout << "Force Save - P\n\n\n";
+
+		std::cout << "V-Sync Toggle - V\n";
+		std::cout << "Unlock/Lock Mouse - ESC\n";
+		std::cout << "Fullscreen - F11\n";
 		std::cout << "Last Action : \n";
+		
 
 		UpdateEditorStateText();
 
@@ -612,9 +624,9 @@ public:
 
 
 
-
+	//23 is how many lines we keep
 	void refreshEditorOutput() {
-		std::cout << "\033[16;1H";
+		std::cout << "\033[30;1H";
 
 		std::cout << "\033[J";
 

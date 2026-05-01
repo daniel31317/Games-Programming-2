@@ -574,6 +574,7 @@ public:
 	const float* GetCurrentSpeed() const { return &currentSpeed; }
 	const float* GetBrakeForce() const { return &brakeForce; }
 	const bool* GetCollidedLastFrame() const { return &collidedLastFrame; }
+	GameObject* GetCrosshair() { return &m_crosshair; }
 	const bool GetIfCanShoot() const { return canShoot && alive; }
 	const bool IsAlive() const { return alive; }
 

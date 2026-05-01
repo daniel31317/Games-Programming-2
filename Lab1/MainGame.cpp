@@ -45,6 +45,8 @@ void MainGame::initSystems()
 	skybox.SetShader(m_shaderManager.GetShader(SKYBOX));
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
+
+	writeGameControls();
 }
 
 void MainGame::initGameObjects()
@@ -143,6 +145,38 @@ void MainGame::gameLoop()
 	}
 }
 
+
+void MainGame::writeGameControls()
+{
+	std::system("cls");
+
+	std::cout << "Move Forward - W\nMove Backward - S\n";
+	std::cout << "Turn Left - A\nTurn Right - D\n";
+	std::cout << "Look Around - Mouse\n";
+	std::cout << "Shoot - Left Mouse\nZoom - Right Click\n";
+	std::cout << "Respawn - R\nV-Sync Toggle - V\n";
+	std::cout << "Toggle World Colliders - H\nX-Ray On Enemy - X\n";
+	std::cout << "Toggle Free Camera - TAB\nToggle Collider Editor - LALT\n";
+	std::cout << "Unlock/Lock Mouse - ESC\n";
+	std::cout << "Fullscreen - F11\n";
+}
+
+void MainGame::writeFreeCamControls()
+{
+	std::system("cls");
+
+	std::cout << "Move Forward - W\nMove Backward - S\n";
+	std::cout << "Move Left - A\nMove Right - D\n";
+	std::cout << "Move Up - LSHIFT\nMove Down - LCTRL\n";
+	std::cout << "Look Around - Mouse\n";
+	std::cout << "V-Sync Toggle - V\n";
+	std::cout << "Toggle World Colliders - H\nX-Ray On Enemy - X\n";
+	std::cout << "Toggle Free Camera - TAB\nToggle Collider Editor - LALT\n";
+	std::cout << "Unlock/Lock Mouse - ESC\n";
+	std::cout << "Fullscreen - F11\n";
+}
+
+
 void MainGame::processInput()
 {
 	SDL_Event event;
@@ -161,10 +195,13 @@ void MainGame::processInput()
 					freeCamera = !freeCamera;
 					if (!freeCamera)
 					{
+						writeGameControls();
 						m_tank->ResetCameraToTank();
 					}
 					else
 					{
+
+						writeFreeCamControls();
 						m_mainCamera.ResetPitch();
 						m_mainCamera.SetRotation(m_mainCamera.GetRotation());
 					}
@@ -194,6 +231,7 @@ void MainGame::processInput()
 						freeCamera = false;
 						m_tank->ResetCameraToTank();
 						m_colliderEditor->CloseEditor();
+						writeGameControls();
 						
 					}
 					updateGameTitle = true;
@@ -216,6 +254,15 @@ void MainGame::processInput()
 					}
 								
 				}
+
+				if (event.key.keysym.sym == SDLK_F11) {
+					_gameDisplay.toggleFullscreen();
+
+					int w, h;
+					SDL_GetWindowSize(_gameDisplay.getWindow(), &w, &h);
+					glViewport(0, 0, w, h);
+				}
+
 
 				break;
 
@@ -268,6 +315,8 @@ void MainGame::processInput()
 
 	if (freeCamera)
 	{
+		m_tank->GetCrosshair()->GetTransform()->SetPosition(glm::vec3(0));
+
 		if (state[SDL_SCANCODE_W])
 		{
 			m_mainCamera.move(m_mainCamera.GetForward() * moveAmount * deltaTime);
@@ -386,7 +435,7 @@ void MainGame::processInput()
 		if (!hDown)
 		{
 			hDown = true;
-			collidersShowing =! collidersShowing;
+			collidersShowing = !collidersShowing;
 		}
 		
 	}

@@ -42,6 +42,11 @@ private:
 	void update();
 	void drawGame();
 
+
+	void writeGameControls();
+
+	void writeFreeCamControls();
+
 	Display _gameDisplay;
 	GameState _gameState; 
 

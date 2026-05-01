@@ -91,7 +91,18 @@ void Display::toggleVSync()
 	}
 }
 
-
+void Display::toggleFullscreen() 
+{
+	if (!_isFullscreen) 
+	{
+		SDL_SetWindowFullscreen(_sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	}
+	else 
+	{
+		SDL_SetWindowFullscreen(_sdlWindow, 0);
+	}
+	_isFullscreen = !_isFullscreen;
+}
 
 void Display::clearDisplay(float r, float g, float b, float a)
 {
