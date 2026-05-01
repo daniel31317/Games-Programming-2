@@ -1,6 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <iterator>
+#include <array>
 
 //collision method from https://dev.to/pratyush_mohanty_6b8f2749/the-math-behind-bounding-box-collision-detection-aabb-vs-obbseparate-axis-theorem-1gdn 
 //as previous aabb was not working
@@ -54,19 +56,21 @@ struct Collider
 
 
 
-		bool CheckRayHit(glm::vec3 rayOrigin, glm::vec3 rayDir, const Collider& target, float& distance) {
+		bool CheckRayHit(glm::vec3 rayOrigin, glm::vec3 rayDir, const Collider& target, float& distance) 
+		{
 			//start distance
-			float tMin = 0.0f;     
+			float minD = 0.0f;     
 			//max distnace
-			float tMax = 100000.0f;    
+			float maxD = 100000.0f;    
 
 			glm::vec3 worldPos = target.GetPosition(); 
-			glm::vec3 delta = worldPos - rayOrigin;
+			glm::vec3 deltaPos = worldPos - rayOrigin;
 
 			//slabs algorithm for obb
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; i++) 
+			{
 				glm::vec3 axis = target.GetAxes()[i];
-				float e = glm::dot(axis, delta);
+				float e = glm::dot(axis, deltaPos);
 				float f = glm::dot(rayDir, axis);
 
 				//if the ray is not parallel to the planes
@@ -76,9 +80,19 @@ struct Collider
 					float t1 = (e + target.GetHalfExtents()->x) / f; 
 
 					//objects are indexed by i so we map extents
-					float extent = (i == 0) ? target.GetHalfExtents()->x :
-						(i == 1) ? target.GetHalfExtents()->y :
-						target.GetHalfExtents()->z;
+					float extent;
+					if (i == 0) 
+					{
+						extent = halfExtents.x;
+					}
+					else if (i == 1) 
+					{
+						extent = halfExtents.y;
+					}
+					else
+					{
+						extent = halfExtents.z;
+					}
 
 					//intersection logic
 					float t1_actual = (e + extent) / f;
@@ -86,24 +100,48 @@ struct Collider
 
 					if (t1_actual > t2_actual) std::swap(t1_actual, t2_actual);
 
-					if (t1_actual > tMin) tMin = t1_actual;
-					if (t2_actual < tMax) tMax = t2_actual;
+					if (t1_actual > minD) minD = t1_actual;
+					if (t2_actual < maxD) maxD = t2_actual;
 
 					//missed
-					if (tMin > tMax) return false;
+					if (minD > maxD)
+					{
+						return false;
+					}
 					//box beyond the ray
-					if (tMax < 0) return false;   
+					if (maxD < 0)
+					{
+						return false;
+					}
 				}
-				else {
+				else 
+				{
 					//ray is parrallel so check if the origin is inside the slab
-					float extent = (i == 0) ? target.GetHalfExtents()->x :
-						(i == 1) ? target.GetHalfExtents()->y :
-						target.GetHalfExtents()->z;
-					if (-e - extent > 0 || -e + extent < 0) return false;
+					float extent;
+
+					if (i == 0) 
+					{
+						extent = halfExtents.x;
+					}
+					else if (i == 1) 
+					{
+						extent = halfExtents.y;
+					}
+					else 
+					{
+						extent = halfExtents.z;
+					}
+
+
+
+					if (-e - extent > 0 || -e + extent < 0)
+					{
+						return false;
+					}	
 				}
 			}
 
-			distance = tMin;
+			distance = minD;
 			return true;
 		}
 
@@ -130,8 +168,14 @@ struct Collider
 			//get the cros products
 			int idx = 6;
 			for (int i = 0; i < 3; i++)
+			{
 				for (int j = 0; j < 3; j++)
+				{
 					testAxes[idx++] = glm::cross(a.axes[i], b->GetAxes()[j]);
+				}
+					
+			}
+				
 
 			for (int i = 0; i < 15; i++)
 			{
@@ -156,7 +200,8 @@ struct Collider
 
 			//get the closest point of b collider
 			glm::vec3 closestPointOnB = b->position;
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; i++) 
+			{
 				float dist = glm::dot(a.position - b->position, b->axes[i]);
 				dist = glm::clamp(dist, -(*b->GetHalfExtents())[i], (*b->GetHalfExtents())[i]);
 				closestPointOnB += b->axes[i] * dist;
@@ -175,12 +220,14 @@ struct Collider
 
 			//find the best corner that we hit with
 			float maxDot = -1.0f;
-			for (const SideDir& d : directions)
+
+			for (int i = 0; i < sizeof(directions) / sizeof(directions[0]); i++)
 			{
-				float dot = glm::dot(localDir, d.direction);
-				if (dot > maxDot) {
+				float dot = glm::dot(localDir, directions[i].direction);
+				if (dot > maxDot) 
+				{
 					maxDot = dot;
-					lastCollisionSide = d.side;
+					lastCollisionSide = directions[i].side;
 				}
 			}
 			return true;
@@ -204,11 +251,13 @@ struct Collider
 		glm::vec3 axes[3];
 		CollisionSide lastCollisionSide;
 
-		SideDir directions[4] = {
-			{ Collider::CollisionSide::FrontLeft, glm::vec2(0.7071f, 0.7071f) },
-			{ Collider::CollisionSide::FrontRight,  glm::vec2(-0.7071f, 0.7071f) },
-			{ Collider::CollisionSide::BackLeft,  glm::vec2(0.7071f, -0.7071f) },
-			{ Collider::CollisionSide::BackRight,   glm::vec2(-0.7071f, -0.7071f) } };;
+		std::array<SideDir, 4> directions = 
+		{ {
+			{ Collider::CollisionSide::FrontLeft,  glm::vec2(0.7071f,  0.7071f) },
+			{ Collider::CollisionSide::FrontRight, glm::vec2(-0.7071f,  0.7071f) },
+			{ Collider::CollisionSide::BackLeft,   glm::vec2(0.7071f, -0.7071f) },
+			{ Collider::CollisionSide::BackRight,  glm::vec2(-0.7071f, -0.7071f) }
+		} };
 
 		
 };

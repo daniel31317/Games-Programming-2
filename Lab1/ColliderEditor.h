@@ -658,7 +658,8 @@ public:
 
 
 	//30 is how many lines we keep and clear the rest
-	void refreshEditorOutput() {
+	void refreshEditorOutput() 
+	{
 		std::cout << "\033[30;1H";
 
 		std::cout << "\033[J";

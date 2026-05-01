@@ -269,7 +269,8 @@ void MainGame::processInput()
 
 
 				//fullscreen
-				if (event.key.keysym.sym == SDLK_F11) {
+				if (event.key.keysym.sym == SDLK_F11) 
+				{
 					_gameDisplay.toggleFullscreen();
 
 					int w, h;

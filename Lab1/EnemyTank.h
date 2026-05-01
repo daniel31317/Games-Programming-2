@@ -168,7 +168,8 @@ public:
 
 
 			//only move is really recessary
-			if (std::abs(diff) > 0.05f) {
+			if (std::abs(diff) > 0.05f) 
+			{
 				if (diff > 0)
 				{
 					m_tank.RotateTurretLeftAI(deltaTime);
@@ -267,7 +268,8 @@ public:
 	}
 
 
-	MapIndex GetNextRandomPoint(MapIndex current, MapIndex previous, int maxRows, int maxCols) {
+	MapIndex GetNextRandomPoint(MapIndex current, MapIndex previous, int maxRows, int maxCols) 
+	{
 		std::vector<MapIndex> validPoints;
 
 		//determine direction of previous travel
@@ -276,10 +278,12 @@ public:
 
 
 		//cjeck points in the same row
-		for (int c = 0; c < maxCols; ++c) {
+		for (int c = 0; c < maxCols; ++c) 
+		{
 			if (c == current.col) continue;
 
-			if (movingHorizontally) {
+			if (movingHorizontally) 
+			{
 
 				//ignore previous moves to the left if we just moved right
 				if (current.col > previous.col && c < current.col) continue;
@@ -292,10 +296,12 @@ public:
 
 
 		//check points in same column
-		for (int r = 0; r < maxRows; ++r) {
+		for (int r = 0; r < maxRows; ++r) 
+		{
 			if (r == current.row) continue;
 
-			if (movingVertically) {
+			if (movingVertically) 
+			{
 				//same as before but with up and down
 				if (current.row > previous.row && r < current.row) continue;
 
@@ -318,7 +324,8 @@ public:
 
 
 	//generate a random starting point
-	void GenerateStartingIndices(MapIndex& start, MapIndex& previous, int maxRows, int maxCols) {
+	void GenerateStartingIndices(MapIndex& start, MapIndex& previous, int maxRows, int maxCols) 
+	{
 		static std::mt19937 gen(std::random_device{}());
 		std::uniform_int_distribution<> rowDist(0, maxRows - 1);
 		std::uniform_int_distribution<> colDist(0, maxCols - 1);
