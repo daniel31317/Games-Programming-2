@@ -32,7 +32,7 @@ public:
 
 	Tank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* camera, bool isPlayer)
 	{
-
+		RespawnTank();
 		if (isPlayer)
 		{
 			//leclerc body
