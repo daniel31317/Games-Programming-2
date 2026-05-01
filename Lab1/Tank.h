@@ -518,7 +518,7 @@ public:
 		}
 
 
-		if (true)
+		if (muzzleFlashData.IsAlive())
 		{
 			m_muzzleFlash.GetShader()->Bind();
 			m_muzzleFlash.GetShader()->Update(*m_muzzleFlash.GetTransform(), *camera, true);
