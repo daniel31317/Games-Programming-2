@@ -33,7 +33,7 @@ public:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
-    std::vector<glm::vec3> colours;
+    std::vector<glm::vec3> colours; //i added colours as an initial model had vertex colour data so that works as well
 
 	glm::vec3 defaultColour;
 

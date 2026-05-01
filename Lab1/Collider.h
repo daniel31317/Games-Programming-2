@@ -45,7 +45,7 @@ struct Collider
 
 		float ProjectOntoAxis(const Collider& box, const glm::vec3& axis)
 		{
-			// How far this box extends along the given axis
+			//how far is box into axis
 			int x = 1;
 			return box.halfExtents.x * std::abs(glm::dot(box.axes[0], axis)) +
 				box.halfExtents.y * std::abs(glm::dot(box.axes[1], axis)) +

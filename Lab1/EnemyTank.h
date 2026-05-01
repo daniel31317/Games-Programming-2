@@ -31,6 +31,9 @@ public:
 
 		ResetTankPos();
 
+
+		//get refs to stuff
+
 		m_positionRef = m_tank.GetBody()->GetTransform()->GetPosition();
 		m_currentSpeedRef = m_tank.GetCurrentSpeed();
 		m_brakeForceRef = m_tank.GetBrakeForce();
@@ -42,6 +45,7 @@ public:
 
 	void ResetTankPos()
 	{
+		//get new target point
 		GenerateStartingIndices(currentIndex, nextIndex, 9, 8);
 
 		m_tank.SetPosition(glm::vec3(movementGrid[currentIndex.row][currentIndex.col].x, -0.94f, -movementGrid[currentIndex.row][currentIndex.col].y));
@@ -52,7 +56,8 @@ public:
 
 	void Update(float deltaTime)
 	{
-
+		//we handle driving even if not dead so it keeps its speed and slows down 
+		//it cant actually move becuase there is a check for if the tank is actually alive
 		HandleDriving();
 
 		if (m_tank.IsAlive())
@@ -70,7 +75,9 @@ public:
 
 	void HandleDriving()
 	{
+		//get stopping distance distance = (velocity^2) / (2*brake force)
 		float stoppingDistance = (*m_currentSpeedRef * *m_currentSpeedRef) / (2.0f * *m_brakeForceRef);
+		//distance to next point
 		float distanceToTarget = glm::distance(*m_positionRef, nextPoint);
 
 		//braking 
@@ -134,12 +141,12 @@ public:
 			if (angleDiff > 0)
 			{
 				m_tank.RotateBodyLeft(deltaTime, true, *tankColliderOffset);
-				m_tank.RotateTurretLeftAI(deltaTime, false);
+				m_tank.RotateTurretLeftAI(deltaTime);
 			}
 			else
 			{
 				m_tank.RotateBodyRight(deltaTime, true, *tankColliderOffset);
-				m_tank.RotateTurretRightAI(deltaTime, false);
+				m_tank.RotateTurretRightAI(deltaTime);
 			}
 		}
 
@@ -159,15 +166,17 @@ public:
 			while (diff < -glm::pi<float>()) diff += glm::two_pi<float>();
 			while (diff > glm::pi<float>()) diff -= glm::two_pi<float>();
 
+
+			//only move is really recessary
 			if (std::abs(diff) > 0.05f) {
 				if (diff > 0)
 				{
-					m_tank.RotateTurretLeftAI(deltaTime, false);
+					m_tank.RotateTurretLeftAI(deltaTime);
 				}
 
 				else
 				{
-					m_tank.RotateTurretRightAI(deltaTime, false);
+					m_tank.RotateTurretRightAI(deltaTime);
 				}
 			}
 			else
@@ -249,10 +258,10 @@ public:
 		{
 			if (angleDiff > 0) 
 			{
-				m_tank.RotateTurretLeftAI(deltaTime, false);
+				m_tank.RotateTurretLeftAI(deltaTime);
 			}
 			else {
-				m_tank.RotateTurretRightAI(deltaTime, false);
+				m_tank.RotateTurretRightAI(deltaTime);
 			}
 		}
 	}
@@ -307,6 +316,8 @@ public:
 	}
 
 
+
+	//generate a random starting point
 	void GenerateStartingIndices(MapIndex& start, MapIndex& previous, int maxRows, int maxCols) {
 		static std::mt19937 gen(std::random_device{}());
 		std::uniform_int_distribution<> rowDist(0, maxRows - 1);

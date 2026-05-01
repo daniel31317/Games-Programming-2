@@ -25,6 +25,8 @@ struct Camera
 		pos += movement;
 	}
  
+
+	//rotate the cameras matrix and get the new forward,up and right directions
 	void rotate(float angle, const glm::vec3& axis)
 	{
 		glm::mat4 rotation = glm::rotate(angle, axis);
@@ -81,6 +83,8 @@ struct Camera
 		this->pos = pos;
 	}
 
+
+
 	void SetRotation(const glm::vec3& newRot)
 	{
 		this->rot = newRot;
@@ -105,15 +109,13 @@ struct Camera
 
 	void UpdateZoom(float deltaTime)
 	{
-		// Determine which FOV we are aiming for
+		//detremine the fov we are zooming to 
 		float targetFOV = m_isZooming ? m_zoomFOV : m_defaultFOV;
 
-		// Smoothly interpolate (Lerp) the current FOV toward the target
-		// 10.0f is the zoom speed
+		//lerp between them
 		m_currentFOV = glm::mix(m_currentFOV, targetFOV, deltaTime * 10.0f);
 
-		// Update the projection matrix with the new FOV
-		// Pass your existing aspect ratio, near, and far clips
+		//update projection matrix
 		updateProjection(m_currentFOV, m_aspectRatio, 0.1f, 1000.0f);
 	}
 

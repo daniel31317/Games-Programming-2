@@ -49,6 +49,7 @@ public:
 		CreateTankBodyCollider();
 		CreateEnemyTankBodyCollider();
 
+		//we save colliders to a binary file for quick loading
 		loadCollidersFromBinary("..\\res\\colliders.bin");
 	}
 
@@ -82,7 +83,7 @@ public:
 
 	void HandleInputForCreatingAndDeletingColliders(const Uint8* state)
 	{
-		//new collider
+		//create new collider
 		if (state[SDL_SCANCODE_N])
 		{
 			if (!nDown)
@@ -134,6 +135,8 @@ public:
 		}
 	}
 
+
+	//based on input either ,./ we switch what transform element we are editing
 	void HandleInputForEditorType(const Uint8* state)
 	{
 		//transform type
@@ -188,6 +191,9 @@ public:
 		}
 	}
 
+
+
+	//based on xyz input we are now editing that axis
 	void HandleInputForAxisType(const Uint8* state)
 	{
 		if (state[SDL_SCANCODE_X])
@@ -240,16 +246,25 @@ public:
 		}
 	}
 
+
+
+
+
 	void HandleInputForTypingStatChange(const Uint8* state)
 	{
+
+		//allow user to enter new change value
 		if (state[SDL_SCANCODE_V])
 		{
 			if (!vDown)
 			{
 				vDown = true;
 				refreshEditorOutput();
+
 				while (true)
 				{
+
+					//get current value
 					std::string statType;
 					float currentValue = 0.0f;
 					switch (currentEditorState)
@@ -268,11 +283,15 @@ public:
 						break;
 
 					}
+
+					//display
 					std::cout << "Current Change Stat Value For " + statType + " : " + std::to_string(currentValue);
 					std::cout << "\nEnter New Change Stat Value For " + statType + " : ";
 
 					float changeAmount = 0;
 
+
+					//get new amount and update the right change amount based on waht we are editing
 					if (std::cin >> changeAmount)
 					{
 						switch (currentEditorState)
@@ -293,6 +312,7 @@ public:
 						break;
 
 					}
+					//i love input validation
 					else
 					{
 						std::cout << "Invalid Input, Try Again\n";
@@ -310,10 +330,14 @@ public:
 		}
 	}
 
+
+	//stat change
 	void HandleInputForStatChanging(const Uint8* state)
 	{
 		float factor = 1.0f;
 
+
+		//multipliers
 		if (state[SDL_SCANCODE_1])
 		{
 			factor = 10.0f;
@@ -326,6 +350,7 @@ public:
 
 
 		//add stuff
+		//basically a huge switch statement for each axis and transofrm element and it adds the value to the axis and transform element we are editing
 		if (state[SDL_SCANCODE_EQUALS])
 		{
 			if (currentColliderIndex >= m_colliders.size() || m_colliders[currentColliderIndex] == nullptr)
@@ -418,7 +443,7 @@ public:
 
 
 
-		//minus stuff
+		//same as add here but minus
 		if (state[SDL_SCANCODE_MINUS])
 		{
 			if (currentColliderIndex >= m_colliders.size() || m_colliders[currentColliderIndex] == nullptr)
@@ -508,6 +533,9 @@ public:
 		}
 	}
 
+
+
+	//index chaning
 	void HandleInputForChangingIndex(const Uint8* state)
 	{
 
@@ -556,6 +584,9 @@ public:
 		}
 	}
 
+
+
+	//hide those meshes so you can see the beautiful colliders
 	void HandleInputForHidingMesh(const Uint8* state)
 	{
 		//hide meshes
@@ -576,6 +607,8 @@ public:
 		}
 	}
 
+
+	//save the work
 	void HandleInputForForceSaving(const Uint8* state)
 	{
 		//force save
@@ -624,7 +657,7 @@ public:
 
 
 
-	//23 is how many lines we keep
+	//30 is how many lines we keep and clear the rest
 	void refreshEditorOutput() {
 		std::cout << "\033[30;1H";
 
@@ -634,7 +667,7 @@ public:
 	}
 
 
-
+	//on closing editor (not closing program) save
 	void CloseEditor()
 	{
 		std::system("cls");
@@ -643,6 +676,7 @@ public:
 	}
 
 
+	//draw the lovely colliders in polygon mode
 	void DrawEditor(Camera& mainCamera)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -662,7 +696,7 @@ public:
 
 		}
 
-
+		//tank colliders
 		m_tankBodyCollider.GetShader()->Bind();
 		m_tankBodyCollider.GetShader()->Update(*m_tankBodyCollider.GetTransform(), mainCamera, false);
 		m_tankBodyCollider.GetTexture()->Bind(0);
@@ -677,6 +711,8 @@ public:
 	}
 
 
+
+	//for drawing wall hacks when not in editor mode
 	void WallHacks(Camera& mainCamera)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -689,7 +725,7 @@ public:
 	}
 
 
-
+	//save the collider data to binary file
 	void saveCollidersToBinary(const std::string& filename)
 	{
 		std::ofstream file(filename, std::ios::binary);
@@ -722,6 +758,8 @@ public:
 		file.write(reinterpret_cast<char*>(scales.data()), scaleCount * sizeof(glm::vec3));
 	}
 
+
+	//load that binary file
 	void loadCollidersFromBinary(const std::string& filename)
 	{
 		std::ifstream file(filename, std::ios::binary);
@@ -774,6 +812,8 @@ public:
 	}
 
 
+
+	//make collider for tank
 	void CreateTankBodyCollider()
 	{
 		m_tankBodyCollider = GameObject();
@@ -789,6 +829,7 @@ public:
 	}
 
 
+	//make colldier for enemy
 	void CreateEnemyTankBodyCollider()
 	{
 		m_enemyTankBodyCollider = GameObject();
@@ -806,7 +847,7 @@ public:
 
 
 
-
+	//displays what the user is editing in the console
 	void UpdateEditorStateText()
 	{
 		refreshEditorOutput();
@@ -870,10 +911,11 @@ public:
 
 	glm::vec3 ShootDetection(const glm::vec3& rayStartPos, const glm::vec3& rayDirection, bool isPlayer, bool kill)
 	{
+		//bullet data
 		std::vector<BulletHitData> bullletHitData = std::vector<BulletHitData>();
 
 
-
+		//check colliders for hits (could be optimized but no time)
 		for (int i = 0; i < m_colliders.size(); i++)
 		{
 			float distance = 0.0f;
@@ -888,10 +930,11 @@ public:
 		}
 
 
+		//closest hit from that data
 		BulletHitData* closestHit = GetClosestHit(bullletHitData);
 
 
-
+		//we check the closest building hit with the enemy tank and if the tank is closer kill that fella, if not we shot a building 
 		float distance = 0.0f;
 		if (m_enemyTankBodyCollider.GetCollider()->CheckRayHit(rayStartPos, rayDirection, *m_enemyTankBodyCollider.GetCollider(), distance))
 		{
@@ -917,15 +960,16 @@ public:
 		}
 
 
-
+		//if we hit a building
 		if (closestHit != nullptr)
 		{
 			return closestHit->colliderHit->GetPosition();
 		}
 
-		
+		//if nothing was hit (looking at lovely skybox) return a value big enough to work
 		return glm::vec3(50.0);
 	}
+
 
 
 	BulletHitData* GetClosestHit(std::vector<BulletHitData>& hits) const
@@ -955,7 +999,7 @@ public:
 
 
 
-
+	//ai check for player in 180 cone ahead of it 
 	bool CheckForPlayer()
 	{
 		glm::vec3 enemyPos = *enemyTankRef->GetBody()->GetTransform()->GetPosition();
