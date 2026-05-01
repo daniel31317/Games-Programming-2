@@ -57,7 +57,7 @@ void MainGame::initGameObjects()
 	m_gameObjects[0]->GetTransform()->SetScale(glm::vec3(0.01, 0.01, 0.01));
 	m_gameObjects[0]->SetShader(*m_shaderManager.GetShader(ADS));
 	m_gameObjects[0]->SetTexture(*m_textureManager.GetTexture(CITYTEXTURE));
-	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(CITY));
+	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(CITY_M));
 
 	//crosshair
 	m_gameObjects[1]->GetTransform()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
@@ -65,7 +65,7 @@ void MainGame::initGameObjects()
 	m_gameObjects[1]->GetTransform()->SetScale(glm::vec3(1.0, 1.0, 1.0));
 	m_gameObjects[1]->SetShader(*m_shaderManager.GetShader(UIELEMENT));
 	m_gameObjects[1]->SetTexture(*m_textureManager.GetTexture(NONE));
-	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(CROSSHAIR));
+	m_gameObjects[1]->SetMesh(*m_meshManager.GetMesh(CROSSHAIR_M));
 
 
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera, true);

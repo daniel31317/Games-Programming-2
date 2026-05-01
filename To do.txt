@@ -1,7 +1,3 @@
--Smoke from barrel shot
-
--Fume particle thing
-
 -Settings
  	-vsync
 	-sens

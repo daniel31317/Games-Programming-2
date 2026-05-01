@@ -39,7 +39,7 @@ public:
 			m_body.GetTransform()->SetScale(glm::vec3(0.35f, 0.35f, 0.35f));
 			m_body.SetShader(*shaderManager.GetShader(TANK));
 			m_body.SetTexture(*textureManager.GetTexture(LECLERCHULL_T));
-			m_body.SetMesh(*meshManager.GetMesh(LECLERCHULL));
+			m_body.SetMesh(*meshManager.GetMesh(LECLERCHULL_M));
 
 			//turret
 			m_turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.68, -1.25));
@@ -47,7 +47,18 @@ public:
 			m_turret.GetTransform()->SetScale(glm::vec3(0.35f, 0.35f, 0.35f));
 			m_turret.SetShader(*shaderManager.GetShader(TANK));
 			m_turret.SetTexture(*textureManager.GetTexture(LECLERCTURRET_T));
-			m_turret.SetMesh(*meshManager.GetMesh(LECLERCTURRET));
+			m_turret.SetMesh(*meshManager.GetMesh(LECLERCTURRET_M));
+
+
+			//barrel only for player
+			m_barrel.GetTransform()->SetPosition(glm::vec3(0.0, -0.55, -0.975));
+			m_barrel.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
+			m_barrel.GetTransform()->SetScale(glm::vec3(0.35f, 0.35f, 0.35f));
+			m_barrel.SetShader(*shaderManager.GetShader(TANK));
+			m_barrel.SetTexture(*textureManager.GetTexture(LECLERCBARREL_T));
+			m_barrel.SetMesh(*meshManager.GetMesh(LECLERCBARREL_M));
+			barrelOffset = *m_barrel.GetTransform()->GetPosition() - *m_turret.GetTransform()->GetPosition();
+
 		}
 		else
 		{
@@ -57,7 +68,7 @@ public:
 			m_body.GetTransform()->SetScale(glm::vec3(0.20f, 0.20f, 0.20f));
 			m_body.SetShader(*shaderManager.GetShader(TANK));
 			m_body.SetTexture(*textureManager.GetTexture(T80HULL_T));
-			m_body.SetMesh(*meshManager.GetMesh(T80HULL));
+			m_body.SetMesh(*meshManager.GetMesh(T80HULL_M));
 
 			//turret
 			m_turret.GetTransform()->SetPosition(glm::vec3(0.0, -0.94, -1.5));
@@ -65,7 +76,7 @@ public:
 			m_turret.GetTransform()->SetScale(glm::vec3(0.20f, 0.20f, 0.20f));
 			m_turret.SetShader(*shaderManager.GetShader(TANK));
 			m_turret.SetTexture(*textureManager.GetTexture(T80TURRET_T));
-			m_turret.SetMesh(*meshManager.GetMesh(T80TURRET));
+			m_turret.SetMesh(*meshManager.GetMesh(T80TURRET_M));
 		}
 		
 
@@ -75,7 +86,7 @@ public:
 		m_muzzleFlash.GetTransform()->SetScale(glm::vec3(0.3f, 0.3f, 0.3f));
 		m_muzzleFlash.SetShader(*shaderManager.GetShader(REMOVE_BACKGRROUND));
 		m_muzzleFlash.SetTexture(*textureManager.GetTexture(MUZZLEFLASH));
-		m_muzzleFlash.SetMesh(*meshManager.GetMesh(QUAD));
+		m_muzzleFlash.SetMesh(*meshManager.GetMesh(QUAD_M));
 
 		noiseTexture = textureManager.GetTexture(NOISE);
 
@@ -159,6 +170,7 @@ public:
 			if (isPlayer)
 			{
 				camera->move(forward * currentSpeed * deltaTime);
+				m_barrel.GetTransform()->move(forward * currentSpeed * deltaTime);
 			}
 			
 			
@@ -202,6 +214,7 @@ public:
 
 	GameObject* GetBody() { return &m_body; }
 	GameObject* GetTurret() { return &m_turret; }
+	GameObject* GetBarrel() { return &m_barrel; }
 
     void MoveForward()
     {
@@ -365,6 +378,14 @@ public:
 		m_muzzleFlash.GetTransform()->SetPosition(*turretTransform->GetPosition()
 			+ (turretTransform->GetForward() * 1.4f)
 			+ (turretTransform->GetUp() * muzzleFlashOffset));
+
+
+		//rotate barrel
+		m_barrel.GetTransform()->SetRotation(*turretTransform->GetRotation());
+		glm::mat4 turretRotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
+		glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotMat * glm::vec4(barrelOffset, 1.0f));
+		m_barrel.GetTransform()->SetPosition(*turretTransform->GetPosition() + rotatedBarrelOffset);
+
 	}
 
 
@@ -476,6 +497,17 @@ public:
 		noiseTexture->Bind(1);
 		m_turret.GetMesh()->draw();
 
+
+		if (isPlayer)
+		{
+			m_barrel.GetShader()->Bind();
+			m_barrel.GetShader()->Update(*m_barrel.GetTransform(), *camera, true, alive ? 0.0f : 0.95f);
+			m_barrel.GetTexture()->Bind(0);
+			noiseTexture->Bind(1);
+			m_barrel.GetMesh()->draw();
+		}
+
+
 		if (muzzleFlashData.IsAlive())
 		{
 			m_muzzleFlash.GetShader()->Bind();
@@ -508,6 +540,7 @@ public:
 private:
 	GameObject m_body;
 	GameObject m_turret;
+	GameObject m_barrel;
 	GameObject m_muzzleFlash;
 	GameObject* tankCollider;
 
@@ -549,6 +582,7 @@ private:
 
 	glm::vec3 cameraOffset = glm::vec3();
 	glm::vec3 turretOffset = glm::vec3();
+	glm::vec3 barrelOffset = glm::vec3();
 	float muzzleFlashOffset = 0.0;
 
 	
