@@ -132,7 +132,7 @@ private:
 	glm::vec3 up;
 	glm::vec3 right;
 
-	float m_aspectRatio;
+	float m_aspectRatio = 16.0f/9.0f;
 
 	float m_defaultFOV = glm::radians(50.0f); // Standard view
 	float m_zoomFOV = glm::radians(15.0f);    // Zoomed view

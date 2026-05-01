@@ -68,6 +68,7 @@ private:
 
 	float m_sensitivity = 1.0f;
 	float m_targetTurretAngle = 0.0f;
+	float m_targetBarrelPitch = 0.0f;
 
 	int lastFrameCount = 0;
 
@@ -80,7 +81,6 @@ private:
 	bool isZooming = false;
 
 	bool hDown = false;
-	bool cDown = false;
-	bool tDown = false;
+	bool xDown = false;
 
 };

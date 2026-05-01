@@ -25,7 +25,10 @@ public:
 		glm::mat4 rotX = glm::rotate(m_rot.x, glm::vec3(1.0, 0.0, 0.0));
 		glm::mat4 rotY = glm::rotate(m_rot.y, glm::vec3(0.0, 1.0, 0.0));
 		glm::mat4 rotZ = glm::rotate(m_rot.z, glm::vec3(0.0, 0.0, 1.0));
-		glm::mat4 rotMat = rotX * rotY * rotZ;
+
+
+		//apply yaw last so pitch moves with it
+		glm::mat4 rotMat = rotY * rotX * rotZ;
 
 		return posMat * rotMat * scaleMat;
 	}
@@ -37,21 +40,27 @@ public:
 		m_rot += rotation;
 	}
 
-	const glm::vec3 GetForward() const 
+	const glm::vec3 GetForward() const
 	{
-		glm::mat4 rotation = glm::rotate(m_rot.y, glm::vec3(0, 1, 0));
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), m_rot.y, glm::vec3(0, 1, 0));
+		rotation = glm::rotate(rotation, m_rot.x, glm::vec3(1, 0, 0));
+
 		return glm::vec3(rotation * glm::vec4(0, 0, 1, 0));
 	}
 
-	const glm::vec3 GetUp() const 
+	const glm::vec3 GetUp() const
 	{
-		glm::mat4 rotation = glm::rotate(m_rot.y, glm::vec3(0, 1, 0));
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), m_rot.y, glm::vec3(0, 1, 0));
+		rotation = glm::rotate(rotation, m_rot.x, glm::vec3(1, 0, 0));
+
 		return glm::vec3(rotation * glm::vec4(0, 1, 0, 0));
 	}
 
-	const glm::vec3 GetRight() const 
+	const glm::vec3 GetRight() const
 	{
-		glm::mat4 rotation = glm::rotate(m_rot.y, glm::vec3(0, 1, 0));
+		glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), m_rot.y, glm::vec3(0, 1, 0));
+		rotation = glm::rotate(rotation, m_rot.x, glm::vec3(1, 0, 0));
+
 		return glm::vec3(rotation * glm::vec4(1, 0, 0, 0));
 	}
 

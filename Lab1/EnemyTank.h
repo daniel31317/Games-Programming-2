@@ -18,7 +18,13 @@ public:
 		int col;
 
 	};
-	EnemyTank() {}
+	EnemyTank() 
+	{
+		currentIndex.row = 0;
+		currentIndex.col = 0;
+		nextIndex.row = 0;
+		nextIndex.col = 0;
+	}
 
 	EnemyTank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* mainCamera, Tank* playerTank) : m_tank(shaderManager, textureManager, meshManager, mainCamera, false)
 	{
@@ -336,7 +342,7 @@ private:
 	bool stopMovingForward = true;
 	bool arrived = false;
 
-	glm::vec3* tankColliderOffset;
+	glm::vec3* tankColliderOffset = nullptr;
 
 	glm::vec3 nextPoint;
 

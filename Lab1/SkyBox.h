@@ -85,8 +85,8 @@ public:
 
 private :
 
-    unsigned int VAO, VBO;
-    unsigned int textureID;
+    unsigned int VAO, VBO = 0;
+    unsigned int textureID = 0;
 
     Shader* m_shaderRef = nullptr;
     Transform transform;

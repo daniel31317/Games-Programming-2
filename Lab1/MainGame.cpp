@@ -358,7 +358,9 @@ void MainGame::processInput()
 		//just so sensitivity can be a normal number
 		m_targetTurretAngle += (float)mouseX * (-m_sensitivity / 1000.f);
 
-		m_tank->UpdateTurretAim(deltaTime, m_targetTurretAngle, isZooming);
+		m_targetBarrelPitch += (float)mouseY * (m_sensitivity / 1000.f);
+
+		m_tank->UpdateTurretAim(deltaTime, m_targetTurretAngle, m_targetBarrelPitch, isZooming);
 
 
 		if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
@@ -392,18 +394,18 @@ void MainGame::processInput()
 	}
 
 
-	if (state[SDL_SCANCODE_C])
+	if (state[SDL_SCANCODE_X])
 	{
-		if (!cDown)
+		if (!xDown)
 		{
-			cDown = true;
+			xDown = true;
 			wallHacks = !wallHacks;
 		}
 		
 	}
 	else
 	{
-		cDown = false;
+		xDown = false;
 	}
 	
 }
@@ -434,7 +436,7 @@ void MainGame::update()
 
 	m_tank->Update(deltaTime);
 
-	//m_EnemyTank->Update(deltaTime);
+	m_EnemyTank->Update(deltaTime);
 
 	m_mainCamera.UpdateZoom(deltaTime);
 	

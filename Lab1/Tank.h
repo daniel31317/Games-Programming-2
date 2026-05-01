@@ -5,6 +5,7 @@
 #include "ShaderManager.h"
 #include "TextureManager.h"
 #include "Camera.h"
+#include <glm/gtc/quaternion.hpp>
 
 struct Tank
 {
@@ -25,6 +26,7 @@ public:
 	{
 		camera = nullptr;
 		tankCollider = nullptr;
+		noiseTexture = nullptr;
 	}
 
 
@@ -59,6 +61,9 @@ public:
 			m_barrel.SetMesh(*meshManager.GetMesh(LECLERCBARREL_M));
 			barrelOffset = *m_barrel.GetTransform()->GetPosition() - *m_turret.GetTransform()->GetPosition();
 
+			muzzleFlashOffset = 0.6;
+
+			m_muzzleFlash.GetTransform()->SetPosition(glm::vec3(0.0, m_barrel.GetTransform()->GetPosition()->y + muzzleFlashOffset, -0.1));
 		}
 		else
 		{
@@ -77,11 +82,13 @@ public:
 			m_turret.SetShader(*shaderManager.GetShader(TANK));
 			m_turret.SetTexture(*textureManager.GetTexture(T80TURRET_T));
 			m_turret.SetMesh(*meshManager.GetMesh(T80TURRET_M));
+
+			muzzleFlashOffset = 0.3;
+
+			m_muzzleFlash.GetTransform()->SetPosition(glm::vec3(0.0, m_turret.GetTransform()->GetPosition()->y + muzzleFlashOffset, -0.1));
 		}
 		
 
-		//muzzle flash
-		m_muzzleFlash.GetTransform()->SetPosition(glm::vec3(0.0, -0.45, -0.1));
 		m_muzzleFlash.GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
 		m_muzzleFlash.GetTransform()->SetScale(glm::vec3(0.3f, 0.3f, 0.3f));
 		m_muzzleFlash.SetShader(*shaderManager.GetShader(REMOVE_BACKGRROUND));
@@ -95,8 +102,6 @@ public:
 		cameraOffset = camera->GetPosition() - *m_turret.GetTransform()->GetPosition();
 
 		turretOffset = *m_turret.GetTransform()->GetPosition() - *m_body.GetTransform()->GetPosition();
-
-		muzzleFlashOffset = m_muzzleFlash.GetTransform()->GetPosition()->y - m_turret.GetTransform()->GetPosition()->y;
 
 		this->isPlayer = isPlayer;
 
@@ -341,51 +346,56 @@ public:
     }
 
 
-	void UpdateTurretAim(float deltaTime, float targetAngle, bool isZooming)
+	void UpdateTurretAim(float deltaTime, float targetHorizontalAngle, float& targetPitch, bool isZooming)
 	{
 		if (!alive) return;
-
 		Transform* turretTransform = m_turret.GetTransform();
 
-		//update camera to where player is aiming
-		camera->SetRotation(glm::vec3(0.0f, targetAngle, 0.0f));
+		//clamp to elevation adnd depression
+		targetPitch = glm::clamp(targetPitch, glm::radians(depression), glm::radians(elevation));
 
-		//update camera position
-		glm::mat4 rotMat = glm::rotate(targetAngle, glm::vec3(0, 1, 0));
-		glm::vec3 rotatedOffset = glm::vec3(rotMat * glm::vec4(cameraOffset, 0.0f));
-		camera->SetPosition(*turretTransform->GetPosition() + rotatedOffset);
+		//yaw system to calculate the final yaw of the turret
+		float currentTurretRotY = turretTransform->GetRotation()->y;
+		float yawDiff = targetHorizontalAngle - currentTurretRotY;
+		while (yawDiff < -glm::pi<float>()) yawDiff += glm::two_pi<float>();
+		while (yawDiff > glm::pi<float>()) yawDiff -= glm::two_pi<float>();
 
-		//turret lag behind
-		float currentTurretRot = turretTransform->GetRotation()->y;
-		float angleDiff = targetAngle - currentTurretRot;
+		float currentRotSpeed = isZooming ? turretRotSpeed / 2.0f : turretRotSpeed;
+		float maxYawThisFrame = currentRotSpeed * deltaTime;
+		float actualYawMove = 0.0f;
 
-		//shortest path
-		while (angleDiff < -glm::pi<float>()) angleDiff += glm::two_pi<float>();
-		while (angleDiff > glm::pi<float>()) angleDiff -= glm::two_pi<float>();
-
-
-		float speed = isZooming ? turretRotSpeed / 2.0f : turretRotSpeed;
-		float maxRotThisFrame = speed * deltaTime;
-
-		if (std::abs(angleDiff) > 0.001f)
+		//if the yaw is substantial 
+		if (std::abs(yawDiff) > 0.001f)
 		{
-			//clamp
-			float actualMove = glm::clamp(angleDiff, -maxRotThisFrame, maxRotThisFrame);
-			turretTransform->rotate(glm::vec3(0.0f, actualMove, 0.0f));
+			actualYawMove = glm::clamp(yawDiff, -maxYawThisFrame, maxYawThisFrame);
 		}
 
-		m_muzzleFlash.GetTransform()->SetRotation(*turretTransform->GetRotation());
-		m_muzzleFlash.GetTransform()->SetPosition(*turretTransform->GetPosition()
-			+ (turretTransform->GetForward() * 1.4f)
-			+ (turretTransform->GetUp() * muzzleFlashOffset));
+		//set yaw
+		float finalTurretYaw = currentTurretRotY + actualYawMove;
+		turretTransform->SetRotation(glm::vec3(0.0f, finalTurretYaw, 0.0f));
 
+		//barrel system
+		m_barrel.GetTransform()->SetRotation(glm::vec3(targetPitch, finalTurretYaw, 0.0f));
 
-		//rotate barrel
-		m_barrel.GetTransform()->SetRotation(*turretTransform->GetRotation());
-		glm::mat4 turretRotMat = glm::rotate(turretTransform->GetRotation()->y, glm::vec3(0, 1, 0));
-		glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotMat * glm::vec4(barrelOffset, 1.0f));
+		//update positon
+		glm::mat4 turretPosMat = glm::rotate(glm::mat4(1.0f), finalTurretYaw, glm::vec3(0, 1, 0));
+		glm::vec3 rotatedBarrelOffset = glm::vec3(turretPosMat * glm::vec4(barrelOffset, 1.0f));
 		m_barrel.GetTransform()->SetPosition(*turretTransform->GetPosition() + rotatedBarrelOffset);
 
+		//update camera
+		camera->SetRotation(glm::vec3(targetPitch, targetHorizontalAngle, 0.0f));
+		glm::mat4 camRot = glm::mat4(1.0f);
+		camRot = glm::rotate(camRot, targetHorizontalAngle, glm::vec3(0, 1, 0));
+		camRot = glm::rotate(camRot, targetPitch, glm::vec3(1, 0, 0));
+		glm::vec3 rotatedCamOffset = glm::vec3(camRot * glm::vec4(cameraOffset, 0.0f));
+		camera->SetPosition(*turretTransform->GetPosition() + rotatedCamOffset);
+
+		//update muzzleflash position and rotation
+		m_muzzleFlash.GetTransform()->SetRotation(*m_barrel.GetTransform()->GetRotation());
+		glm::vec4 localOffset = glm::vec4(0.0f, m_barrel.GetTransform()->GetPosition()->y + muzzleFlashOffset, 2.65f, 1.0f);
+		glm::mat4 barrelMatrix = m_barrel.GetTransform()->GetModel();
+		glm::vec3 finalFlashPos = glm::vec3(barrelMatrix * localOffset);
+		m_muzzleFlash.GetTransform()->SetPosition(finalFlashPos);
 	}
 
 
@@ -406,7 +416,7 @@ public:
 
 		m_muzzleFlash.GetTransform()->SetPosition(*turretTransform->GetPosition()
 			+ (turretTransform->GetForward() * 1.4f)
-			+ (turretTransform->GetUp() * muzzleFlashOffset));
+			+ (turretTransform->GetUp() * (m_barrel.GetTransform()->GetPosition()->y + muzzleFlashOffset)));
 
 		if (isPlayer)
 		{
@@ -434,7 +444,7 @@ public:
 
 		m_muzzleFlash.GetTransform()->SetPosition(*turretTransform->GetPosition()
 			+ (turretTransform->GetForward() * 1.4f)
-			+ (turretTransform->GetUp() * muzzleFlashOffset));
+			+ (turretTransform->GetUp() * (m_barrel.GetTransform()->GetPosition()->y + muzzleFlashOffset)));
 
 		if (isPlayer)
 		{
@@ -508,7 +518,7 @@ public:
 		}
 
 
-		if (muzzleFlashData.IsAlive())
+		if (true)
 		{
 			m_muzzleFlash.GetShader()->Bind();
 			m_muzzleFlash.GetShader()->Update(*m_muzzleFlash.GetTransform(), *camera, true);
@@ -566,6 +576,8 @@ private:
 	const float turnSpeedPenalty = 0.8f;
 	const float brakeForce = 7.f;
 
+	const float elevation = 20.0f; //degrees
+	const float depression = -8.0f; //degrees
 
 	const float bodyRotSpeed = 1.0f;
 	const float turretRotSpeed = 1.0f;
@@ -573,6 +585,7 @@ private:
 	const float maxReloadTime = 6.0f;
 	float currentReloadTime = 0.0f;
 
+	float muzzleFlashOffset = 0.0;
 
 	bool canShoot = true;
 
@@ -583,7 +596,6 @@ private:
 	glm::vec3 cameraOffset = glm::vec3();
 	glm::vec3 turretOffset = glm::vec3();
 	glm::vec3 barrelOffset = glm::vec3();
-	float muzzleFlashOffset = 0.0;
 
 	
 };
