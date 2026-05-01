@@ -56,6 +56,10 @@ void Mesh::loadModel(const std::string& filename)
 	
 }
 
+
+
+//i made it so it saves models to a binary file so load time is shorter because it was taking a while to load and getting annoying to debug
+//this unironically saved me hours of waiting based on how many times i played the game just to change one value for it to be wrong
 void Mesh::saveModelAsBinary(const std::string& filename)
 {
 	std::ofstream file(filename, std::ios::binary);

@@ -13,7 +13,7 @@ MeshManager::~MeshManager()
 
 void MeshManager::LoadMeshes()
 {
-	
+	//make mesh ptrs
 	m_meshList[T80HULL_M] = std::make_unique<Mesh>();
 	m_meshList[T80TURRET_M] = std::make_unique<Mesh>();
 	m_meshList[LECLERCHULL_M] = std::make_unique<Mesh>();
@@ -21,7 +21,7 @@ void MeshManager::LoadMeshes()
 	m_meshList[LECLERCBARREL_M] = std::make_unique<Mesh>();
 	m_meshList[CITY_M] = std::make_unique<Mesh>();
 
-
+    //load them models
 	m_meshList[T80HULL_M]->loadModel("..\\res\\T_80_Hull");
 	m_meshList[T80TURRET_M]->loadModel("..\\res\\T_80_Turret");
 	m_meshList[LECLERCHULL_M]->loadModel("..\\res\\LeclercHull");
@@ -29,6 +29,7 @@ void MeshManager::LoadMeshes()
 	m_meshList[LECLERCBARREL_M]->loadModel("..\\res\\LeclercBarrel");
 	m_meshList[CITY_M]->loadModel("..\\res\\City");
 
+    //upload them models
 	m_meshList[T80HULL_M]->uploadModelToGPU();
 	m_meshList[T80TURRET_M]->uploadModelToGPU();
 	m_meshList[LECLERCHULL_M]->uploadModelToGPU();
@@ -36,7 +37,7 @@ void MeshManager::LoadMeshes()
 	m_meshList[LECLERCBARREL_M]->uploadModelToGPU();
 	m_meshList[CITY_M]->uploadModelToGPU();
 
-
+    //make a quad
 	m_meshList[QUAD_M] = std::make_unique<Mesh>();
 
 	Vertex vertices[] = { Vertex(glm::vec3(-1.0, 1.0, 0), glm::vec2(0.0, 1.0), glm::vec3(0,0,1)),
@@ -54,6 +55,11 @@ void MeshManager::LoadMeshes()
 	m_meshList[QUAD_M]->init(vertices, numVertices, indices, numIndices);
 	m_meshList[QUAD_M]->uploadModelToGPU();
 
+
+
+
+
+    //make a cube
 	m_meshList[CUBE_M] = std::make_unique<Mesh>();
 
     Vertex vertices1[] = {
@@ -107,7 +113,7 @@ void MeshManager::LoadMeshes()
 
 
 
-
+    //make a crosshair
     m_meshList[CROSSHAIR_M] = std::make_unique<Mesh>();
 
     float width = 0.036f; 

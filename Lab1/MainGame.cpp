@@ -62,7 +62,7 @@ void MainGame::initGameObjects()
 	m_gameObjects[0]->SetTexture(*m_textureManager.GetTexture(CITYTEXTURE));
 	m_gameObjects[0]->SetMesh(*m_meshManager.GetMesh(CITY_M));
 
-
+	//make tanks and colliders in certain order so they all ahve their needed references
 	m_tank = std::make_unique<Tank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera, true);
 
 	m_EnemyTank = std::make_unique<EnemyTank>(m_shaderManager, m_textureManager, m_meshManager, &m_mainCamera, m_tank.get());
@@ -77,6 +77,7 @@ void MainGame::initGameObjects()
 
 void MainGame::gameLoop()
 {
+	//fps stuff
 	float fpsTimer = 0.0f;
 	int fpsCounter = 0;
 	std::string words = "Game Programming 2 | FPS: ";
@@ -86,6 +87,8 @@ void MainGame::gameLoop()
 	std::string on = "ON";
 	std::string off = "OFF";
 
+	//update titlle to show fps if we havent exited
+	//it also shows free camera and collider editor states
 	while (_gameState != GameState::EXIT)
 	{
 		float currentFrame = SDL_GetTicks() / 1000.0f;  // convert ms to seconds
@@ -139,6 +142,9 @@ void MainGame::gameLoop()
 			updateGameTitle = false;
 		}
 
+
+
+		//actual game loop
 		processInput();
 		update();
 		drawGame();
@@ -153,6 +159,7 @@ void MainGame::writeGameControls()
 	std::cout << "Move Forward - W\nMove Backward - S\n";
 	std::cout << "Turn Left - A\nTurn Right - D\n";
 	std::cout << "Look Around - Mouse\n";
+	std::cout << "Sensitivity is a variable in MainGame.h if you need to change it\n";
 	std::cout << "Shoot - Left Mouse\nZoom - Right Click\n";
 	std::cout << "Respawn - R\nV-Sync Toggle - V\n";
 	std::cout << "Toggle World Colliders - H\nX-Ray On Enemy - X\n";
@@ -169,6 +176,7 @@ void MainGame::writeFreeCamControls()
 	std::cout << "Move Left - A\nMove Right - D\n";
 	std::cout << "Move Up - LSHIFT\nMove Down - LCTRL\n";
 	std::cout << "Look Around - Mouse\n";
+	std::cout << "Sensitivity is a variable in MainGame.h if you need to change it\n";
 	std::cout << "V-Sync Toggle - V\n";
 	std::cout << "Toggle World Colliders - H\nX-Ray On Enemy - X\n";
 	std::cout << "Toggle Free Camera - TAB\nToggle Collider Editor - LALT\n";
@@ -190,6 +198,8 @@ void MainGame::processInput()
 			break;
 
 			case SDL_KEYDOWN:
+
+				//switch to free cam and back
 				if (event.key.keysym.sym == SDLK_TAB && !colliderEditorActive)
 				{
 					freeCamera = !freeCamera;
@@ -209,6 +219,8 @@ void MainGame::processInput()
 					updateGameTitle = true;
 				}
 
+
+				//switch to collider editor and back
 				if(event.key.keysym.sym == SDLK_LALT)
 				{
 					colliderEditorActive = !colliderEditorActive;
@@ -238,7 +250,7 @@ void MainGame::processInput()
 				}
 
 
-
+				//show mouse or hide it
 				if(event.key.keysym.sym == SDLK_ESCAPE)
 				{					
 					
@@ -255,6 +267,8 @@ void MainGame::processInput()
 								
 				}
 
+
+				//fullscreen
 				if (event.key.keysym.sym == SDLK_F11) {
 					_gameDisplay.toggleFullscreen();
 
@@ -266,6 +280,8 @@ void MainGame::processInput()
 
 				break;
 
+
+				//update projection if window changes size
 			case SDL_WINDOWEVENT:
 				if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 				{
@@ -299,7 +315,7 @@ void MainGame::processInput()
 	//mouseState
 	Uint32 mouseState = SDL_GetRelativeMouseState(&mouseX, &mouseY);
 
-
+	//zooming in
 	if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))
 	{
 		m_mainCamera.SetZooming(true);
@@ -315,8 +331,12 @@ void MainGame::processInput()
 
 	if (freeCamera)
 	{
+
+		//move crosshair
 		m_tank->GetCrosshair()->GetTransform()->SetPosition(glm::vec3(0));
 
+
+		//movement
 		if (state[SDL_SCANCODE_W])
 		{
 			m_mainCamera.move(m_mainCamera.GetForward() * moveAmount * deltaTime);
@@ -344,6 +364,7 @@ void MainGame::processInput()
 		}
 
 
+		//mouse movement
 		if (mouseX != 0)
 		{
 			float yawAmount = (float)mouseX * m_sensitivity / 1000.f;
@@ -378,6 +399,8 @@ void MainGame::processInput()
 	}
 	else
 	{
+
+		//movement
 		if (state[SDL_SCANCODE_W])
 		{
 			m_tank->MoveForward();
@@ -395,6 +418,8 @@ void MainGame::processInput()
 			m_tank->RotateBodyRight(deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
 		}
 
+
+		//reset
 		if (state[SDL_SCANCODE_R])
 		{
 			if (!rDown)
@@ -409,16 +434,17 @@ void MainGame::processInput()
 
 
 
-		//just so sensitivity can be a normal number
+		//just so sensitivity can be a normal number we divide by 1000.0 otherwise sense would be 0.001
 		m_targetTurretAngle += (float)mouseX * (-m_sensitivity / 1000.f);
 
 		m_targetBarrelPitch += (float)mouseY * (m_sensitivity / 1000.f);
 
+		//update the turret aiming with the glm:;distance being to the nearest object to change crosshair
 		m_tank->UpdateTurretAim(deltaTime, m_targetTurretAngle, m_targetBarrelPitch, isZooming, 
 			glm::distance(*m_tank->GetBody()->GetTransform()->GetPosition(), m_colliderEditor->ShootDetection(*m_tank->GetBarrel()->GetTransform()->GetPosition(), m_tank->GetBarrel()->GetTransform()->GetForward(), true, false)));
 		
 
-
+		//perry target that man 500m away and fire
 		if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
 		{
 			if (m_tank->GetIfCanShoot())
@@ -430,6 +456,8 @@ void MainGame::processInput()
 		}	
 	}
 
+
+	//hide colliders
 	if (state[SDL_SCANCODE_H])
 	{
 		if (!hDown)
@@ -445,6 +473,8 @@ void MainGame::processInput()
 	}
 
 
+
+	//give the player cheats because enemy is hard to find and it is kind of cracked if you dont know where it is
 	if (state[SDL_SCANCODE_X])
 	{
 		if (!xDown)
@@ -460,6 +490,8 @@ void MainGame::processInput()
 	}
 
 
+
+	//v-sync for testing delta time stuff
 	if (state[SDL_SCANCODE_V])
 	{
 		if (!vDown)
@@ -479,11 +511,14 @@ void MainGame::processInput()
 
 void MainGame::update()
 {
+
+	//update editor
 	if (colliderEditorActive)
 		m_colliderEditor->UpdateEditor();
 
 
-
+	//tank collision before movement is probably not conventional and should probably be in a fixed updated or smth
+	//but it works for this and if i had more time i wouldve 
 	std::array<bool, 2> tankCollision = m_colliderEditor->CollisionDetection();
 	
 	//handle if tanks crash into each other
@@ -498,6 +533,8 @@ void MainGame::update()
 		m_tank->HandleColliison(tankCollision[0], 8);
 	}
 
+
+	//other various updates
 	m_EnemyTank->UpdateIfEnemyCanSeePlayer(m_colliderEditor->CheckForPlayer());
 
 	m_tank->Update(deltaTime);
@@ -509,15 +546,21 @@ void MainGame::update()
 }
 
 
-
+//draw game
 void MainGame::drawGame()
 {
+	//clear
 	_gameDisplay.clearDisplay();
 
+
+	//skybox first
 	skybox.Draw(m_mainCamera);
 
+
+	//if we are not hiding the meshes in the editor
 	if (!m_colliderEditor->GetHideMeshes())
 	{
+		//there is only one object in here but i made it so it was flexible if i needed more
 		for (int i = 0; i < NUM_GAME_OBJECTS; i++)
 		{
 			m_gameObjects[i]->GetShader()->Bind();
@@ -526,22 +569,20 @@ void MainGame::drawGame()
 			m_gameObjects[i]->GetMesh()->draw();
 		}
 
+		//draw them tanks
 		m_EnemyTank->GetTank()->Draw();
 		m_tank->Draw();
 	}
 		
+	//draw editor if we are editing or showing colliders
 	if (colliderEditorActive || collidersShowing)
 		m_colliderEditor->DrawEditor(m_mainCamera);
 
 	
-
+	//we are wall hacking 
 	if (wallHacks)
 	{
-		glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
 		m_colliderEditor->WallHacks(m_mainCamera);
-		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
 	}
 
 

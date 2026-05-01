@@ -4,6 +4,11 @@
 #include <algorithm>
 #include <map>
 
+//i edited this slightly to allow for vertex colour input since that was needed with a previous model 
+//it snot needed anymore but its cool i guess
+
+
+
 static bool CompareOBJIndexPtr(const OBJIndex* a, const OBJIndex* b);
 static inline unsigned int FindNextChar(unsigned int start, const char* str, unsigned int length, char token);
 static inline unsigned int ParseOBJIndexValue(const std::string& token, unsigned int start, unsigned int end);

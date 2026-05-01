@@ -715,6 +715,8 @@ public:
 	//for drawing wall hacks when not in editor mode
 	void WallHacks(Camera& mainCamera)
 	{
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glLineWidth(2.0f);
 		m_enemyTankBodyCollider.GetShader()->Bind();
@@ -722,6 +724,8 @@ public:
 		m_enemyTankBodyCollider.GetTexture()->Bind(0);
 		m_enemyTankBodyCollider.GetMesh()->draw();
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 

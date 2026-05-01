@@ -71,7 +71,22 @@ private:
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
 
+
+
+	//sensitivity
+	//	  |
+	//	  |
+	//	  |
+	//	  v
 	float m_sensitivity = 1.0f;
+	//	  ^
+	//	  |
+	//	  |
+	//	  |
+	//sensitivity
+
+
+
 	float m_targetTurretAngle = 0.0f;
 	float m_targetBarrelPitch = 0.0f;
 

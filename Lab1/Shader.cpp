@@ -143,6 +143,7 @@ void Shader::Bind()
 	glUseProgram(program);
 }
 
+//for ads 
 void Shader::Update(const Transform& transform, const Camera& camera, bool hasTexture)
 {
 	glm::mat4 model = transform.GetModel();
@@ -213,6 +214,7 @@ void Shader::Update(const Transform& transform, const Camera& camera, bool hasTe
 }
 
 	
+//skybox
 void Shader::Update(const Camera& camera, bool isStatic)
 {
 	glm::mat4 view = camera.GetView();
