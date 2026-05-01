@@ -31,9 +31,11 @@ void MainGame::run()
 
 void MainGame::initSystems()
 {
-	std::cout << "====================================================\n\n";
-	std::cout << "First Load Will Take Longer Due To Binary Conversion\n\n";
-	std::cout << "====================================================";
+	std::cout << "=================================================================\n\n";
+	std::cout << "First Load Will Take Longer Due To Loading Models from obj format\n\n";
+	std::cout << "=================================================================\n\n";
+	std::cout << " Do not delete colliders.bin as this will mess up the game logic\n\n";
+	std::cout << "=================================================================\n\n";
 
 	_gameDisplay.initDisplay();
 

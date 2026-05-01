@@ -64,7 +64,7 @@ public:
 
 		std::cout << "Collider Editor\nNew Collider - N\nDelete Current Collider - Backspace\nPosition - ,\n";
 		std::cout << "Rotation - .\nScale - / \nAxis - X Y Z\n";
-		std::cout << "Type Change Stat Value - V\nChange Stat + (Increase)-(Decrease)\nMultiply Change State By 10,100 - 1,2 (NOT NUMPAD)\n";
+		std::cout << "Type Change Stat Value - C\nChange Stat + (Increase)-(Decrease)\nMultiply Change State By 10,100 - 1,2 (NOT NUMPAD)\n";
 		std::cout << "Change Collider Index Up - E\nChange Collider Index Down - Q\n";
 		std::cout << "Hide All Meshes - H\n";
 		std::cout << "Force Save - P\n\n\n";
@@ -254,11 +254,11 @@ public:
 	{
 
 		//allow user to enter new change value
-		if (state[SDL_SCANCODE_V])
+		if (state[SDL_SCANCODE_C])
 		{
-			if (!vDown)
+			if (!cDown)
 			{
-				vDown = true;
+				cDown = true;
 				refreshEditorOutput();
 
 				while (true)
@@ -326,7 +326,7 @@ public:
 		}
 		else
 		{
-			vDown = false;
+			cDown = false;
 		}
 	}
 
@@ -841,7 +841,7 @@ public:
 		m_tankBodyColliderOffset = glm::vec3(0.0, 0.3, 0.0);
 		m_enemyTankBodyCollider.GetTransform()->SetPosition(*enemyTankBody->GetTransform()->GetPosition() + m_tankBodyColliderOffset);
 		m_enemyTankBodyCollider.GetTransform()->SetRotation(glm::vec3(0.0));
-		m_enemyTankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 0.6, 1.5));
+		m_enemyTankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 0.8, 1.5));
 		m_enemyTankBodyCollider.GetCollider()->SetScale(*m_enemyTankBodyCollider.GetTransform()->GetScale());
 		m_enemyTankBodyCollider.GetCollider()->UpdateCollider(*m_enemyTankBodyCollider.GetTransform()->GetPosition(), *m_enemyTankBodyCollider.GetTransform()->GetRotation());
 		m_enemyTankBodyCollider.SetShader(*shaderManager->GetShader(COLLIDEROUTLINE));
@@ -1073,6 +1073,7 @@ public:
 
 		int currentColliderIndex = 0;
 
+		//key downs
 		bool commaDown = false;
 		bool periodDown = false;
 		bool slashDown = false;
@@ -1083,7 +1084,7 @@ public:
 		bool minusDown = false;
 		bool nDown = false;
 		bool backspaceDown = false;
-		bool vDown = false;
+		bool cDown = false;
 		bool eDown = false;
 		bool qDown = false;
 		bool hDown = false;

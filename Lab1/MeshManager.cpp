@@ -29,6 +29,9 @@ void MeshManager::LoadMeshes()
 	m_meshList[LECLERCBARREL_M]->loadModel("..\\res\\Meshes\\LeclercBarrel", "..\\res\\Binary\\LeclercBarrel");
 	m_meshList[CITY_M]->loadModel("..\\res\\Meshes\\City", "..\\res\\Binary\\City");
 
+
+
+
     //upload them models
 	m_meshList[T80HULL_M]->uploadModelToGPU();
 	m_meshList[T80TURRET_M]->uploadModelToGPU();
