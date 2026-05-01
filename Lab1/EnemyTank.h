@@ -29,9 +29,7 @@ public:
 	EnemyTank(ShaderManager& shaderManager, TextureManager& textureManager, MeshManager& meshManager, Camera* mainCamera, Tank* playerTank) : m_tank(shaderManager, textureManager, meshManager, mainCamera, false)
 	{
 
-		GenerateStartingIndices(currentIndex, nextIndex, 9, 8);
-
-		m_tank.SetPosition(glm::vec3(movementGrid[currentIndex.row][currentIndex.col].x, -0.94f, -movementGrid[currentIndex.row][currentIndex.col].y));
+		ResetTankPos();
 
 		m_positionRef = m_tank.GetBody()->GetTransform()->GetPosition();
 		m_currentSpeedRef = m_tank.GetCurrentSpeed();
@@ -39,6 +37,16 @@ public:
 		m_tankBodyRef = m_tank.GetBody();
 		m_playerRef = playerTank;
 		m_playerBodyRef = playerTank->GetBody();
+	}
+
+
+	void ResetTankPos()
+	{
+		GenerateStartingIndices(currentIndex, nextIndex, 9, 8);
+
+		m_tank.SetPosition(glm::vec3(movementGrid[currentIndex.row][currentIndex.col].x, -0.94f, -movementGrid[currentIndex.row][currentIndex.col].y));
+	
+		m_tank.SetRotation(glm::vec3(0));
 	}
 
 
@@ -168,7 +176,7 @@ public:
 				if (m_tank.GetIfCanShoot())
 				{
 					m_tank.Shoot();
-					m_playerRef->KillTank();
+					//m_playerRef->KillTank();
 				}
 			}
 		}

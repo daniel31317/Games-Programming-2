@@ -39,8 +39,6 @@ void MainGame::initSystems()
 
 	m_meshManager.LoadMeshes();
 
-	m_mainCamera.initCamera(glm::vec3(0, 0.25, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
-
 	initGameObjects();
 
 	skybox.initSkyBox();
@@ -51,6 +49,9 @@ void MainGame::initSystems()
 
 void MainGame::initGameObjects()
 {
+
+	m_mainCamera.initCamera(glm::vec3(0, 0.25, -5), 70.0f, (float)_gameDisplay.getWidth() / _gameDisplay.getHeight(), 0.01f, 1000.0f);
+
 	//city
 	m_gameObjects[0]->GetTransform()->SetPosition(glm::vec3(0.0, -1.0, 0.0));	
 	m_gameObjects[0]->GetTransform()->SetRotation(glm::vec3(0.0, 0.0, 0.0));
@@ -345,6 +346,18 @@ void MainGame::processInput()
 			m_tank->RotateBodyRight(deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
 		}
 
+		if (state[SDL_SCANCODE_R])
+		{
+			if (!rDown)
+			{
+				initGameObjects();
+			}
+		}
+		else
+		{
+			rDown = false;
+		}
+
 
 
 		//just so sensitivity can be a normal number
@@ -473,3 +486,4 @@ void MainGame::drawGame()
 	_gameDisplay.swapBuffer();
 
 }
+
