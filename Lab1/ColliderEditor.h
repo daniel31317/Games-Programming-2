@@ -50,7 +50,7 @@ public:
 		CreateEnemyTankBodyCollider();
 
 		//we save colliders to a binary file for quick loading
-		loadCollidersFromBinary("..\\res\\Binary\\colliders.bin");
+		loadCollidersFromBinary("..\\res\\Binary\\DONTDELETE\\colliders.bin");
 	}
 
 	void OpenEditor()
@@ -618,7 +618,7 @@ public:
 			{
 				pDown = true;
 				refreshEditorOutput();
-				saveCollidersToBinary("..\\res\\Binary\\colliders.bin");
+				saveCollidersToBinary("..\\res\\Binary\\DONTDELETE\\colliders.bin");
 				std::cout << "Colliders Saved\n";
 			}
 
@@ -672,7 +672,7 @@ public:
 	void CloseEditor()
 	{
 		std::system("cls");
-		saveCollidersToBinary("..\\res\\Binary\\colliders.bin");
+		saveCollidersToBinary("..\\res\\Binary\\DONTDELETE\\colliders.bin");
 		hideMeshes = false;
 	}
 
