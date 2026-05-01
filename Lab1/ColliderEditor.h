@@ -780,7 +780,7 @@ public:
 	void CreateEnemyTankBodyCollider()
 	{
 		m_enemyTankBodyCollider = GameObject();
-		m_tankBodyColliderOffset = glm::vec3(0.0, 0.1, -0.1);
+		m_tankBodyColliderOffset = glm::vec3(0.0, 0.5, -0.1);
 		m_enemyTankBodyCollider.GetTransform()->SetPosition(*enemyTankBody->GetTransform()->GetPosition() + m_tankBodyColliderOffset);
 		m_enemyTankBodyCollider.GetTransform()->SetRotation(glm::vec3(0.0));
 		m_enemyTankBodyCollider.GetTransform()->SetScale(glm::vec3(0.8, 1.0, 1.7));

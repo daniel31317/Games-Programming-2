@@ -1,5 +1,3 @@
-- Sky background
-
 -Smoke from barrel shot
 
 -Fume particle thing
