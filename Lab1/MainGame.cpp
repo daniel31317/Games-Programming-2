@@ -31,6 +31,10 @@ void MainGame::run()
 
 void MainGame::initSystems()
 {
+	std::cout << "====================================================\n\n";
+	std::cout << "First Load Will Take Longer Due To Binary Conversion\n\n";
+	std::cout << "====================================================";
+
 	_gameDisplay.initDisplay();
 
 	m_shaderManager.LoadShaders();
