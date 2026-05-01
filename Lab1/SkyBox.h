@@ -97,12 +97,12 @@ private :
     Transform transform;
 
     const std::vector<std::string> faces = {
-    "..\\res\\right.jpg",
-    "..\\res\\left.jpg",
-    "..\\res\\top.jpg",
-    "..\\res\\bottom.jpg",
-    "..\\res\\front.jpg",
-    "..\\res\\back.jpg"
+    "..\\res\\Textures\\right.jpg",
+    "..\\res\\Textures\\left.jpg",
+    "..\\res\\Textures\\top.jpg",
+    "..\\res\\Textures\\bottom.jpg",
+    "..\\res\\Textures\\front.jpg",
+    "..\\res\\Textures\\back.jpg"
     };
 
 

@@ -34,24 +34,24 @@ void Mesh::init(Vertex* vertices, unsigned int numVertices, unsigned int* indice
 		model.indices.push_back(indices[i]);
 }
 
-void Mesh::loadModel(const std::string& filename)
+void Mesh::loadModel(const std::string& meshFilename, const std::string& binaryFilename)
 {
-	std::string binPath = filename + ".bin";
+	std::string binPath = binaryFilename + ".bin";
 
 	std::ifstream f(binPath.c_str());
 
 	if (f.good())
 	{
-		std::cout << "Loading Mesh - " + filename + ".bin\n";
+		std::cout << "Loading Mesh - " + binaryFilename + ".bin\n";
 		loadModelAsBinary(binPath);
-		std::cout << "Finished Loading Mesh - " + filename + ".bin\n";
+		std::cout << "Finished Loading Mesh - " + binaryFilename + ".bin\n";
 	}
 	else
 	{
-		std::cout << "Loading Mesh - " + filename + ".obj\n";
-		model = OBJModel(filename + ".obj", defaultColour).ToIndexedModel();
+		std::cout << "Loading Mesh - " + meshFilename + ".obj\n";
+		model = OBJModel(meshFilename + ".obj", defaultColour).ToIndexedModel();
 		saveModelAsBinary(binPath);
-		std::cout << "Finished Loading Mesh - " + filename + ".obj\n";
+		std::cout << "Finished Loading Mesh - " + meshFilename + ".obj\n";
 	}
 	
 }

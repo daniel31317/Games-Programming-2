@@ -22,12 +22,12 @@ void MeshManager::LoadMeshes()
 	m_meshList[CITY_M] = std::make_unique<Mesh>();
 
     //load them models
-	m_meshList[T80HULL_M]->loadModel("..\\res\\T_80_Hull");
-	m_meshList[T80TURRET_M]->loadModel("..\\res\\T_80_Turret");
-	m_meshList[LECLERCHULL_M]->loadModel("..\\res\\LeclercHull");
-	m_meshList[LECLERCTURRET_M]->loadModel("..\\res\\LeclercTurret");
-	m_meshList[LECLERCBARREL_M]->loadModel("..\\res\\LeclercBarrel");
-	m_meshList[CITY_M]->loadModel("..\\res\\City");
+	m_meshList[T80HULL_M]->loadModel("..\\res\\Meshes\\T_80_Hull", "..\\res\\Binary\\T_80_Hull");
+	m_meshList[T80TURRET_M]->loadModel("..\\res\\Meshes\\T_80_Turret", "..\\res\\Binary\\T_80_Turret");
+	m_meshList[LECLERCHULL_M]->loadModel("..\\res\\Meshes\\LeclercHull", "..\\res\\Binary\\LeclercHull");
+	m_meshList[LECLERCTURRET_M]->loadModel("..\\res\\Meshes\\LeclercTurret", "..\\res\\Binary\\LeclercTurret");
+	m_meshList[LECLERCBARREL_M]->loadModel("..\\res\\Meshes\\LeclercBarrel", "..\\res\\Binary\\LeclercBarrel");
+	m_meshList[CITY_M]->loadModel("..\\res\\Meshes\\City", "..\\res\\Binary\\City");
 
     //upload them models
 	m_meshList[T80HULL_M]->uploadModelToGPU();

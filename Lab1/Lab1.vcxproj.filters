@@ -109,40 +109,40 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\res\UIElement.vert">
+    <None Include="..\res\Shaders\ADS.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\UIElement.frag">
+    <None Include="..\res\Shaders\ADS.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\ColliderOutline.frag">
+    <None Include="..\res\Shaders\ColliderOutline.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\ColliderOutline.vert">
+    <None Include="..\res\Shaders\ColliderOutline.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\ADS.frag">
+    <None Include="..\res\Shaders\RemoveBackground.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\ADS.vert">
+    <None Include="..\res\Shaders\RemoveBackground.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\RemoveBackground.frag">
+    <None Include="..\res\Shaders\Skybox.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\RemoveBackground.vert">
+    <None Include="..\res\Shaders\Skybox.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\Tank.frag">
+    <None Include="..\res\Shaders\Tank.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\Tank.vert">
+    <None Include="..\res\Shaders\Tank.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\Skybox.frag">
+    <None Include="..\res\Shaders\UIElement.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\res\Skybox.vert">
+    <None Include="..\res\Shaders\UIElement.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
