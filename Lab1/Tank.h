@@ -235,9 +235,6 @@ public:
 	}
 
 
-	GameObject* GetBody() { return &m_body; }
-	GameObject* GetTurret() { return &m_turret; }
-	GameObject* GetBarrel() { return &m_barrel; }
 
     void MoveForward()
     {
@@ -262,7 +259,7 @@ public:
 
 
 	//rotate the body of the tank left
-	void RotateBodyLeft(float deltaTime, bool checkMovebackwards, glm::vec3& tankColliderOffset)
+	void RotateHull(bool left, float deltaTime, bool checkMovebackwards, glm::vec3& tankColliderOffset)
 	{
 		if (!alive)
 		{
@@ -283,19 +280,19 @@ public:
 		//avoid infinite loop with checkMovebackwards
 		if (checkMovebackwards && movingBackward)
 		{
-			RotateBodyRight(deltaTime ,false, tankColliderOffset);
+			RotateHull(!left, deltaTime ,false, tankColliderOffset);
 			return;
 		}
 	
 		//apply turn speed penalty based on current speed
 		float effectiveRotSpeed = bodyRotSpeed * (1.0f - (currentSpeed / maxForwardSpeed) * 0.5f);
-		float rotationAmount = effectiveRotSpeed * deltaTime;
+		float rotationAmount = effectiveRotSpeed * deltaTime * (left ? 1 : -1);
 
 		m_body.GetTransform()->rotate(glm::vec3(0.0, rotationAmount, 0.0));
 		tankCollider->GetTransform()->rotate(glm::vec3(0.0, rotationAmount, 0.0));
 
 		//change current speed
-		currentSpeed *= (1.0f - rotationAmount * turnSpeedPenalty);
+		currentSpeed *= (1.0f - glm::abs(rotationAmount) * turnSpeedPenalty);
 
 		//update turret position
 		glm::vec3 bodyPos = *m_body.GetTransform()->GetPosition();
@@ -319,55 +316,6 @@ public:
 
 	}
 
-
-
-	//like RotateBodyLeft above but with opposite rotation
-    void RotateBodyRight(float deltaTime, bool checkMovebackwards, glm::vec3& tankColliderOffset)
-    {
-		if (!alive)
-		{
-			return;
-		}
-		if (collidedLastFrame)
-		{
-			switch (*tankCollider->GetCollider()->GetCollisionSide())
-			{
-			case Collider::CollisionSide::FrontRight:
-			case Collider::CollisionSide::BackLeft:
-				return;
-			default: break;
-			}
-		}
-		if (checkMovebackwards && movingBackward)
-		{
-			RotateBodyLeft(deltaTime, false, tankColliderOffset);
-			return;
-		}
-		float effectiveRotSpeed = bodyRotSpeed * (1.0f - (currentSpeed / maxForwardSpeed) * 0.5f);
-		float rotationAmount = effectiveRotSpeed * deltaTime;
-
-		m_body.GetTransform()->rotate(glm::vec3(0.0, -rotationAmount, 0.0));
-		tankCollider->GetTransform()->rotate(glm::vec3(0.0, -rotationAmount, 0.0));
-
-		currentSpeed *= (1.0f - rotationAmount * turnSpeedPenalty);
-
-		glm::vec3 bodyPos = *m_body.GetTransform()->GetPosition();
-		glm::mat4 bodyRot = glm::rotate(m_body.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
-		glm::vec3 rotatedOffset = glm::vec3(bodyRot * glm::vec4(turretOffset, 0.0f));
-		m_turret.GetTransform()->SetPosition(bodyPos + rotatedOffset);
-
-		glm::vec3 rotatedColliderOffset = glm::vec3(bodyRot * glm::vec4(tankColliderOffset, 0.0f));
-		tankCollider->GetTransform()->SetPosition(bodyPos + rotatedColliderOffset);
-		tankCollider->GetCollider()->UpdateCollider(*tankCollider->GetTransform()->GetPosition(), *tankCollider->GetTransform()->GetRotation());
-
-		if (isPlayer)
-		{
-			glm::mat4 camRot = glm::rotate(m_turret.GetTransform()->GetRotation()->y, glm::vec3(0, 1, 0));
-			glm::vec3 camOffset = glm::vec3(camRot * glm::vec4(cameraOffset, 0.0f));
-			camera->SetPosition(*m_turret.GetTransform()->GetPosition() + camOffset);
-		}
-		
-    }
 
 
 
@@ -443,7 +391,7 @@ public:
 
 
 	//for the ai to rotate left
-	void RotateTurretLeftAI(float deltaTime)
+	void RotateTurretAI(bool left, float deltaTime)
 	{
 		if (!alive)
 		{
@@ -454,7 +402,7 @@ public:
 		//rotate turret and muzzle flash
 		Transform* turretTransform = m_turret.GetTransform();
 
-		turretTransform->rotate(glm::vec3(0.0f, turretRotSpeed * deltaTime, 0.0f));
+		turretTransform->rotate(glm::vec3(0.0f, turretRotSpeed * (left ? 1 : -1) * deltaTime, 0.0f));
 
 		m_muzzleFlash.GetTransform()->SetRotation(*turretTransform->GetRotation());
 
@@ -462,27 +410,6 @@ public:
 			+ (turretTransform->GetForward() * 1.4f)
 			+ (turretTransform->GetUp() * (m_barrel.GetTransform()->GetPosition()->y + muzzleFlashOffset)));
 	}
-
-
-	//same as above but opposite direction
-    void RotateTurretRightAI(float deltaTime)
-    {
-		if (!alive)
-		{
-			return;
-		}
-		Transform* turretTransform = m_turret.GetTransform();
-
-		turretTransform->rotate(glm::vec3(0.0f, -turretRotSpeed * deltaTime, 0.0f));
-
-		m_muzzleFlash.GetTransform()->SetRotation(*turretTransform->GetRotation());
-
-		m_muzzleFlash.GetTransform()->SetPosition(*turretTransform->GetPosition()
-			+ (turretTransform->GetForward() * 1.4f)
-			+ (turretTransform->GetUp() * (m_barrel.GetTransform()->GetPosition()->y + muzzleFlashOffset)));
-
-    }
-
 
 
 	//if we have collided and its a new collsion, then we dampen the current speed
@@ -586,6 +513,9 @@ public:
 	const float* GetBrakeForce() const { return &brakeForce; }
 	const bool* GetCollidedLastFrame() const { return &collidedLastFrame; }
 	GameObject* GetCrosshair() { return &m_crosshair; }
+	GameObject* GetBody() { return &m_body; }
+	GameObject* GetTurret() { return &m_turret; }
+	GameObject* GetBarrel() { return &m_barrel; }
 	const bool GetIfCanShoot() const { return canShoot && alive; }
 	const bool IsAlive() const { return alive; }
 

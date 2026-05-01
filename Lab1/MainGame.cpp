@@ -412,11 +412,11 @@ void MainGame::processInput()
 		}
 		if (state[SDL_SCANCODE_A])
 		{
-			m_tank->RotateBodyLeft(deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
+			m_tank->RotateHull(true, deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
 		}
 		if (state[SDL_SCANCODE_D])
 		{
-			m_tank->RotateBodyRight(deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
+			m_tank->RotateHull(false, deltaTime, true, *m_colliderEditor->GetTankColliderOffset());
 		}
 
 
