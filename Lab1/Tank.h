@@ -164,9 +164,9 @@ public:
 			}
 			
 		}
-		else
+		else 
 		{
-			//if not moving but still have speed slow down
+			//if not moving but still have speed slow down (friction)
 			if (currentSpeed > 0)
 			{
 				currentSpeed -= deceleration * deltaTime;
